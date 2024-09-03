@@ -1,0 +1,7 @@
+# 1. git에 올리지 않은 파일 정의
+
+# 2. dataset
+/Dataset
+
+# 3. idea 파일
+.idea/
