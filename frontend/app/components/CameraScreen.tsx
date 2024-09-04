@@ -33,7 +33,7 @@ export default function CameraScreen() {
 
       console.log('Uploading image...', formData); // 로그 출력
 
-      const response = await fetch('http://10.0.2.2:3001/upload', {
+      const response = await fetch('http://192.168.31.56:3001/upload', {
         method: 'POST',
         body: formData,
         headers: {
@@ -58,40 +58,46 @@ export default function CameraScreen() {
 
   return (
     <View style={styles.container}>
-      <View>
-        <TouchableOpacity style={styles.button} onPress={takePhoto}>
-          <Text style={styles.buttonText}>사진 찍기</Text>
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={takePhoto}>
+        <Text style={styles.buttonText}>사진 찍기</Text>
+      </TouchableOpacity>
+
+      <View
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}
+      >
+        {imageUri && (
+          <View style={{ display: 'flex' }}>
+            <Text style={{ fontSize: 20 }}>찍은 사진</Text>
+            <Image
+              source={{ uri: imageUri }}
+              style={styles.image}
+              resizeMode="contain"
+            />
+          </View>
+        )}
+        {uploadedImageUrl && (
+          <View style={{ display: 'flex' }}>
+            <Text style={{ fontSize: 20 }}>서버로 보낸 사진</Text>
+            <Image source={{ uri: uploadedImageUrl }} style={styles.image} />
+          </View>
+        )}
       </View>
-      {imageUri && (
-        <>
-          <Text style={{ fontSize: 20 }}>찍은 사진</Text>
-          <Image
-            source={{ uri: imageUri }}
-            style={{ width: '100%', height: '60%', marginTop: 10 }}
-            resizeMode="contain"
-          />
-        </>
-      )}
-      {uploadedImageUrl && (
-        <>
-          <Text style={{ fontSize: 20 }}>서버로 보낸 사진</Text>
-          <Image
-            source={{ uri: uploadedImageUrl }}
-            style={{ width: 200, height: 200, marginTop: 20 }}
-          />
-        </>
-      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    display: 'flex',
     backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
+    height: '100%',
+    width: '100%',
   },
   button: {
     backgroundColor: '#3498db',
@@ -104,5 +110,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  image: {
+    width: '100%',
+    height: '60%',
   },
 });
