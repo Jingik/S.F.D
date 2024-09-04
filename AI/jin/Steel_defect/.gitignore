@@ -1,0 +1,7 @@
+dataset
+train
+note.pptx
+.vscode
+cpp
+__pycache__/
+*.pyc
