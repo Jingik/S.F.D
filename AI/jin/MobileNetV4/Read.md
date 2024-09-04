@@ -6,3 +6,5 @@ https://github.com/parkmina365/Semiconductor-defect-inspection/blob/main/semicon
 
 - 사전 학습 된
 https://github.com/lmomoy/LF-YOLO?tab=readme-ov-file
+
+- ..
