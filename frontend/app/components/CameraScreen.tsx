@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Text,
 } from 'react-native';
+import axios from 'axios';
 import { launchCamera } from 'react-native-image-picker';
 
 export default function CameraScreen() {
@@ -33,16 +34,13 @@ export default function CameraScreen() {
 
       console.log('Uploading image...', formData); // 로그 출력
 
-      const response = await fetch('http://192.168.31.56:3001/upload', {
-        method: 'POST',
-        body: formData,
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await axios.post(
+        'http://192.168.31.56:3001/upload',
+        formData,
+      );
 
-      if (response.ok) {
-        const data = await response.json();
+      if (response.status === 200) {
+        const data = response.data;
         setUploadedImageUrl(data.fileUrl);
         console.log('Upload successful', data); // 성공 로그
         Alert.alert('Success', '이미지가 성공적으로 업로드 되었습니다!');
