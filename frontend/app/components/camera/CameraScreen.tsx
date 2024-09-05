@@ -60,16 +60,10 @@ export default function CameraScreen() {
         <Text style={styles.buttonText}>사진 찍기</Text>
       </TouchableOpacity>
 
-      <View
-        style={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-        }}
-      >
+      <View style={[styles.flex, styles.setRowMiddle]}>
         {imageUri && (
-          <View style={{ display: 'flex' }}>
-            <Text style={{ fontSize: 20 }}>찍은 사진</Text>
+          <View style={styles.flex}>
+            <Text style={styles.fontSize20}>찍은 사진</Text>
             <Image
               source={{ uri: imageUri }}
               style={styles.image}
@@ -78,8 +72,8 @@ export default function CameraScreen() {
           </View>
         )}
         {uploadedImageUrl && (
-          <View style={{ display: 'flex' }}>
-            <Text style={{ fontSize: 20 }}>서버로 보낸 사진</Text>
+          <View style={styles.flex}>
+            <Text style={styles.fontSize20}>서버로 보낸 사진</Text>
             <Image source={{ uri: uploadedImageUrl }} style={styles.image} />
           </View>
         )}
@@ -112,5 +106,15 @@ const styles = StyleSheet.create({
   image: {
     width: '100%',
     height: '60%',
+  },
+  flex: {
+    display: 'flex',
+  },
+  setRowMiddle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  fontSize20: {
+    fontSize: 20,
   },
 });
