@@ -10,14 +10,14 @@ import {
 import axios from 'axios';
 import { launchCamera } from 'react-native-image-picker';
 
-export default function CameraScreen() {
+export const CameraScreen = () => {
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
 
   const takePhoto = () => {
     launchCamera({}, (response) => {
       if (response.assets) {
-        setImageUri(response.assets[0].uri);
+        setImageUri(response.assets[0].uri!);
         uploadImage(response.assets[0]);
       }
     });
@@ -80,12 +80,11 @@ export default function CameraScreen() {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    backgroundColor: 'skyblue',
     justifyContent: 'center',
     alignItems: 'center',
     height: '100%',
