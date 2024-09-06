@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import { MainAnimation } from './components/screens/MainAnimation';
 import { LoginScreen } from './components/screens/LoginScreen';
+import { RegisterScreen } from './components/screens/RegisterScreen';
 import { CameraScreen } from './components/camera/CameraScreen';
 import { StyleSheet, View } from 'react-native';
 
@@ -26,13 +27,18 @@ export const App = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="RegisterScreen"
+          component={RegisterScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="DefectDetect"
           component={CameraScreen}
           options={{
             title: '불량 검출',
             // Header 블록에 대한 스타일
             headerStyle: {
-              backgroundColor: '#ffb625',
+              backgroundColor: '#555555',
             },
             // Header의 텍스트, 버튼 색상
             headerTintColor: '#ffffff',
