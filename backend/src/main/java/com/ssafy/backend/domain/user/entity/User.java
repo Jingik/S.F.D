@@ -1,87 +1,45 @@
 package com.ssafy.backend.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
-@Entity
+@Entity // DB의 테이블과 1:1 매핑되는 객체
+@Table(name = "users")
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class User implements UserDetails {
+@AllArgsConstructor
+@NoArgsConstructor
+public class User {
 
-    @Id
+    @JsonIgnore
+    @Id // primary key
+    @Column(name = "id")
+    // 자동 증가 되는
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 30)
+    @Column(name = "email", length = 100, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @JsonIgnore
+    @Column(name = "password", length = 100)
     private String password;
 
-    private String name;
+    @Column(name = "nickname", length = 50)
+    private String nickname;
 
-    private LocalDate createdAt;
+    @JsonIgnore
+    @Column(name = "activated")
+    private boolean activated;
 
-    @Builder.Default
-    @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> roles = new ArrayList<>();
-
-    // 특정 필드를 받는 생성자
-    public User(String email, String password, String name, List<String> roles) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-        this.roles = roles;
-        this.createdAt = LocalDate.now();
-    }
-
-    // UserDetails 인터페이스 메서드 구현
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream()
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+    @ManyToMany
+    @JoinTable(
+            name = "user_authority",
+            joinColumns = {@JoinColumn(name = "id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
+    private Set<Authority> authorities;
 }
