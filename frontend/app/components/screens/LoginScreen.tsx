@@ -63,16 +63,24 @@ export const LoginScreen = ({ navigation }: any) => {
   );
 
   return (
-    <View style={[styles.flex, styles.center, styles.maxWidthHeight]}>
-      <Text>로그인 화면</Text>
+    <View
+      style={[styles.flex, styles.flex1, styles.center, styles.maxWidthHeight]}
+    >
+      <Text style={styles.flex1}>로그인 화면</Text>
       {/* 임시로 로그인 처리 */}
-      <TouchableOpacity onPress={() => navigation.navigate('DefectDetect')}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('DefectDetect')}
+        style={styles.flex1}
+      >
         <Text>로그인</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+      <TouchableOpacity
+        onPress={() => navigation.navigate('RegisterScreen')}
+        style={styles.flex1}
+      >
         <Text>회원가입</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleExitApp}>
+      <TouchableOpacity onPress={handleExitApp} style={[styles.flex1]}>
         <Text>앱 종료</Text>
       </TouchableOpacity>
     </View>
@@ -82,6 +90,9 @@ export const LoginScreen = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   flex: {
     display: 'flex',
+  },
+  flex1: {
+    flex: 1,
   },
   center: {
     alignItems: 'center',
