@@ -4,7 +4,7 @@ from tensorflow.keras.models import load_model
 import numpy as np
 from sklearn.metrics import precision_score, recall_score, confusion_matrix
 
-# 테스트 데이터 제너레이터 설정
+# 테스트 데이터 제너레이터 설정a
 test_datagen = ImageDataGenerator(rescale=1.0/255)
 
 # 테스트 데이터 불러오기
