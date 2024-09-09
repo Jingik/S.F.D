@@ -1,6 +1,7 @@
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
+import styles from '@/components/common/styles';
 
 export const MainAnimation = ({ navigation }: any) => {
   const [time, setTime] = useState(2500);
@@ -15,22 +16,16 @@ export const MainAnimation = ({ navigation }: any) => {
   );
 
   return (
-    <View style={[styles.flex, styles.setRowMiddle, styles.maxWidthHeight]}>
+    <View
+      style={[
+        styles.BGWhite,
+        styles.flex,
+        styles.row,
+        styles.between,
+        styles.maxWidthHeight,
+      ]}
+    >
       <Text>메인 애니메이션</Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  flex: {
-    display: 'flex',
-  },
-  setRowMiddle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  maxWidthHeight: {
-    width: '100%',
-    height: '100%',
-  },
-});
