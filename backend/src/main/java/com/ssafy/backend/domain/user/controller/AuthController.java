@@ -1,8 +1,7 @@
 package com.ssafy.backend.domain.user.controller;
 
-import com.ssafy.backend.domain.user.dto.*;
-import com.ssafy.backend.domain.user.entity.User;
-import com.ssafy.backend.domain.user.model.repository.UserRepository;
+import com.ssafy.backend.domain.user.dto.LoginDto;
+import com.ssafy.backend.domain.user.dto.TokenDto;
 import com.ssafy.backend.global.config.JwtFilter;
 import com.ssafy.backend.global.config.TokenProvider;
 import jakarta.validation.Valid;
@@ -10,18 +9,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -29,10 +24,10 @@ import java.util.List;
 public class AuthController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
     @PostMapping("/authenticate")
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto) {
 
+        // Spring Security 제공 메소드
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
 

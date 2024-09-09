@@ -6,8 +6,8 @@ import lombok.*;
 
 import java.util.Set;
 
-@Entity // DB의 테이블과 1:1 매핑되는 객체
-@Table(name = "users")
+@Entity
+@Table(name = "users") // DB의 테이블과 매핑
 @Getter
 @Setter
 @Builder
@@ -16,11 +16,9 @@ import java.util.Set;
 public class User {
 
     @JsonIgnore
-    @Id // primary key
-    @Column(name = "id")
-    // 자동 증가 되는
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // primary key로 자동 증가
 
     @Column(name = "email", length = 100, unique = true)
     private String email;
@@ -29,6 +27,9 @@ public class User {
     @Column(name = "password", length = 100)
     private String password;
 
+    @Column(name = "name", length = 50) // 사람 이름을 저장하는 필드 추가
+    private String name;
+
     @Column(name = "nickname", length = 50)
     private String nickname;
 
@@ -36,10 +37,11 @@ public class User {
     @Column(name = "activated")
     private boolean activated;
 
+    // User와 Authority의 ManyToMany 관계 매핑
     @ManyToMany
     @JoinTable(
-            name = "user_authority",
-            joinColumns = {@JoinColumn(name = "id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
+            name = "user_authority", // 매핑 테이블 이름
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, // User의 id를 참조
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")}) // Authority의 authority_name 참조
     private Set<Authority> authorities;
 }
