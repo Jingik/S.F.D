@@ -3,11 +3,12 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { MainAnimation } from './components/screens/MainAnimation';
-import { LoginScreen } from './components/screens/LoginScreen';
-import { RegisterScreen } from './components/screens/RegisterScreen';
-import { CameraScreen } from './components/camera/CameraScreen';
-import { StyleSheet, View } from 'react-native';
+import { MainAnimation } from '@screens/MainAnimation';
+import { LoginScreen } from '@screens/LoginScreen';
+import { RegisterScreen } from '@screens/RegisterScreen';
+import { CameraScreen } from '@components/camera/CameraScreen';
+import { View } from 'react-native';
+import styles from '@/components/common/styles';
 
 const Stack = createStackNavigator();
 const EmptyHeaderLeft = () => <View style={styles.none} />;
@@ -29,10 +30,22 @@ export const App = () => {
         <Stack.Screen
           name="RegisterScreen"
           component={RegisterScreen}
-          options={{ headerShown: false }}
+          options={{
+            headerTitle: '회원 가입',
+            headerTitleAlign: 'center',
+            headerStyle: {
+              backgroundColor: 'white',
+            },
+            headerStatusBarHeight: 36,
+            headerTintColor: '#333333',
+            headerTitleStyle: {
+              fontWeight: 'bold',
+              fontSize: 36,
+            },
+          }}
         />
         <Stack.Screen
-          name="DefectDetect"
+          name="DetectDefect"
           component={CameraScreen}
           options={{
             title: '불량 검출',
@@ -54,11 +67,5 @@ export const App = () => {
     </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  none: {
-    display: 'none',
-  },
-});
 
 export default App;
