@@ -1,0 +1,6 @@
+Epoch, Loss, Model Path
+1, 0.6526, ./epoch\epoch_1.pth
+2, 0.4821, ./epoch\epoch_2.pth
+3, 0.4034, ./epoch\epoch_3.pth
+4, 0.3988, ./epoch\epoch_4.pth
+5, 0.3361, ./epoch\epoch_5.pth
