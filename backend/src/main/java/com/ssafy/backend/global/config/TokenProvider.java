@@ -1,8 +1,6 @@
 package com.ssafy.backend.global.config;
 
-import com.ssafy.backend.domain.user.entity.User;
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,9 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
@@ -22,24 +23,30 @@ import java.util.stream.Collectors;
 @Component
 public class TokenProvider implements InitializingBean {
 
-    private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
     private static final String AUTHORITIES_KEY = "auth";
-    private final String secret;
+    private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
     private final long tokenValidityInMilliseconds;
     private Key key;
 
+    // Secret 값을 외부에서 설정하지 않고, SecureRandom을 이용해 비밀 키 생성
     public TokenProvider(
-            @Value("${jwt.secret}") String secret,
             @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
-        this.secret = secret;
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
     }
 
-    // 빈이 생성되고 주입을 받은 후에 secret값을 Base64 Decode해서 key 변수에 할당하기 위해
+    // 빈이 생성되고 주입을 받은 후에 비밀 키를 생성하기 위해 SecureRandom 사용
     @Override
     public void afterPropertiesSet() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
+        // 64바이트의 랜덤한 비밀 키 생성 (512비트)
+        byte[] keyBytes = new byte[64];
+        SecureRandom secureRandom = new SecureRandom();
+        secureRandom.nextBytes(keyBytes);
+
+        // HMAC-SHA512 알고리즘을 위한 비밀 키 생성
         this.key = Keys.hmacShaKeyFor(keyBytes);
+
+        // 비밀 키를 Base64로 인코딩하여 출력 (디버깅용으로 확인 가능)
+        logger.info("Generated Secret Key: " + io.jsonwebtoken.io.Encoders.BASE64.encode(keyBytes));
     }
 
     public String createToken(Authentication authentication) {
@@ -47,7 +54,7 @@ public class TokenProvider implements InitializingBean {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        // 토큰의 expire 시간을 설정
+        // 토큰의 만료 시간 설정
         long now = (new Date()).getTime();
         Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
@@ -55,7 +62,7 @@ public class TokenProvider implements InitializingBean {
                 .setSubject(authentication.getName())
                 .claim(AUTHORITIES_KEY, authorities) // 정보 저장
                 .signWith(key, SignatureAlgorithm.HS512) // 사용할 암호화 알고리즘과 , signature 에 들어갈 secret값 세팅
-                .setExpiration(validity) // set Expire Time 해당 옵션 안넣으면 expire안함
+                .setExpiration(validity) // 만료 시간 설정
                 .compact();
     }
 
@@ -84,16 +91,12 @@ public class TokenProvider implements InitializingBean {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-
             logger.info("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-
             logger.info("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
-
             logger.info("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
-
             logger.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
