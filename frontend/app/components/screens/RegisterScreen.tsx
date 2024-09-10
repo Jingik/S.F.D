@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { Button } from '@components/common/Button';
 import styles from '@components/common/styles';
@@ -36,7 +36,7 @@ export const RegisterScreen = ({ navigation }: any) => {
 
   // 이메일 중복 체크
   function checkDuplicateEmail(trimEmail: string) {
-    axiosSecurity.get({ email: trimEmail }).then((response: any) => {
+    axiosSecurity.get('/', { email: trimEmail }).then((response: any) => {
       console.log(response);
       // return response.data;
     });
@@ -76,16 +76,34 @@ export const RegisterScreen = ({ navigation }: any) => {
         checkPw !== '' &&
         pw === checkPw
       ) {
-        console.log('활성화');
         setIsDisable(false);
       } else {
-        console.log('비활성화');
         setIsDisable(true);
       }
     }
 
     checkDisable();
   }, [email, emailMessage, pw, pwMessage, checkPw, checkPwMessage]);
+
+  // 서버로 회원 정보 보내기
+  function onPressAction() {
+    const user = {
+      email: email,
+      name: '',
+      nickname: '',
+      password: pw,
+    };
+
+    axiosSecurity
+      .post('/', user)
+      .then((response: any) => {
+        console.log(response);
+      })
+      .then(navigation.navigate('LoginScreen'))
+      .catch((e: any) => {
+        console.error('회원 정보 보내기 에러발생: ' + e);
+      });
+  }
 
   return (
     <View
@@ -159,13 +177,17 @@ export const RegisterScreen = ({ navigation }: any) => {
       <View style={styles.flex2} />
 
       <View style={[styles.flex1, styles.center, styles.maxWidthHeight]}>
-        <Button
-          name="회원가입"
-          color={isDisable ? '#AAAAAA' : '#148EE6'}
-          path="LoginScreen"
-          navigation={navigation}
-          isDisable={isDisable}
-        />
+        <TouchableOpacity
+          onPress={onPressAction}
+          style={
+            isDisable
+              ? [customStyles.backgroundDeny, customStyles.button]
+              : [customStyles.backgroundAccept, customStyles.button]
+          }
+          disabled={isDisable}
+        >
+          <Text style={customStyles.text}>회원가입</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.flex0_5} />
@@ -202,5 +224,26 @@ const customStyles = StyleSheet.create({
   },
   alignSelfEnd: {
     alignSelf: 'flex-end',
+  },
+
+  button: {
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '20%',
+    borderRadius: 100,
+  },
+  text: {
+    color: 'white',
+    fontWeight: '700',
+    fontSize: 30,
+  },
+
+  backgroundDeny: {
+    backgroundColor: '#AAAAAA',
+  },
+  backgroundAccept: {
+    backgroundColor: '#148EE6',
   },
 });
