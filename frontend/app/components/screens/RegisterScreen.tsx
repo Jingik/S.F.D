@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { Button } from '@components/common/Button';
 import styles from '@components/common/styles';
@@ -13,6 +19,8 @@ import {
 export const RegisterScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
   const [emailMessage, setEmailMessage] = useState('');
+  const [name, setName] = useState('');
+  const [nickname, setNickname] = useState('');
   const [pw, setPw] = useState('');
   const [pwMessage, setPwMessage] = useState('');
   const [checkPw, setCheckPw] = useState('');
@@ -72,6 +80,8 @@ export const RegisterScreen = ({ navigation }: any) => {
         pwMessage === '' &&
         checkPwMessage === '' &&
         email !== '' &&
+        name !== '' &&
+        nickname !== '' &&
         pw !== '' &&
         checkPw !== '' &&
         pw === checkPw
@@ -83,14 +93,23 @@ export const RegisterScreen = ({ navigation }: any) => {
     }
 
     checkDisable();
-  }, [email, emailMessage, pw, pwMessage, checkPw, checkPwMessage]);
+  }, [
+    email,
+    emailMessage,
+    name,
+    nickname,
+    pw,
+    pwMessage,
+    checkPw,
+    checkPwMessage,
+  ]);
 
   // 서버로 회원 정보 보내기
   function onPressAction() {
     const user = {
       email: email,
-      name: '',
-      nickname: '',
+      name: name,
+      nickname: nickname,
       password: pw,
     };
 
@@ -109,7 +128,6 @@ export const RegisterScreen = ({ navigation }: any) => {
     <View
       style={[
         styles.BGWhite,
-        styles.flex,
         styles.flex1,
         styles.center,
         styles.maxWidthHeight,
@@ -118,64 +136,107 @@ export const RegisterScreen = ({ navigation }: any) => {
       <View style={styles.flex0_5} />
 
       {/* 회원정보 입력 영역 */}
-      <View style={[styles.maxWidthHeight, styles.center, styles.flex4]}>
-        <View style={[styles.flex1, styles.width35]}>
-          <Text style={[customStyles.fontSetting, customStyles.alignSelfStart]}>
-            이메일
-          </Text>
-          <TextInput
-            style={[customStyles.input, styles.fontSize20]}
-            onChangeText={onChangeEmail}
-            value={email}
-            placeholder="이메일"
-            keyboardType="email-address"
-          />
-          <Text style={[customStyles.denyFontColor, customStyles.alignSelfEnd]}>
-            {emailMessage}
-          </Text>
-        </View>
+      <View style={[styles.flex4, styles.maxWidth]}>
+        <ScrollView style={[styles.flex1, styles.maxWidth]}>
+          {/* 이메일 */}
+          <View style={[styles.width35, styles.alignSelfCenter]}>
+            <Text style={[customStyles.fontSetting, styles.alignSelfStart]}>
+              이메일
+            </Text>
+            <TextInput
+              style={[customStyles.input, styles.fontSize20]}
+              onChangeText={onChangeEmail}
+              value={email}
+              placeholder="이메일"
+              keyboardType="email-address"
+            />
+            <Text
+              style={
+                emailMessage === '사용 가능한 이메일입니다.'
+                  ? [customStyles.denyFontColor, styles.alignSelfEnd]
+                  : [customStyles.acceptFontColor, styles.alignSelfEnd]
+              }
+            >
+              {emailMessage}
+            </Text>
+          </View>
 
-        <View style={styles.flex1} />
+          {/* 이름 */}
+          <View style={[styles.width35, styles.alignSelfCenter]}>
+            <Text style={[customStyles.fontSetting, styles.alignSelfStart]}>
+              이름
+            </Text>
+            <TextInput
+              style={[customStyles.input, styles.fontSize20]}
+              onChangeText={(e) => setName(e)}
+              value={name}
+              placeholder="이름"
+              keyboardType="default"
+            />
+            <Text style={[customStyles.denyFontColor, styles.alignSelfEnd]}>
+              {}
+            </Text>
+          </View>
 
-        <View style={[styles.flex1, styles.width35]}>
-          <Text style={[customStyles.fontSetting, customStyles.alignSelfStart]}>
-            비밀번호
-          </Text>
-          <TextInput
-            style={[customStyles.input, styles.fontSize20]}
-            secureTextEntry={true}
-            onChangeText={onChangePw}
-            value={pw}
-            placeholder="비밀번호"
-            keyboardType="default"
-          />
-          <Text style={[customStyles.denyFontColor, customStyles.alignSelfEnd]}>
-            {pwMessage}
-          </Text>
-        </View>
+          {/* 별명 */}
+          <View style={[styles.width35, styles.alignSelfCenter]}>
+            <Text style={[customStyles.fontSetting, styles.alignSelfStart]}>
+              별명
+            </Text>
+            <TextInput
+              style={[customStyles.input, styles.fontSize20]}
+              onChangeText={(e) => {
+                setNickname(e);
+              }}
+              value={nickname}
+              placeholder="별명"
+              keyboardType="default"
+            />
+            <Text style={[customStyles.denyFontColor, styles.alignSelfEnd]}>
+              {}
+            </Text>
+          </View>
 
-        <View style={styles.flex1} />
+          {/* 비밀번호 */}
+          <View style={[styles.width35, styles.alignSelfCenter]}>
+            <Text style={[customStyles.fontSetting, styles.alignSelfStart]}>
+              비밀번호
+            </Text>
+            <TextInput
+              style={[customStyles.input, styles.fontSize20]}
+              secureTextEntry={true}
+              onChangeText={onChangePw}
+              value={pw}
+              placeholder="비밀번호"
+              keyboardType="default"
+            />
+            <Text style={[customStyles.denyFontColor, styles.alignSelfEnd]}>
+              {pwMessage}
+            </Text>
+          </View>
 
-        <View style={[styles.flex1, styles.width35]}>
-          <Text style={[customStyles.fontSetting, customStyles.alignSelfStart]}>
-            비밀번호 확인
-          </Text>
-          <TextInput
-            style={[customStyles.input, styles.fontSize20]}
-            secureTextEntry={true}
-            onChangeText={onChangeCheckPw}
-            value={checkPw}
-            keyboardType="default"
-            placeholder="비밀번호를 한 번 더 입력해주세요"
-          />
-          <Text style={[customStyles.denyFontColor, customStyles.alignSelfEnd]}>
-            {checkPwMessage}
-          </Text>
-        </View>
+          {/* 비밀번호 확인 */}
+          <View style={[styles.width35, styles.alignSelfCenter]}>
+            <Text style={[customStyles.fontSetting, styles.alignSelfStart]}>
+              비밀번호 확인
+            </Text>
+            <TextInput
+              style={[customStyles.input, styles.fontSize20]}
+              secureTextEntry={true}
+              onChangeText={onChangeCheckPw}
+              value={checkPw}
+              keyboardType="default"
+              placeholder="비밀번호를 한 번 더 입력해주세요"
+            />
+            <Text style={[customStyles.denyFontColor, styles.alignSelfEnd]}>
+              {checkPwMessage}
+            </Text>
+          </View>
+        </ScrollView>
       </View>
 
-      <View style={styles.flex2} />
-
+      {/* 회원가입 버튼 */}
+      <View style={styles.flex0_5} />
       <View style={[styles.flex1, styles.center, styles.maxWidthHeight]}>
         <TouchableOpacity
           onPress={onPressAction}
@@ -189,7 +250,6 @@ export const RegisterScreen = ({ navigation }: any) => {
           <Text style={customStyles.text}>회원가입</Text>
         </TouchableOpacity>
       </View>
-
       <View style={styles.flex0_5} />
     </View>
   );
@@ -217,13 +277,6 @@ const customStyles = StyleSheet.create({
   denyFontColor: {
     color: '#E32626',
     padding: 5,
-  },
-
-  alignSelfStart: {
-    alignSelf: 'flex-start',
-  },
-  alignSelfEnd: {
-    alignSelf: 'flex-end',
   },
 
   button: {
