@@ -26,6 +26,24 @@ const styles = StyleSheet.create({
   flex4: {
     flex: 4,
   },
+  flex5: {
+    flex: 5,
+  },
+  flex6: {
+    flex: 6,
+  },
+  flex7: {
+    flex: 7,
+  },
+  flex8: {
+    flex: 8,
+  },
+  flex9: {
+    flex: 9,
+  },
+  flex10: {
+    flex: 10,
+  },
 
   start: {
     justifyContent: 'flex-start',
@@ -34,16 +52,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  alignCenter: {
+    alignItems: 'center',
+  },
   row: {
     flexDirection: 'row',
   },
   between: {
     justifyContent: 'space-between',
   },
+  alignSelfStart: {
+    alignSelf: 'flex-start',
+  },
+  alignSelfCenter: {
+    alignSelf: 'center',
+  },
+  alignSelfEnd: {
+    alignSelf: 'flex-end',
+  },
 
   maxWidthHeight: {
     width: '100%',
     height: '100%',
+  },
+  maxWidth: {
+    width: '100%',
   },
   width35: {
     width: '35%',

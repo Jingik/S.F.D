@@ -6,16 +6,9 @@ interface PropsType {
   color: string;
   path?: string;
   navigation?: any;
-  isDisable?: boolean;
 }
 
-export const Button = ({
-  name,
-  color,
-  path,
-  navigation,
-  isDisable,
-}: PropsType) => {
+export const Button = ({ name, color, path, navigation }: PropsType) => {
   return (
     <TouchableOpacity
       onPress={() => {
@@ -24,7 +17,6 @@ export const Button = ({
         }
       }}
       style={[customStyles.button, { backgroundColor: color }]}
-      disabled={isDisable}
     >
       <Text style={customStyles.text}>{name}</Text>
     </TouchableOpacity>
