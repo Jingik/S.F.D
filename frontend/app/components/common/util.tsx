@@ -1,4 +1,4 @@
-// email형식 확인
+// email 형식 확인
 export const validateEmail = (email: string) => {
   const regex =
     /^[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/;
@@ -9,4 +9,10 @@ export const validateEmail = (email: string) => {
 export const removeWhitespace = (text: string) => {
   const regex = /\s/g;
   return text.replace(regex, '');
+};
+
+// password 형식 확인
+export const validatePassword = (password: string) => {
+  const regex = /^(?=.*[a-zA-Z])(?=.*[~!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
+  return regex.test(password);
 };
