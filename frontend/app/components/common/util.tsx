@@ -1,5 +1,6 @@
 // axios 모듈화
 import axios from 'axios';
+import AsyncStorage from '@react-native-community/async-storage';
 
 // axios 인스턴스 생성
 export const axiosSecurity = axios.create({
@@ -10,9 +11,9 @@ export const axiosSecurity = axios.create({
 });
 
 // 로컬 스토리지에 토큰이 있는 경우 Authorization 헤더 설정
-const token = localStorage.getItem('token');
+const token = AsyncStorage.getItem('token');
 if (token) {
-  axiosSecurity.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+  axiosSecurity.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
 
 // email 형식 확인
