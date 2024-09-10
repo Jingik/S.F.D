@@ -1,0 +1,8 @@
+# dataset.yaml
+
+train: ./dataset/train/images
+val: ./dataset/valid/images
+test: ./dataset/test/images # 선택 사항
+
+nc: 4 # 클래스 개수 (예: deformation, fracture, rusting, scratches)
+names: ["scratches", "deformation", "fracture", "rusting"] # 클래스 이름
