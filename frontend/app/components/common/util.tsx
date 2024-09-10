@@ -1,3 +1,20 @@
+// axios 모듈화
+import axios from 'axios';
+
+// axios 인스턴스 생성
+export const axiosSecurity = axios.create({
+  baseURL: '링크',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// 로컬 스토리지에 토큰이 있는 경우 Authorization 헤더 설정
+const token = localStorage.getItem('token');
+if (token) {
+  axiosSecurity.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+}
+
 // email 형식 확인
 export const validateEmail = (email: string) => {
   const regex =

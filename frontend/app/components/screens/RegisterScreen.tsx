@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TextInput } from 'react-native-gesture-handler';
 import { Button } from '@components/common/Button';
@@ -7,8 +7,8 @@ import {
   validateEmail,
   removeWhitespace,
   validatePassword,
+  axiosSecurity,
 } from '@components/common/util';
-import axios from 'axios';
 
 export const RegisterScreen = ({ navigation }: any) => {
   const [email, setEmail] = useState('');
@@ -36,8 +36,9 @@ export const RegisterScreen = ({ navigation }: any) => {
 
   // 이메일 중복 체크
   function checkDuplicateEmail(trimEmail: string) {
-    axios.get('링크', { email: trimEmail }).then((response) => {
-      return response.data;
+    axiosSecurity.get({ email: trimEmail }).then((response: any) => {
+      console.log(response);
+      // return response.data;
     });
     return true;
   }
@@ -160,7 +161,7 @@ export const RegisterScreen = ({ navigation }: any) => {
       <View style={[styles.flex1, styles.center, styles.maxWidthHeight]}>
         <Button
           name="회원가입"
-          color={isDisable ? '#aaaaaa' : '#148EE6'}
+          color={isDisable ? '#AAAAAA' : '#148EE6'}
           path="LoginScreen"
           navigation={navigation}
           isDisable={isDisable}
