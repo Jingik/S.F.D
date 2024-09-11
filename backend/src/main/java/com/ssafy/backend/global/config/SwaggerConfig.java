@@ -18,8 +18,8 @@ public class SwaggerConfig {
 
     private Info apiInfo() {
         return new Info()
-                .title("ANSMOON Special API Docs")
-                .description("api 문서 정리")
+                .title("ANSMOON API Docs")
+                .description("SFD api 문서 정리")
                 .version("1.0.1");
     }
 }
