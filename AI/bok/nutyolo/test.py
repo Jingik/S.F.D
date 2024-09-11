@@ -8,8 +8,9 @@ import matplotlib.pyplot as plt
 model = YOLO("C:/Users/SSAFY/Desktop/YOLO/ultralytics/runs/detect/yolo_custom_training7/weights/best.pt")
 
 # 테스트할 이미지 경로 설정
-image_dir = 'C:/Users/SSAFY/Desktop/특화/nutyolo/dataset/test/images/'
-image_name = '1_2021-11-17-01_12_41-566040_jpg.rf.d483f3526e3c70398f90de68eba178a0.jpg'
+image_dir1 = 'C:/Users/SSAFY/Desktop/특화/nutyolo/dataset/test/images/'
+image_dir = 'C:/Users/SSAFY/Desktop/특화/nutyolo/dataset/test/deformation/images/'
+image_name = 'rn_image_picker_lib_temp_f9a08b9.jpg'
 image_path = os.path.join(image_dir, image_name)
 
 # 모델 예측 실행
@@ -17,7 +18,7 @@ results = model.predict(
     image_path,
     save=False,  # 결과 이미지를 저장하지 않음
     imgsz=640,  # 이미지 크기
-    conf=0.5,  # confidence threshold (0.5 이상의 박스만 출력)
+    conf=0.05,  # confidence threshold (0.05 이상의 박스만 출력)
     device="cuda",  # GPU 사용
 )
 
