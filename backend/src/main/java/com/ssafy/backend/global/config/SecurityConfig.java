@@ -51,9 +51,10 @@ public class SecurityConfig {
 
                 // 요청들에 대한 접근 제한 설정
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/api/authenticate").permitAll() // 로그인 API 허용
-                        .requestMatchers("/api/signup").permitAll() // 회원가입 API 허용
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html", "/v3/api-docs.yaml").permitAll() // Swagger 허용
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll() // Swagger 허용
+                        .requestMatchers("/api/user/login").permitAll() // 로그인 API 허용
+                        .requestMatchers("/api/user/signup").permitAll() // 회원가입 API 허용
+                        .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated() // 나머지 요청은 인증 필요
                 )
 

@@ -1,5 +1,6 @@
 package com.ssafy.backend.global.util;
 
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -8,11 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 
+@NoArgsConstructor
 public class SecurityUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(SecurityUtil.class);
-
-    private SecurityUtil() {}
 
     // getCurrentUsername 메소드의 역할은 Security Cont
     public static Optional<String> getCurrentUsername() {
