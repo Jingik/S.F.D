@@ -23,7 +23,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Transactional
 // 로그인 시 DB에서 유저 정보와 권한 정보를 가져와서 해당 정보를 기반으로 UserDetails 객체를 생성해 리턴
     public UserDetails loadUserByUsername(final String email) {
-
         return userRepository.findOneWithAuthoritiesByEmail(email)
                 .map(user -> createUser(email, user))
                 .orElseThrow(() -> new UsernameNotFoundException(email + " -> 데이터베이스에서 찾을 수 없습니다."));

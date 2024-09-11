@@ -50,10 +50,13 @@ public class UserService {
         return userRepository.findOneWithAuthoritiesByEmail(email);
     }
 
-    // 현재 securityContext에 저장된 useremail의 정보만 가져오는 메소드
     @Transactional(readOnly = true)
     public Optional<User> getMyUserWithAuthorities() {
         return SecurityUtil.getCurrentUsername()
-                .flatMap(userRepository::findOneWithAuthoritiesByEmail);
+                .flatMap(username -> {
+                    System.out.println("Current authenticated user: " + username);  // 현재 인증된 사용자 로그 출력
+                    return userRepository.findOneWithAuthoritiesByEmail(username);
+                });
     }
+
 }
