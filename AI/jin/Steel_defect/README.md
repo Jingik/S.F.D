@@ -8,7 +8,7 @@ From my result, I noticed that:
 1. If I union the boxes of crazing class, the AP would improve a lot.
 I suppose the labeling rule of crazing class should adopt a large bounding box because there 
 are not many distict boundaries between the crazes in `NEU-DET` images.
-
+#
 2. The AP score diverges: patches class is always doing well; rolled-in scale class is below average. The sooner the strong classes are recognized well in the early training period, the smaller score the weak classes will get. I have tried 
 * Label Smoothing
 * Focal loss
