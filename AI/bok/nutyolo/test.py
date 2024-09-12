@@ -8,11 +8,16 @@ import matplotlib.pyplot as plt
 model = YOLO("C:/Users/SSAFY/Desktop/YOLO/ultralytics/runs/detect/yolo_custom_training7/weights/best.pt")
 
 # 테스트할 이미지 경로 설정
+rusting = '1_2021-11-17-01_12_22-807635_jpg.rf.e2aa5c44e64a19f243fee1250e730791.jpg'
+deformation = '1_2021-11-17-01_10_45-111205_jpg.rf.e42af1923b2246f2feebeb637404ce67.jpg'
+scratches = '1_2021-11-17-01_12_22-807635_jpg.rf.e2aa5c44e64a19f243fee1250e730791.jpg'
+fracture = '1_2021-11-16-23_54_24-224477_jpg.rf.5b7b68a97eae93677dc521158f46b7db.jpg'
+
 image_dir1 = 'C:/Users/SSAFY/Desktop/특화/nutyolo/dataset/test/images/'
 image_dir = 'C:/Users/SSAFY/Desktop/특화/nutyolo/dataset/test/deformation/images/'
 image_name = 'rn_image_picker_lib_temp_f9a08b9.jpg'
-image_path = os.path.join(image_dir, image_name)
-
+image_name1 = fracture
+image_path = os.path.join(image_dir1, image_name1)
 # 모델 예측 실행
 results = model.predict(
     image_path,
@@ -56,10 +61,10 @@ for r in results:
         x1_scale, y1_scale = int(x1_int * scale_factor_x), int(y1_int * scale_factor_y)
         x2_scale, y2_scale = int(x2_int * scale_factor_x), int(y2_int * scale_factor_y)
 
-        # 바운딩 박스를 이미지에 그리기
+        # 바운딩 박스를 이미지에 그리기 (0, 255, 0) -> 바운딩 박스 색상
         image = cv2.rectangle(image, (x1_scale, y1_scale), (x2_scale, y2_scale), (0, 255, 0), 2)
         image = cv2.putText(image, f"{cls_name} {conf_number:.2f}", (x1_scale, y1_scale - 10),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2) # 255, 0, 0 글자 색상
 
     print(f"처리 시간: {time.time() - start:.2f}초")
     
