@@ -1,0 +1,23 @@
+.sidebar {
+  height: 100%;
+  margin: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(#555555, 50%, #333333);
+  color: white;
+  border-radius: 1rem;
+}
+
+.sidebarbutton {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: white;
+}
+
+.sidebarLocation {
+  display: grid;
+  justify-items: stretch;
+  grid-template-columns: 1fr 3fr;
+}

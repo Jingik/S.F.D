@@ -31,19 +31,25 @@ export const RegisterPage = () => {
       if (!validateEmail(trimEmail)) {
         return '이메일 형식을 확인해주세요';
       }
-      // if (checkDuplicateEmail(trimEmail)) {
-      //   return '중복된 이메일입니다';
-      // }
+      if (checkDuplicateEmail(trimEmail)) {
+        return '중복된 이메일입니다';
+      }
       return '사용 가능한 이메일입니다.';
     });
   }
 
   // 이메일 중복 체크
   function checkDuplicateEmail(trimEmail: string) {
-    axiosSecurity.get('/', { email: trimEmail }).then((response: any) => {
-      console.log(response);
-      // return response.data;
-    });
+    axiosSecurity
+      .get('/', { email: trimEmail })
+      .then((response: any) => {
+        console.log(response);
+        return response.data;
+      })
+      .catch((e: any) => {
+        console.log('axios error: ' + e);
+        return;
+      });
     return true;
   }
 
@@ -101,8 +107,8 @@ export const RegisterPage = () => {
   ]);
 
   useEffect(() => {
-    setButtonColor(isDisable ? '#AAAAAA' : '#148EE6')
-  }, [isDisable])
+    setButtonColor(isDisable ? '#AAAAAA' : '#148EE6');
+  }, [isDisable]);
 
   // 서버로 회원 정보 보내기
   function sendRegister() {
@@ -128,26 +134,24 @@ export const RegisterPage = () => {
   const onSubmitRegister = async (e: React.FormEvent) => {
     // 폼 제출 시 새로고침 되는 것을 방지
     e.preventDefault();
-    if(isDisable) return;
+    if (isDisable) return;
     sendRegister();
   };
 
   return (
-    <div className='flex flex-col justify-center items-center w-full h-full'>
+    <div className="flex flex-col justify-center items-center w-full h-full">
       {/* 상단 제목 */}
-      <p className='text-5xl p-4 font-extrabold'>회원가입</p>
-      <p className='text-base p-2'>환영합니다!!</p>
+      <p className="text-5xl p-4 font-extrabold">회원가입</p>
+      <p className="text-base p-2">환영합니다!!</p>
 
-        {/* 회원정보 입력 영역 */}
-      <form onSubmit={onSubmitRegister} className='w-full'>
-        <div className='flex flex-col w-full justify-center items-center overflow-y-auto'>
+      {/* 회원정보 입력 영역 */}
+      <form onSubmit={onSubmitRegister} className="w-full">
+        <div className="flex flex-col w-full justify-center items-center overflow-y-auto">
           {/* 이메일 */}
-          <div className='flex flex-col'>
-            <p className='flex self-start text-lg p-1'>
-              이메일
-            </p>
+          <div className="flex flex-col">
+            <p className="flex self-start text-lg p-1">이메일</p>
             <input
-              type='email'
+              type="email"
               className={styles.input}
               onChange={onChangeEmail}
               value={email}
@@ -165,86 +169,72 @@ export const RegisterPage = () => {
           </div>
 
           {/* 이름 */}
-          <div className='flex flex-col'>
-            <p className='flex self-start text-lg p-1'>
-              이름
-            </p>
+          <div className="flex flex-col">
+            <p className="flex self-start text-lg p-1">이름</p>
             <input
-              type='text'
+              type="text"
               className={styles.input}
               onChange={(e: any) => setName(e.target.value)}
               value={name}
               placeholder="이름"
             />
-            <p className='flex self-end text-xs text-[#E32626] p-1'>
-              { }
-            </p>
+            <p className="flex self-end text-xs text-[#E32626] p-1">{}</p>
           </div>
 
           {/* 별명 */}
-          <div className='flex flex-col'>
-            <p className='flex self-start text-lg p-1'>
-              별명
-            </p>
+          <div className="flex flex-col">
+            <p className="flex self-start text-lg p-1">별명</p>
             <input
-              type='text'
+              type="text"
               className={styles.input}
-              onChange={(e: any) => 
-                setNickname(e.target.value)
-              }
+              onChange={(e: any) => setNickname(e.target.value)}
               value={nickname}
               placeholder="별명"
             />
-            <p className='flex self-end text-xs text-[#E32626] p-1'>
-              { }
-            </p>
+            <p className="flex self-end text-xs text-[#E32626] p-1">{}</p>
           </div>
 
           {/* 비밀번호 */}
-          <div className='flex flex-col'>
-            <p className='flex self-start text-lg p-1'>
-              비밀번호
-            </p>
+          <div className="flex flex-col">
+            <p className="flex self-start text-lg p-1">비밀번호</p>
             <input
-              type='password'
+              type="password"
               className={styles.input}
               onChange={onChangePw}
               value={pw}
               placeholder="비밀번호"
             />
-            <p className='flex self-end text-xs text-[#E32626] p-1'>
+            <p className="flex self-end text-xs text-[#E32626] p-1">
               {pwMessage}
             </p>
           </div>
 
           {/* 비밀번호 확인 */}
-          <div className='flex flex-col'>
-            <p className='flex self-start text-lg p-1'>
-              비밀번호 확인
-            </p>
+          <div className="flex flex-col">
+            <p className="flex self-start text-lg p-1">비밀번호 확인</p>
             <input
-              type='password'
+              type="password"
               className={styles.input}
               onChange={onChangeCheckPw}
               value={checkPw}
               placeholder="비밀번호를 한 번 더 입력해주세요"
             />
-            <p className='flex self-end text-xs text-[#E32626] p-1'>
+            <p className="flex self-end text-xs text-[#E32626] p-1">
               {checkPwMessage}
             </p>
           </div>
         </div>
         {/* 하단 버튼 */}
-        <div className='flex justify-center w-full h-full'>
+        <div className="flex justify-center">
           <button
             className={styles.button}
-            style={{ backgroundColor: buttonColor}}
+            style={{ backgroundColor: buttonColor }}
             disabled={isDisable}
           >
             회원가입
           </button>
-          
-          <Button name='메인으로' color='#444444' path='/' />
+
+          <Button name="메인으로" color="#444444" path="/" />
         </div>
       </form>
     </div>

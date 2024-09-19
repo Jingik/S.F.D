@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from '@/pages/Pages.module.css';
 import { useNavigate } from 'react-router-dom';
-import { axiosSecurity } from '@components/common/util'
+import { axiosSecurity } from '@components/common/util';
 
 export const LoginPage = () => {
   const [email, onChangeEmail] = useState('');
@@ -15,7 +15,7 @@ export const LoginPage = () => {
       alert('이메일을 입력하세요!');
       return;
     }
-    
+
     if (pw === '') {
       alert('비밀번호를 입력하세요!');
       return;
@@ -24,16 +24,19 @@ export const LoginPage = () => {
     const user = {
       email: email,
       password: pw,
-    }
+    };
 
-    axiosSecurity.post('', user).then((response: any) => {
-      console.log(response);
-      // 성공 시 토큰을 로컬스토리지에 저장
-      // localStorage.setItem('token', response.data.token);
-    }).catch((e: any) => {
-      console.error("로그인 실패: " + e);
-      alert('로그인 정보가 잘못되었습니다!');
-    })
+    axiosSecurity
+      .post('', user)
+      .then((response: any) => {
+        console.log(response);
+        // 성공 시 토큰을 로컬스토리지에 저장
+        localStorage.setItem('token', response.data.token);
+      })
+      .catch((e: any) => {
+        console.error('로그인 실패: ' + e);
+        alert('로그인 정보가 잘못되었습니다!');
+      });
   }
 
   function onSubmitLogin(e: React.FormEvent) {
@@ -42,25 +45,25 @@ export const LoginPage = () => {
   }
 
   return (
-    <div className='flex flex-col justify-center items-center w-full h-full'>
+    <div className="flex flex-col justify-center items-center w-full h-full">
       {/* 제목 */}
-      <div className='flex justify-center items-center'>
-        <p className='text-4xl font-extrabold m-4'>로그인</p>
+      <div className="flex justify-center items-center">
+        <p className="text-4xl font-extrabold m-4">로그인</p>
       </div>
 
-      <form onSubmit={onSubmitLogin} className='w-full'>
+      <form onSubmit={onSubmitLogin} className="w-full">
         {/* 로그인 입력 영역 */}
-        <div className='w-full h-full flex flex-col justify-center items-center'>
+        <div className="w-full h-full flex flex-col justify-center items-center">
           <input
-            type='email'
+            type="email"
             className={`${styles.loginInput} ${styles.upperInput} text-base`}
             onChange={(e: any) => onChangeEmail(e.target.value)}
             value={email}
             placeholder="이메일"
           />
           <input
-          type='password'
-          className={`${styles.loginInput} ${styles.bottomInput} text-base`}
+            type="password"
+            className={`${styles.loginInput} ${styles.bottomInput} text-base`}
             onChange={(e: any) => onChangePw(e.target.value)}
             value={pw}
             placeholder="비밀번호"
@@ -68,14 +71,16 @@ export const LoginPage = () => {
         </div>
 
         {/* 버튼 영역 */}
-        <div className='w-full h-full flex flex-col justify-center items-center'>
+        <div className="w-full h-full flex flex-col justify-center items-center">
           {/* 임시로 로그인 처리 */}
-          <button
-          className='flex justify-center items-center w-[40%] rounded-lg bg-[#148EE6] text-white text-xl font-semibold p-4 m-3'>
-              로그인
+          <button className="flex justify-center items-center w-[40%] rounded-lg bg-[#148EE6] text-white text-xl font-semibold p-4 m-3">
+            로그인
           </button>
-          <button onClick={() => nav('/register')} className='text-[#999999] text-sm underline'>
-              회원가입
+          <button
+            onClick={() => nav('/register')}
+            className="text-[#999999] text-sm underline"
+          >
+            회원가입
           </button>
         </div>
       </form>
