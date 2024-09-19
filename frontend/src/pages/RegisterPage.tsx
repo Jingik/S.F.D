@@ -31,9 +31,9 @@ export const RegisterPage = () => {
       if (!validateEmail(trimEmail)) {
         return '이메일 형식을 확인해주세요';
       }
-      // if (checkDuplicateEmail(trimEmail)) {
-      //   return '중복된 이메일입니다';
-      // }
+      if (checkDuplicateEmail(trimEmail)) {
+        return '중복된 이메일입니다';
+      }
       return '사용 가능한 이메일입니다.';
     });
   }
@@ -42,7 +42,10 @@ export const RegisterPage = () => {
   function checkDuplicateEmail(trimEmail: string) {
     axiosSecurity.get('/', { email: trimEmail }).then((response: any) => {
       console.log(response);
-      // return response.data;
+      return response.data;
+    }).catch((e: any) => {
+      console.log('axios error: ' + e);
+      return
     });
     return true;
   }
