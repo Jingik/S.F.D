@@ -48,7 +48,7 @@ export const Sidebar = () => {
   function crossLine(width: number) {
     return (
       <div
-        className={`border-solid border-[#999999] border-b-[1px] m-2 w-[${width}%]`}
+        className={`border-solid border-[#999999] border-b-2 m-2 w-[${width}%]`}
       />
     );
   }
@@ -58,7 +58,7 @@ export const Sidebar = () => {
   }
 
   function gotoMain() {
-    nav('domain');
+    nav('/domain');
   }
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export const Sidebar = () => {
           className="w-full m-3"
         >
           <div className="flex flex-row">
-            <div className="flex flex-[1] justify-end items-center">
+            <div className="flex flex-[1] justify-end items-center mr-4">
               <p className="font-bold text-5xl">SFD</p>
             </div>
             <div className="flex flex-[1] flex-col mr-2">

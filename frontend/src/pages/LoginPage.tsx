@@ -3,6 +3,8 @@ import styles from '@/pages/Pages.module.css';
 import { useNavigate } from 'react-router-dom';
 import { axiosSecurity } from '@components/common/util';
 
+import SFDLogo from '@/assets/images/SFD_logo.png';
+
 export const LoginPage = () => {
   const [email, onChangeEmail] = useState('');
   const [pw, onChangePw] = useState('');
@@ -21,6 +23,13 @@ export const LoginPage = () => {
       return;
     }
 
+    // 임시 로그인 처리
+    if (email === 'ssafy@ssafy.com' && pw === 'ssafy') {
+      localStorage.setItem('token', '{ userId: 김싸피 }');
+      nav('/domain');
+      return;
+    }
+
     const user = {
       email: email,
       password: pw,
@@ -31,7 +40,7 @@ export const LoginPage = () => {
       .then((response: any) => {
         console.log(response);
         // 성공 시 토큰을 로컬스토리지에 저장
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('token', JSON.parse(response.data.token));
       })
       .catch((e: any) => {
         console.error('로그인 실패: ' + e);
@@ -46,7 +55,12 @@ export const LoginPage = () => {
 
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
-      {/* 제목 */}
+      {/* 제목 영역 */}
+      <div className="flex justify-center items-center m-10">
+        <button onClick={() => nav('/')}>
+          <img src={SFDLogo} alt="SFD" />
+        </button>
+      </div>
       <div className="flex justify-center items-center">
         <p className="text-4xl font-extrabold m-4">로그인</p>
       </div>
@@ -72,7 +86,6 @@ export const LoginPage = () => {
 
         {/* 버튼 영역 */}
         <div className="w-full h-full flex flex-col justify-center items-center">
-          {/* 임시로 로그인 처리 */}
           <button className="flex justify-center items-center w-[40%] rounded-lg bg-[#148EE6] text-white text-xl font-semibold p-4 m-3">
             로그인
           </button>

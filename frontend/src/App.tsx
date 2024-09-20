@@ -23,7 +23,11 @@ export function App() {
 
   return (
     <div className="flex w-full h-full">
-      <div className="flex-[1] h-hull">{!hideSidebar && <Sidebar />}</div>
+      {!hideSidebar && (
+        <div className="flex-[1] h-hull flex justify-center">
+          <Sidebar />
+        </div>
+      )}
 
       <div className="flex-[3] h-full">
         <Routes>
