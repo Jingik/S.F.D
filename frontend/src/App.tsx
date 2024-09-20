@@ -3,9 +3,13 @@ import { PublicRoute, ProtectedRoute } from '@components/common/ProtectedRoute';
 
 import { Sidebar } from '@components/feature/Sidebar'; // 사이드바
 
-import { MainPage } from './pages/MainPage'; // 메인 페이지
-import { LoginPage } from './pages/LoginPage'; // 로그인 페이지
-import { RegisterPage } from './pages/RegisterPage'; // 회원가입 페이지
+import { MainPage } from '@/pages/MainPage'; // 메인 페이지
+import { LoginPage } from '@/pages/LoginPage'; // 로그인 페이지
+import { RegisterPage } from '@/pages/RegisterPage'; // 회원가입 페이지
+import { SelectDomainPage } from '@/pages/SelectDomainPage'; // 품목 선택 페이지
+import { DetectDefectPage } from '@/pages/DetectDefectPage'; // 불량 검출 페이지
+import { HistoryPage } from '@/pages/HistoryPage'; // 전체 기록 조회 페이지
+import { UserInfoPage } from '@/pages/UserInfoPage'; // 회원 정보 페이지
 
 export function App() {
   const location = useLocation();
@@ -14,15 +18,16 @@ export function App() {
   const hideSidebar =
     location.pathname === '/' ||
     location.pathname === '/login' ||
-    location.pathname === '/register';
-  //   location.pathname.startsWith('/user');
+    location.pathname === '/register' ||
+    location.pathname.startsWith('/user');
 
   return (
     <div className="flex w-full h-full">
-      <div className="flex-[1] h-hull">
-        {/* {!hideSidebar && <Sidebar />} */}
-        <Sidebar />
-      </div>
+      {!hideSidebar && (
+        <div className="flex-[1] h-hull flex justify-center">
+          <Sidebar />
+        </div>
+      )}
 
       <div className="flex-[3] h-full">
         <Routes>
@@ -33,7 +38,12 @@ export function App() {
             <Route path="/register" element={<RegisterPage />} />
           </Route>
           {/* 로그인 안했으면 진입 금지 */}
-          <Route element={<ProtectedRoute />}></Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/domain" element={<SelectDomainPage />} />
+            <Route path="/detect" element={<DetectDefectPage />} />
+            <Route path="/history" element={<HistoryPage />} />
+            <Route path="/user" element={<UserInfoPage />}></Route>
+          </Route>
         </Routes>
       </div>
     </div>
