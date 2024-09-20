@@ -9,5 +9,6 @@ import lombok.*;
 @NoArgsConstructor
 public class TokenDto {
 
-    private String token;
+    private String accessToken;  // Access Token
+    private String refreshToken; // Refresh Token
 }

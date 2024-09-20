@@ -1,13 +1,17 @@
 package com.ssafy.backend.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ssafy.backend.domain.user.entity.Authority;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-// 노출되면 안되는 정보 / 컬럼의 정봐 확인 시 DB 탈취 시도 가능성 존재
-// DB와 mapping 되어 직접적인 업데이트가 이뤄지는 곳
 @Entity
 @Table(name = "users") // DB의 테이블과 매핑
 @Getter
@@ -15,12 +19,12 @@ import java.util.Set;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class User {
+public class User implements UserDetails {  // UserDetails 인터페이스 구현
 
     @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // primary key로 자동 증가
+    private Long id;
 
     @Column(name = "email", length = 100, unique = true)
     private String email;
@@ -29,7 +33,7 @@ public class User {
     @Column(name = "password", length = 100)
     private String password;
 
-    @Column(name = "name", length = 50) // 사람 이름을 저장하는 필드 추가
+    @Column(name = "name", length = 50)
     private String name;
 
     @Column(name = "nickname", length = 100)
@@ -39,11 +43,56 @@ public class User {
     @Column(name = "activated")
     private boolean activated;
 
+    // Refresh Token 필드
+    @JsonIgnore
+    @Column(name = "refresh_token", length = 512)
+    private String refreshToken;
+
     // User와 Authority의 ManyToMany 관계 매핑
     @ManyToMany
     @JoinTable(
-            name = "user_authority", // 매핑 테이블 이름
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}, // User의 id를 참조
-            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")}) // Authority의 authority_name 참조
+            name = "user_authority",
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
     private Set<Authority> authorities;
+
+    // UserDetails 인터페이스 구현 메서드들
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        // authorities 컬렉션을 GrantedAuthority로 변환
+        return this.authorities.stream()
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))  // Authority의 이름을 SimpleGrantedAuthority로 변환
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;  // 이메일을 사용자의 식별자로 사용
+    }
+
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;  // 계정 만료 여부
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;  // 계정 잠금 여부
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;  // 자격 증명 만료 여부
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.activated;  // 계정 활성화 여부
+    }
 }
