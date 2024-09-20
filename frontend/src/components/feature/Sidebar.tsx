@@ -15,23 +15,23 @@ const buttonProps = [
   {
     imgName: 'sidebar_domain.png',
     name: '품목 선택',
-    goto: 'domain',
+    goto: '/domain',
   },
   {
     imgName: 'sidebar_detect.png',
     name: '불량 검출',
-    goto: 'detect',
+    goto: '/detect',
   },
   {
     imgName: 'sidebar_history.png',
     name: '전체기록 조회',
-    goto: 'history',
+    goto: '/history',
   },
   null,
   {
     imgName: 'sidebar_user.png',
     name: '회원 정보',
-    goto: 'user',
+    goto: '/user',
   },
   {
     imgName: 'sidebar_logout.png',
@@ -62,9 +62,9 @@ export const Sidebar = () => {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const decodedToken: User = jwtDecode(token!);
-    setUserNickname(decodedToken.nickname);
+    // const token = localStorage.getItem('token');
+    // const decodedToken: User = jwtDecode(token!);
+    // setUserNickname(decodedToken.nickname);
   }, []);
 
   return (
@@ -82,9 +82,6 @@ export const Sidebar = () => {
               <p className="font-bold text-5xl">SFD</p>
             </div>
             <div className="flex flex-[1] flex-col mr-2">
-              {/* <div className="self-start ml-3.5">Smart</div>
-              <div className="">Factory</div>
-              <div className="self-end mr-3">Detector</div> */}
               <img
                 src="src/assets/images/logo_explain.png"
                 alt="logo_explain"
