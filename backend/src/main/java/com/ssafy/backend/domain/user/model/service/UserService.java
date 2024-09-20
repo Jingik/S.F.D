@@ -22,12 +22,11 @@ public class UserService {
 
     @Transactional
     public User signup(UserDto userDto) {
-        if (userRepository.findOneWithAuthoritiesByEmail(userDto.getEmail()).orElse(null) != null) {
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {  // 이메일 중복만 확인
             throw new RuntimeException("이미 가입되어 있는 유저입니다.");
         }
 
-        // 가입되어 있지 않은 회원이면,
-        // 권한 정보 만들고
+        // 권한 정보 만들고, 필요한 경우 DB에 저장 (권한이 미리 정의된 경우 생략 가능)
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
@@ -45,10 +44,11 @@ public class UserService {
         return userRepository.save(user);
     }
 
+
     // 유저,권한 정보를 가져오는 메소드
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities(String email) {
-        return userRepository.findOneWithAuthoritiesByEmail(email);
+        return userRepository.findByEmail(email);
     }
 
     @Transactional(readOnly = true)
@@ -56,7 +56,7 @@ public class UserService {
         return SecurityUtil.getCurrentUsername()
                 .flatMap(username -> {
                     System.out.println("Current authenticated user: " + username);  // 현재 인증된 사용자 로그 출력
-                    return userRepository.findOneWithAuthoritiesByEmail(username);
+                    return userRepository.findByEmail(username);
                 });
     }
 

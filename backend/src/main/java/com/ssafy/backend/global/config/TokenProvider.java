@@ -1,5 +1,9 @@
 package com.ssafy.backend.global.config;
 
+import com.ssafy.backend.domain.user.dto.TokenDto;
+import com.ssafy.backend.domain.user.entity.Authority;
+import com.ssafy.backend.domain.user.entity.User;
+import com.ssafy.backend.domain.user.model.repository.UserRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
@@ -10,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
@@ -25,67 +28,107 @@ public class TokenProvider implements InitializingBean {
 
     private static final String AUTHORITIES_KEY = "auth";
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
-    private final long tokenValidityInMilliseconds;
+    private final long accessTokenValidityInMilliseconds;
+    private final long refreshTokenValidityInMilliseconds;
     private Key key;
 
-    // Secret 값을 외부에서 설정하지 않고, SecureRandom을 이용해 비밀 키 생성
+    private final UserRepository userRepository;  // 사용자 정보 저장을 위한 UserRepository
+
     public TokenProvider(
-            @Value("${jwt.token-validity-in-seconds}") long tokenValidityInSeconds) {
-        this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
+            @Value("${jwt.access-token-validity-in-seconds}") long accessTokenValidityInSeconds,
+            @Value("${jwt.refresh-token-validity-in-seconds}") long refreshTokenValidityInSeconds,
+            UserRepository userRepository) {
+        this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 1000;
+        this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 1000;
+        this.userRepository = userRepository;
     }
 
-    // 빈이 생성되고 주입을 받은 후에 비밀 키를 생성하기 위해 SecureRandom 사용
     @Override
     public void afterPropertiesSet() {
-        // 64바이트의 랜덤한 비밀 키 생성 (512비트)
         byte[] keyBytes = new byte[64];
         SecureRandom secureRandom = new SecureRandom();
         secureRandom.nextBytes(keyBytes);
 
-        // HMAC-SHA512 알고리즘을 위한 비밀 키 생성
         this.key = Keys.hmacShaKeyFor(keyBytes);
 
-        // 비밀 키를 Base64로 인코딩하여 출력 (디버깅용으로 확인 가능)
         logger.info("Generated Secret Key: " + io.jsonwebtoken.io.Encoders.BASE64.encode(keyBytes));
     }
 
-    public String createToken(Authentication authentication) {
+    // Access Token 생성 메서드
+    public String createAccessToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        // 토큰의 만료 시간 설정
         long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
+        Date validity = new Date(now + this.accessTokenValidityInMilliseconds);
 
         return Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities) // 정보 저장
-                .signWith(key, SignatureAlgorithm.HS512) // 사용할 암호화 알고리즘과 , signature 에 들어갈 secret값 세팅
-                .setExpiration(validity) // 만료 시간 설정
+                .claim(AUTHORITIES_KEY, authorities)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(validity)
                 .compact();
     }
 
-    // 토큰으로 클레임을 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 authentication 객체를 리턴
+    // Refresh Token 생성 메서드
+    public String createRefreshToken(String email) {
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + this.refreshTokenValidityInMilliseconds);
+
+        String refreshToken = Jwts.builder()
+                .setSubject(email)  // 이메일을 subject로 설정
+                .setExpiration(validity)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+
+        // Refresh Token 저장
+        saveRefreshToken(email, refreshToken);
+
+        return refreshToken;
+    }
+
+    // Refresh Token을 DB에 저장하는 메서드
+    private void saveRefreshToken(String email, String refreshToken) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+
+        user.setRefreshToken(refreshToken);  // 사용자 엔티티에 Refresh Token 저장
+        userRepository.save(user);  // 저장
+    }
+
+    // Access Token과 Refresh Token을 묶어서 반환하는 메서드
+    public TokenDto createTokens(Authentication authentication) {
+        String accessToken = createAccessToken(authentication);
+        String refreshToken = createRefreshToken(authentication.getName());  // 이메일을 이용해 Refresh Token 생성
+
+        // Access Token과 Refresh Token을 포함한 DTO 반환
+        return new TokenDto(accessToken, refreshToken);
+    }
+
     public Authentication getAuthentication(String token) {
-        Claims claims = Jwts
-                .parserBuilder()
+        Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
 
+        // 권한을 추출하여 Authentication 생성
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        User principal = new User(claims.getSubject(), "", authorities);
+        // User 엔티티 생성
+        User user = new User();
+        user.setEmail(claims.getSubject());
+        user.setAuthorities(authorities.stream()
+                .map(auth -> new Authority(auth.getAuthority()))
+                .collect(Collectors.toSet()));
 
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+        return new UsernamePasswordAuthenticationToken(user, token, authorities);
     }
 
-    // 토큰의 유효성 검증을 수행
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -100,5 +143,22 @@ public class TokenProvider implements InitializingBean {
             logger.info("JWT 토큰이 잘못되었습니다.");
         }
         return false;
+    }
+
+    // Refresh Token을 이용해 새로운 Access Token을 발급하는 메서드
+    public String refreshAccessToken(String refreshToken) {
+        try {
+            // Refresh Token 검증
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken);
+
+            // Refresh Token이 유효하면 새로운 Access Token 발급
+            String email = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken).getBody().getSubject();
+            User user = userRepository.findByEmail(email)
+                    .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+
+            return createAccessToken(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
+        } catch (JwtException e) {
+            throw new IllegalArgumentException("잘못된 Refresh Token입니다.", e);
+        }
     }
 }
