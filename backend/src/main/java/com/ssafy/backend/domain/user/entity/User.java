@@ -6,6 +6,8 @@ import lombok.*;
 
 import java.util.Set;
 
+// 노출되면 안되는 정보 / 컬럼의 정봐 확인 시 DB 탈취 시도 가능성 존재
+// DB와 mapping 되어 직접적인 업데이트가 이뤄지는 곳
 @Entity
 @Table(name = "users") // DB의 테이블과 매핑
 @Getter
@@ -30,7 +32,7 @@ public class User {
     @Column(name = "name", length = 50) // 사람 이름을 저장하는 필드 추가
     private String name;
 
-    @Column(name = "nickname", length = 50)
+    @Column(name = "nickname", length = 100)
     private String nickname;
 
     @JsonIgnore
