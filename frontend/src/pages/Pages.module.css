@@ -91,3 +91,28 @@
   border-radius: 1rem;
   background: linear-gradient(#e29191, #e36161);
 }
+
+/* 표 css */
+.tableSet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(#99c9eb, #64b1e9);
+  width: auto;
+  height: 13rem;
+  overflow-y: auto;
+  margin: 1rem;
+  color: white;
+  border-radius: 1rem;
+}
+
+.tableSet > tr {
+  display: flex;
+  width: 90%;
+  justify-content: space-around;
+}
+
+.tableSet > tr > th {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
