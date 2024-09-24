@@ -31,7 +31,7 @@ export function MainPage() {
 
         {/* 안내 문구 */}
         <div className="m-2 text-2xl">
-          <p>내 손 안에 작은 팩토리</p>
+          <p>종류 상관 없는 스마트팩토리</p>
         </div>
       </div>
     </>

@@ -24,12 +24,12 @@ export function App() {
   return (
     <div className="flex w-full h-full">
       {!hideSidebar && (
-        <div className="flex-[1] h-hull flex justify-center">
+        <div className="flex-[1] h-full flex justify-center">
           <Sidebar />
         </div>
       )}
 
-      <div className="flex-[3] h-full">
+      <div className="flex-[4] h-full">
         <Routes>
           {/* 로그인 했으면 진입 금지 */}
           <Route element={<PublicRoute />}>
