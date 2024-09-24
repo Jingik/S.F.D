@@ -23,7 +23,7 @@ export const PublicRoute = () => {
 
   useEffect(() => {
     if (token) {
-      nav('/');
+      nav('/domain');
     }
   }, [token, nav]);
 

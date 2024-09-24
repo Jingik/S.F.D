@@ -29,8 +29,6 @@ const theme = {
 export const BarChart = ({ data }: any) => {
   let maxY = 0;
 
-  console.log(data);
-
   data.forEach((element: any) => {
     maxY = Math.max(maxY, Number.parseInt(element.count));
   });

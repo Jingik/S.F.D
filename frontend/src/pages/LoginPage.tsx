@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import styles from '@/pages/Pages.module.css';
 import { useNavigate } from 'react-router-dom';
-import { axiosSecurity } from '@components/common/util';
+import axios from 'axios';
 
 import SFDLogo from '@/assets/images/SFD_logo.png';
 
@@ -35,12 +35,12 @@ export const LoginPage = () => {
       password: pw,
     };
 
-    axiosSecurity
-      .post('', user)
+    axios
+      .post('https://j11b103.p.ssafy.io:8080/api/user/login', user)
       .then((response: any) => {
         console.log(response);
         // 성공 시 토큰을 로컬스토리지에 저장
-        localStorage.setItem('token', JSON.parse(response.data.token));
+        localStorage.setItem('token', JSON.parse(response.data));
       })
       .catch((e: any) => {
         console.error('로그인 실패: ' + e);
