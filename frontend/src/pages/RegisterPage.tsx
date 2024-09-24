@@ -3,11 +3,12 @@ import {
   validateEmail,
   removeWhitespace,
   validatePassword,
-  axiosSecurity,
 } from '@components/common/util';
-import styles from '@/pages/Pages.module.css';
+import axios from 'axios';
 import { Button } from '@components/common/Button';
 import { useNavigate } from 'react-router-dom';
+
+import styles from '@/pages/Pages.module.css';
 
 export const RegisterPage = () => {
   const [email, setEmail] = useState('');
@@ -31,27 +32,27 @@ export const RegisterPage = () => {
       if (!validateEmail(trimEmail)) {
         return '이메일 형식을 확인해주세요';
       }
-      if (checkDuplicateEmail(trimEmail)) {
-        return '중복된 이메일입니다';
-      }
+      // if (checkDuplicateEmail(trimEmail)) {
+      //   return '중복된 이메일입니다';
+      // }
       return '사용 가능한 이메일입니다.';
     });
   }
 
-  // 이메일 중복 체크
-  function checkDuplicateEmail(trimEmail: string) {
-    axiosSecurity
-      .get('/', { email: trimEmail })
-      .then((response: any) => {
-        console.log(response);
-        return response.data;
-      })
-      .catch((e: any) => {
-        console.log('axios error: ' + e);
-        return;
-      });
-    return true;
-  }
+  // // 이메일 중복 체크
+  // function checkDuplicateEmail(trimEmail: string) {
+  //   axios
+  //     .get('https://j11b103.p.ssafy.io:8080/api/user/{이메일?}', { email: trimEmail })
+  //     .then((response: any) => {
+  //       console.log(response);
+  //       return response.data;
+  //     })
+  //     .catch((e: any) => {
+  //       console.log('axios error: ' + e);
+  //       return;
+  //     });
+  //   return true;
+  // }
 
   // 비밀번호 입력 체크
   function onChangePw(e: any) {
@@ -114,19 +115,22 @@ export const RegisterPage = () => {
   function sendRegister() {
     const user = {
       email: email,
+      password: pw,
       name: name,
       nickname: nickname,
-      password: pw,
     };
 
-    axiosSecurity
-      .post('/', user)
+    axios
+      .post('https://j11b103.p.ssafy.io:8080/api/user/signup', user)
       .then((response: any) => {
         console.log(response);
+        alert('로그인이 완료되었습니다!');
+        nav('/login');
       })
-      .then(nav('login'))
       .catch((e: any) => {
-        console.error('회원 정보 보내기 에러발생: ' + e);
+        console.error('회원 가입 에러발생: ' + e);
+        alert('회원가입에 문제가 생겼습니다...');
+        return;
       });
   }
 

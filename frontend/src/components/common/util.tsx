@@ -3,13 +3,13 @@ import axios from 'axios';
 
 // axios 인스턴스 생성
 export const axiosSecurity = axios.create({
-  baseURL: '링크',
+  baseURL: 'https://j11b103.p.ssafy.io:8080/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-const token = localStorage.getItem('token');
+const token = localStorage.getItem('accessToken');
 if (token) {
   axiosSecurity.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
