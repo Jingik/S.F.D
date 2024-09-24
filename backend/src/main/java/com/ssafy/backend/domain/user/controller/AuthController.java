@@ -27,29 +27,31 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto) {
+        // UsernamePasswordAuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getPassword());
 
+        // Authentication 객체 생성 및 SecurityContextHolder에 설정
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        TokenDto tokenDto = tokenProvider.createTokens(authentication);  // Access Token과 Refresh Token 생성
+        // Access Token과 Refresh Token 생성
+        TokenDto tokenDto = tokenProvider.createTokens(authentication);
 
+        // 헤더에 Access Token 추가
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + tokenDto.getAccessToken());
 
+        // 응답으로 토큰과 헤더 전송
         return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
     }
 
     @PostMapping("/refresh")
     public ResponseEntity<TokenDto> refreshAccessToken(@RequestBody String refreshToken) {
-        String newAccessToken = tokenProvider.refreshAccessToken(refreshToken);
+        // TokenProvider의 refreshTokens 메서드를 사용하여 새로운 Access Token과 Refresh Token 생성
+        TokenDto tokenDto = tokenProvider.refreshTokens(refreshToken);
 
-        TokenDto tokenDto = TokenDto.builder()
-                .accessToken(newAccessToken)
-                .refreshToken(refreshToken)  // Refresh Token은 갱신되지 않음
-                .build();
-
+        // 새로운 Access Token과 Refresh Token을 담은 TokenDto 반환
         return new ResponseEntity<>(tokenDto, HttpStatus.OK);
     }
 }

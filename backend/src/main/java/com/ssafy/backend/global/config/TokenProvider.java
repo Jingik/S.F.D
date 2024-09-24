@@ -32,26 +32,23 @@ public class TokenProvider implements InitializingBean {
     private final long refreshTokenValidityInMilliseconds;
     private Key key;
 
-    private final UserRepository userRepository;  // 사용자 정보 저장을 위한 UserRepository
+    private final UserRepository userRepository;
 
     public TokenProvider(
             @Value("${jwt.access-token-validity-in-seconds}") long accessTokenValidityInSeconds,
             @Value("${jwt.refresh-token-validity-in-seconds}") long refreshTokenValidityInSeconds,
             UserRepository userRepository) {
         this.accessTokenValidityInMilliseconds = accessTokenValidityInSeconds * 1000;
-        this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 1000;
+        this.refreshTokenValidityInMilliseconds = refreshTokenValidityInSeconds * 10000;
         this.userRepository = userRepository;
     }
 
     @Override
     public void afterPropertiesSet() {
         byte[] keyBytes = new byte[64];
-        SecureRandom secureRandom = new SecureRandom();
-        secureRandom.nextBytes(keyBytes);
-
+        new SecureRandom().nextBytes(keyBytes);
         this.key = Keys.hmacShaKeyFor(keyBytes);
-
-        logger.info("Generated Secret Key: " + io.jsonwebtoken.io.Encoders.BASE64.encode(keyBytes));
+        logger.info("Generated Secret Key: {}", io.jsonwebtoken.io.Encoders.BASE64.encode(keyBytes));
     }
 
     // Access Token 생성 메서드
@@ -60,66 +57,62 @@ public class TokenProvider implements InitializingBean {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
-        long now = (new Date()).getTime();
+        long now = new Date().getTime();
         Date validity = new Date(now + this.accessTokenValidityInMilliseconds);
 
-        return Jwts.builder()
-                .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
-                .signWith(key, SignatureAlgorithm.HS512)
-                .setExpiration(validity)
-                .compact();
+        return buildToken(authentication.getName(), authorities, validity);
     }
 
     // Refresh Token 생성 메서드
     public String createRefreshToken(String email) {
-        long now = (new Date()).getTime();
+        long now = new Date().getTime();
         Date validity = new Date(now + this.refreshTokenValidityInMilliseconds);
 
-        String refreshToken = Jwts.builder()
-                .setSubject(email)  // 이메일을 subject로 설정
-                .setExpiration(validity)
-                .signWith(key, SignatureAlgorithm.HS512)
-                .compact();
-
-        // Refresh Token 저장
-        saveRefreshToken(email, refreshToken);
-
+        String refreshToken = buildToken(email, null, validity);
+        saveRefreshToken(email, refreshToken); // Refresh Token 저장
         return refreshToken;
     }
 
-    // Refresh Token을 DB에 저장하는 메서드
-    private void saveRefreshToken(String email, String refreshToken) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+    // 토큰 생성 공통 로직
+    private String buildToken(String subject, String authorities, Date validity) {
+        JwtBuilder jwtBuilder = Jwts.builder()
+                .setSubject(subject)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .setExpiration(validity);
 
-        user.setRefreshToken(refreshToken);  // 사용자 엔티티에 Refresh Token 저장
-        userRepository.save(user);  // 저장
+        if (authorities != null) {
+            jwtBuilder.claim(AUTHORITIES_KEY, authorities);
+        }
+
+        return jwtBuilder.compact();
     }
 
     // Access Token과 Refresh Token을 묶어서 반환하는 메서드
     public TokenDto createTokens(Authentication authentication) {
         String accessToken = createAccessToken(authentication);
-        String refreshToken = createRefreshToken(authentication.getName());  // 이메일을 이용해 Refresh Token 생성
-
-        // Access Token과 Refresh Token을 포함한 DTO 반환
+        String refreshToken = createRefreshToken(authentication.getName());
         return new TokenDto(accessToken, refreshToken);
     }
 
-    public Authentication getAuthentication(String token) {
-        Claims claims = Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
+    // 토큰 검증 및 파싱 메서드
+    private Claims parseToken(String token) {
+        try {
+            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+        } catch (JwtException e) {
+            logger.warn("잘못된 JWT 토큰입니다: {}", e.getMessage());
+            throw new IllegalArgumentException("유효하지 않은 JWT 토큰입니다.", e);
+        }
+    }
 
-        // 권한을 추출하여 Authentication 생성
+    // Authentication 객체 생성 메서드
+    public Authentication getAuthentication(String token) {
+        Claims claims = parseToken(token);
+
         Collection<? extends GrantedAuthority> authorities =
                 Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        // User 엔티티 생성
         User user = new User();
         user.setEmail(claims.getSubject());
         user.setAuthorities(authorities.stream()
@@ -129,36 +122,38 @@ public class TokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(user, token, authorities);
     }
 
+    // 토큰 검증 메서드
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            parseToken(token); // 토큰 파싱이 성공하면 유효한 토큰
             return true;
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            logger.info("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            logger.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            logger.info("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
-            logger.info("JWT 토큰이 잘못되었습니다.");
+            return false;
         }
-        return false;
     }
 
-    // Refresh Token을 이용해 새로운 Access Token을 발급하는 메서드
-    public String refreshAccessToken(String refreshToken) {
-        try {
-            // Refresh Token 검증
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken);
+    // Refresh Token을 이용해 새로운 Access Token & Refresh Token 발급 메서드
+    public TokenDto refreshTokens(String refreshToken) {
+        Claims claims = parseToken(refreshToken);
+        String email = claims.getSubject();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
 
-            // Refresh Token이 유효하면 새로운 Access Token 발급
-            String email = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(refreshToken).getBody().getSubject();
-            User user = userRepository.findByEmail(email)
-                    .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+        // 새로운 Access Token 발급
+        String newAccessToken = createAccessToken(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
 
-            return createAccessToken(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
-        } catch (JwtException e) {
-            throw new IllegalArgumentException("잘못된 Refresh Token입니다.", e);
-        }
+        // Refresh Token도 갱신
+        String newRefreshToken = createRefreshToken(email);
+
+        // 새로운 Access Token과 Refresh Token 반환
+        return new TokenDto(newAccessToken, newRefreshToken);
+    }
+
+    // Refresh Token을 DB에 저장하는 메서드
+    private void saveRefreshToken(String email, String refreshToken) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+        user.setRefreshToken(refreshToken);
+        userRepository.save(user);
     }
 }
