@@ -71,11 +71,11 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("*"));
-        configuration.setAllowedMethods(List.of("*"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setAllowCredentials(true);
-
+        configuration.setAllowedOrigins(List.of("http://localhost:3000", "https://J11B103.p.ssafy.io")); // 도메인을 명시적으로 지정
+        configuration.setAllowedOriginPatterns(List.of("http://localhost:3000", "https://J11B103.p.ssafy.io")); // 패턴으로 허용할 도메인들
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setAllowCredentials(true); // allowCredentials는 true
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
