@@ -116,3 +116,21 @@
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
+
+.tableSet > tr > button {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.tableSet > tr > button .selected {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+  border-radius: 1rem;
+  background: #156ba9;
+}

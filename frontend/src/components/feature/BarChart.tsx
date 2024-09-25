@@ -24,6 +24,19 @@ const theme = {
       strokeWidth: 1,
     },
   },
+  tooltip: {
+    wrapper: {},
+    container: {
+      background: '#333333',
+      color: '#ffffff',
+      fontSize: 12,
+    },
+    basic: {},
+    chip: {},
+    table: {},
+    tableCell: {},
+    tableCellValue: {},
+  },
 };
 
 export const BarChart = ({ data }: any) => {

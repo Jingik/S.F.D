@@ -24,6 +24,19 @@ const theme = {
       strokeWidth: 1,
     },
   },
+  tooltip: {
+    wrapper: {},
+    container: {
+      background: '#333333',
+      color: '#ffffff',
+      fontSize: 12,
+    },
+    basic: {},
+    chip: {},
+    table: {},
+    tableCell: {},
+    tableCellValue: {},
+  },
 };
 
 export const LineChart = ({ data }: any) => {
@@ -69,7 +82,8 @@ export const LineChart = ({ data }: any) => {
       lineWidth={3}
       pointSize={12}
       areaOpacity={0}
-      enableTouchCrosshair={true}
+      enableCrosshair={false}
+      enableTouchCrosshair={false}
       useMesh={true}
     />
   );
