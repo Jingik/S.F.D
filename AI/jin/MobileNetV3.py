@@ -134,6 +134,6 @@ for epoch in range(num_epochs):
     torch.save(model.state_dict(), model_save_full_path)
     print(f'Model saved at {model_save_full_path}')
 
-# 8. 테스트 데이터셋으로 최종 평가
+# 8. 테스트 데이터셋으로 최종 평가.
 print("Final Test Results:")
 test_accuracy = evaluate(model, test_loader, criterion, device)
