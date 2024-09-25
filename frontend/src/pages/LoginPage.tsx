@@ -23,13 +23,6 @@ export const LoginPage = () => {
       return;
     }
 
-    // 임시 로그인 처리
-    if (email === 'ssafy@ssafy.com' && pw === 'ssafy') {
-      localStorage.setItem('token', '{ userId: 김싸피 }');
-      nav('/domain');
-      return;
-    }
-
     const user = {
       email: email,
       password: pw,
@@ -40,6 +33,9 @@ export const LoginPage = () => {
       .then((response: any) => {
         // 성공 시 토큰을 로컬스토리지에 저장
         localStorage.setItem('token', JSON.stringify(response.data));
+        setTimeout(function () {}, 1000);
+      })
+      .then(() => {
         nav('/domain');
       })
       .catch((e: any) => {

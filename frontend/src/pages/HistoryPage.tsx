@@ -83,7 +83,7 @@ export const HistoryPage = () => {
           {/* 총 불량 개수 통계 */}
           <div className={`${styles.boxLayout} flex-[1]`}>
             {/* 통계 그래프 영역 */}
-            <div className={styles.barChart}>
+            <div className={`${styles.barChart}`}>
               <BarChart data={data_bar} />
             </div>
 
@@ -149,17 +149,39 @@ export const HistoryPage = () => {
 
               {/* 해당 날짜의 불량 선택 표 컴포넌트 */}
               <table className={styles.tableSet}>
-                <tr className="border-solid border-[#1c93e9] border-b-2">
-                  <th>불량 유형</th>
-                  <th>검출 시간</th>
-                </tr>
-                <tr>
-                  <button>
-                    <td>데이터가</td>
-                    <td>없습니다</td>
-                  </button>
-                </tr>
-                {/* {
+                <thead>
+                  <tr className="border-solid border-[#1c93e9] border-b-2">
+                    <th>불량 유형</th>
+                    <th>검출 시간</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  <tr>
+                    <td>
+                      <button
+                        className={
+                          selectedButtonIndex === -1
+                            ? ''
+                            : 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                        }
+                      >
+                        데이터가
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className={
+                          selectedButtonIndex === -1
+                            ? ''
+                            : 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                        }
+                      >
+                        없습니다
+                      </button>
+                    </td>
+                  </tr>
+                  {/* {
                 !Arrays ? (
                 <tr>
                   <button className={isSelected ? 'selected' : ''}>
@@ -177,7 +199,9 @@ export const HistoryPage = () => {
                     <td>{data.detectedTime}</td>
                   </button>
                 </tr>
-                )) */}
+                  )) 
+                }*/}
+                </tbody>
               </table>
             </div>
 

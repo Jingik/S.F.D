@@ -10,7 +10,7 @@ export const axiosSecurity = axios.create({
 });
 
 const token = JSON.parse(localStorage.getItem('token')!);
-if (token.accessToken) {
+if (token) {
   axiosSecurity.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 }
 
