@@ -72,12 +72,12 @@ export const LineChart = ({ data }: any) => {
         tickPadding: 5,
       }}
       axisLeft={{
-        tickValues: maxY,
+        tickValues: 6,
         tickSize: 5,
         tickPadding: 5,
       }}
       enableGridX={false}
-      gridYValues={maxY}
+      gridYValues={6}
       colors={['white']}
       lineWidth={3}
       pointSize={12}
