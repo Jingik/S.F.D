@@ -38,7 +38,6 @@ export const LoginPage = () => {
     axios
       .post('http://j11b103.p.ssafy.io:8080/api/user/login', user)
       .then((response: any) => {
-        console.log(response);
         // 성공 시 토큰을 로컬스토리지에 저장
         localStorage.setItem('token', JSON.stringify(response.data));
         nav('/domain');

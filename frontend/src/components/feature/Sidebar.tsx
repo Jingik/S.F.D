@@ -2,15 +2,7 @@ import styles from '@components/feature/Feature.module.css';
 import { SidebarButton } from './SidebarButton';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
 import { axiosSecurity } from '../common/util';
-
-interface User {
-  sub: string;
-  name: string;
-  nickname: string;
-  password: string;
-}
 
 const buttonProps = [
   {
@@ -63,16 +55,9 @@ export const Sidebar = () => {
   }
 
   useEffect(() => {
-    const token = JSON.parse(localStorage.getItem('token')!);
-    const decodedToken: User = jwtDecode(token.accessToken!);
-    console.log(decodedToken);
-
-    axiosSecurity
-      .get(`/user/info/${decodedToken.sub}`)
-      .then((response: any) => {
-        console.log(response);
-      });
-    setUserNickname(decodedToken.nickname);
+    axiosSecurity.get(`/user/info`).then((response: any) => {
+      setUserNickname(response.data.nickname);
+    });
   }, []);
 
   return (
