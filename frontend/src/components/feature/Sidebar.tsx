@@ -6,7 +6,7 @@ import { jwtDecode } from 'jwt-decode';
 import { axiosSecurity } from '../common/util';
 
 interface User {
-  email: string;
+  sub: string;
   name: string;
   nickname: string;
   password: string;
@@ -68,7 +68,7 @@ export const Sidebar = () => {
     console.log(decodedToken);
 
     axiosSecurity
-      .get(`http://j11b103.p.ssafy.io:8080/api/user/info/${decodedToken.sub}`)
+      .get(`/user/info/${decodedToken.sub}`)
       .then((response: any) => {
         console.log(response);
       });

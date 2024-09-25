@@ -3,11 +3,11 @@ import { useState } from 'react';
 
 import { BarChart } from '../components/feature/BarChart';
 import { LineChart } from '../components/feature/LineChart';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import clock from '@/assets/images/clock.png';
 import bulb from '@/assets/images/craked_bulb.png';
-import DatePicker from 'react-datepicker';
-
 // 임시 데이터
 const time = 3;
 
@@ -68,6 +68,13 @@ const data_bar = [
 ];
 
 export const HistoryPage = () => {
+  const [startDate, setStartDate] = useState(new Date());
+  const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
+
+  function handleClick(index: number) {
+    setSelectedButtonIndex(index);
+  }
+
   return (
     <>
       <div className="flex flex-col">
@@ -135,7 +142,7 @@ export const HistoryPage = () => {
               <div>
                 <DatePicker
                   selected={startDate}
-                  onChange={(date) => setStartDate(date)}
+                  onChange={(date: any) => setStartDate(date)}
                   dateFormat="YY-MM-dd"
                 />
               </div>
@@ -147,7 +154,7 @@ export const HistoryPage = () => {
                   <th>검출 시간</th>
                 </tr>
                 <tr>
-                  <button className={isSelected ? 'selected' : ''}>
+                  <button>
                     <td>데이터가</td>
                     <td>없습니다</td>
                   </button>
@@ -163,8 +170,8 @@ export const HistoryPage = () => {
                 ) : (Arrays.map((data, index) => (
                 <tr key={index}>
                   <button
-                    className={isSelected ? 'selected' : ''}
-                    onClick={handleClick}
+                    className={selectedButtonIndex === index ? 'selected' : ''}
+                    onClick={() => handleClick(index)}
                   >
                     <td>{data.type}</td>
                     <td>{data.detectedTime}</td>
