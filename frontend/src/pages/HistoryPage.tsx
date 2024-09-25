@@ -1,12 +1,13 @@
 import styles from '@/pages/Pages.module.css';
+import { useState } from 'react';
 
 import { BarChart } from '../components/feature/BarChart';
 import { LineChart } from '../components/feature/LineChart';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 import clock from '@/assets/images/clock.png';
 import bulb from '@/assets/images/craked_bulb.png';
-import { useEffect, useState } from 'react';
-
 // 임시 데이터
 const time = 3;
 
@@ -67,9 +68,12 @@ const data_bar = [
 ];
 
 export const HistoryPage = () => {
-  const [isSelected, setIsSelected] = useState(false);
+  const [startDate, setStartDate] = useState(new Date());
+  const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
 
-  useEffect(() => {});
+  function handleClick(index: number) {
+    setSelectedButtonIndex(index);
+  }
 
   return (
     <>
@@ -135,6 +139,13 @@ export const HistoryPage = () => {
               </div>
 
               {/* 날짜선택(date picker) 컴포넌트 */}
+              <div>
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date: any) => setStartDate(date)}
+                  dateFormat="YY-MM-dd"
+                />
+              </div>
 
               {/* 해당 날짜의 불량 선택 표 컴포넌트 */}
               <table className={styles.tableSet}>
@@ -143,7 +154,7 @@ export const HistoryPage = () => {
                   <th>검출 시간</th>
                 </tr>
                 <tr>
-                  <button className={isSelected ? 'selected' : ''}>
+                  <button>
                     <td>데이터가</td>
                     <td>없습니다</td>
                   </button>
@@ -159,8 +170,8 @@ export const HistoryPage = () => {
                 ) : (Arrays.map((data, index) => (
                 <tr key={index}>
                   <button
-                    className={isSelected ? 'selected' : ''}
-                    onClick={handleClick}
+                    className={selectedButtonIndex === index ? 'selected' : ''}
+                    onClick={() => handleClick(index)}
                   >
                     <td>{data.type}</td>
                     <td>{data.detectedTime}</td>

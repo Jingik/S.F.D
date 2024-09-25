@@ -36,15 +36,16 @@ export const LoginPage = () => {
     };
 
     axios
-      .post('https://j11b103.p.ssafy.io:8080/api/user/login', user)
+      .post('http://j11b103.p.ssafy.io:8080/api/user/login', user)
       .then((response: any) => {
         console.log(response);
         // 성공 시 토큰을 로컬스토리지에 저장
-        localStorage.setItem('token', JSON.parse(response.data));
+        localStorage.setItem('token', JSON.stringify(response.data));
+        nav('/domain');
       })
       .catch((e: any) => {
         console.error('로그인 실패: ' + e);
-        alert('로그인 정보가 잘못되었습니다!');
+        alert('로그인에 실패했습니다...');
       });
   }
 
