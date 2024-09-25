@@ -5,7 +5,7 @@ import {
   validatePassword,
 } from '@components/common/util';
 import axios from 'axios';
-import { Button } from '@components/common/Button';
+import { Button } from '@components/feature/Button';
 import { useNavigate } from 'react-router-dom';
 
 import styles from '@/pages/Pages.module.css';
