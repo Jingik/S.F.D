@@ -9,9 +9,9 @@ export const axiosSecurity = axios.create({
   },
 });
 
-const token = localStorage.getItem('accessToken');
-if (token) {
-  axiosSecurity.defaults.headers.common.Authorization = `Bearer ${token}`;
+const token = JSON.parse(localStorage.getItem('token')!);
+if (token.accessToken) {
+  axiosSecurity.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 }
 
 // --------------------------------------------------------------------------------

@@ -1,10 +1,12 @@
 import styles from '@/pages/Pages.module.css';
+import { useState } from 'react';
 
 import { BarChart } from '../components/feature/BarChart';
 import { LineChart } from '../components/feature/LineChart';
 
 import clock from '@/assets/images/clock.png';
 import bulb from '@/assets/images/craked_bulb.png';
+import DatePicker from 'react-datepicker';
 
 // 임시 데이터
 const time = 16;
@@ -66,6 +68,8 @@ const data_bar = [
 ];
 
 export const HistoryPage = () => {
+  const [startDate, setStartDate] = useState(new Date());
+
   return (
     <>
       <div className="flex flex-col">
@@ -130,6 +134,13 @@ export const HistoryPage = () => {
               </div>
 
               {/* 날짜선택(date picker) 컴포넌트 */}
+              <div>
+                <DatePicker
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  dateFormat="YY-MM-dd"
+                />
+              </div>
 
               {/* 해당 날짜의 불량 선택 표 컴포넌트 */}
               <table className={styles.tableSet}>

@@ -3,6 +3,7 @@ import { SidebarButton } from './SidebarButton';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import { axiosSecurity } from '../common/util';
 
 interface User {
   email: string;
@@ -62,9 +63,16 @@ export const Sidebar = () => {
   }
 
   useEffect(() => {
-    // const token = localStorage.getItem('token');
-    // const decodedToken: User = jwtDecode(token!);
-    // setUserNickname(decodedToken.nickname);
+    const token = JSON.parse(localStorage.getItem('token')!);
+    const decodedToken: User = jwtDecode(token.accessToken!);
+    console.log(decodedToken);
+
+    axiosSecurity
+      .get(`http://j11b103.p.ssafy.io:8080/api/user/info/${decodedToken.sub}`)
+      .then((response: any) => {
+        console.log(response);
+      });
+    setUserNickname(decodedToken.nickname);
   }, []);
 
   return (
