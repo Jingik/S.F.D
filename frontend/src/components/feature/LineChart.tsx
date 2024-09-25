@@ -24,6 +24,19 @@ const theme = {
       strokeWidth: 1,
     },
   },
+  tooltip: {
+    wrapper: {},
+    container: {
+      background: '#333333',
+      color: '#ffffff',
+      fontSize: 12,
+    },
+    basic: {},
+    chip: {},
+    table: {},
+    tableCell: {},
+    tableCellValue: {},
+  },
 };
 
 export const LineChart = ({ data }: any) => {
@@ -59,17 +72,18 @@ export const LineChart = ({ data }: any) => {
         tickPadding: 5,
       }}
       axisLeft={{
-        tickValues: maxY,
+        tickValues: 6,
         tickSize: 5,
         tickPadding: 5,
       }}
       enableGridX={false}
-      gridYValues={maxY}
+      gridYValues={6}
       colors={['white']}
       lineWidth={3}
       pointSize={12}
       areaOpacity={0}
-      enableTouchCrosshair={true}
+      enableCrosshair={false}
+      enableTouchCrosshair={false}
       useMesh={true}
     />
   );
