@@ -9,7 +9,7 @@ import bulb from '@/assets/images/craked_bulb.png';
 import DatePicker from 'react-datepicker';
 
 // 임시 데이터
-const time = 16;
+const time = 3;
 
 const data_line = [
   {
@@ -18,23 +18,23 @@ const data_line = [
     data: [
       {
         x: `${time}`,
-        y: 1,
+        y: 8,
       },
       {
         x: `${time + 1}`,
-        y: 1,
+        y: 25,
       },
       {
         x: `${time + 2}`,
-        y: 2,
+        y: 15,
       },
       {
         x: `${time + 3}`,
-        y: 2,
+        y: 10,
       },
       {
         x: `${time + 4}`,
-        y: 0,
+        y: 19,
       },
     ],
   },
@@ -43,33 +43,31 @@ const data_line = [
 const data_bar = [
   {
     type: 'scratch',
-    count: 23,
+    count: 73,
   },
   {
     type: 'pitted surface',
-    count: 10,
+    count: 12,
   },
   {
     type: 'inclusion',
-    count: 14,
+    count: 38,
   },
   {
     type: 'crazing',
-    count: 3,
-  },
-  {
-    type: 'fracture',
     count: 0,
   },
   {
+    type: 'fracture',
+    count: 30,
+  },
+  {
     type: 'strain',
-    count: 7,
+    count: 49,
   },
 ];
 
 export const HistoryPage = () => {
-  const [startDate, setStartDate] = useState(new Date());
-
   return (
     <>
       <div className="flex flex-col">
@@ -149,13 +147,30 @@ export const HistoryPage = () => {
                   <th>검출 시간</th>
                 </tr>
                 <tr>
-                  <td>데이터가</td>
-                  <td>없습니다</td>
+                  <button className={isSelected ? 'selected' : ''}>
+                    <td>데이터가</td>
+                    <td>없습니다</td>
+                  </button>
                 </tr>
-                {/* <tr>
-                  <td>{}</td>
-                  <td>{}</td>
-                </tr> */}
+                {/* {
+                !Arrays ? (
+                <tr>
+                  <button className={isSelected ? 'selected' : ''}>
+                    <td>데이터가</td>
+                    <td>없습니다</td>
+                  </button>
+                </tr>
+                ) : (Arrays.map((data, index) => (
+                <tr key={index}>
+                  <button
+                    className={isSelected ? 'selected' : ''}
+                    onClick={handleClick}
+                  >
+                    <td>{data.type}</td>
+                    <td>{data.detectedTime}</td>
+                  </button>
+                </tr>
+                )) */}
               </table>
             </div>
 
