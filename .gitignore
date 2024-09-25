@@ -9,4 +9,4 @@
 
 # 4. data 
 /docker/static/*/data
-/docker/static/cerbot
+/docker/static/cerbot/*
