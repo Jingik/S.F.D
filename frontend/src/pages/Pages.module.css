@@ -1,0 +1,118 @@
+.boxLayout {
+  background-color: white;
+  border-radius: 0.5rem;
+  /* padding: 1rem; */
+  margin: 1rem 1rem 0rem 0rem;
+  box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+  height: 100%;
+}
+
+.input {
+  display: flex;
+  border: solid 1px #999999;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  color: #333333;
+  font-size: 1rem;
+  padding: 1rem;
+  width: 30rem;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20%;
+  border-radius: 9999px;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+  padding: 0.5rem;
+  margin: 1rem;
+}
+
+/* 메인 페이지 */
+.topTextButton {
+  margin: 2rem;
+  color: #999999;
+  font-size: 1.15rem;
+}
+
+/* 로그인 페이지 */
+.loginInput {
+  border: solid 1px #999999;
+  font-weight: 600;
+  width: 40%;
+  padding: 1rem;
+}
+
+.upperInput {
+  border-radius: 0.5rem 0.5rem 0rem 0rem;
+}
+
+.bottomInput {
+  border-radius: 0rem 0rem 0.5rem 0.5rem;
+  border-top: none;
+}
+
+/* 불량 검출 페이지 */
+.tableRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.tableRow > li {
+  margin-left: 0.5rem;
+  margin-bottom: 0.25rem;
+  color: #999999;
+}
+
+.tableRow > li > img {
+  margin-left: 0.5rem;
+  width: auto;
+  height: 1rem;
+}
+
+/* 선형 그래프 배경 */
+.lineChart {
+  height: 15rem;
+  width: auto;
+  margin: 1rem;
+  border-radius: 1rem;
+  background: linear-gradient(#80d479, #47c93c);
+}
+
+/* 막대 그래프 배경 */
+.barChart {
+  height: 15rem;
+  width: auto;
+  margin: 1rem;
+  border-radius: 1rem;
+  background: linear-gradient(#e29191, #e36161);
+}
+
+/* 표 css */
+.tableSet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(#99c9eb, #64b1e9);
+  width: auto;
+  height: 13rem;
+  overflow-y: auto;
+  margin: 1rem;
+  color: white;
+  border-radius: 1rem;
+}
+
+.tableSet > tr {
+  display: flex;
+  width: 90%;
+  justify-content: space-around;
+}
+
+.tableSet > tr > th {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
