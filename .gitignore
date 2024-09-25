@@ -6,3 +6,7 @@
 
 # 3. idea 파일
 .idea/
+
+# 4. data 
+/docker/static/*/data
+/docker/static/certbot/*
