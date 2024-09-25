@@ -5,6 +5,7 @@ import { LineChart } from '../components/feature/LineChart';
 
 import clock from '@/assets/images/clock.png';
 import bulb from '@/assets/images/craked_bulb.png';
+import { useEffect, useState } from 'react';
 
 // 임시 데이터
 const time = 16;
@@ -66,6 +67,10 @@ const data_bar = [
 ];
 
 export const HistoryPage = () => {
+  const [isSelected, setIsSelected] = useState(false);
+
+  useEffect(() => {});
+
   return (
     <>
       <div className="flex flex-col">
@@ -138,13 +143,30 @@ export const HistoryPage = () => {
                   <th>검출 시간</th>
                 </tr>
                 <tr>
-                  <td>데이터가</td>
-                  <td>없습니다</td>
+                  <button className={isSelected ? 'selected' : ''}>
+                    <td>데이터가</td>
+                    <td>없습니다</td>
+                  </button>
                 </tr>
-                {/* <tr>
-                  <td>{}</td>
-                  <td>{}</td>
-                </tr> */}
+                {/* {
+                !Arrays ? (
+                <tr>
+                  <button className={isSelected ? 'selected' : ''}>
+                    <td>데이터가</td>
+                    <td>없습니다</td>
+                  </button>
+                </tr>
+                ) : (Arrays.map((data, index) => (
+                <tr key={index}>
+                  <button
+                    className={isSelected ? 'selected' : ''}
+                    onClick={handleClick}
+                  >
+                    <td>{data.type}</td>
+                    <td>{data.detectedTime}</td>
+                  </button>
+                </tr>
+                )) */}
               </table>
             </div>
 
