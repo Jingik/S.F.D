@@ -41,9 +41,9 @@ public class User implements UserDetails {  // UserDetails 인터페이스 구�
     private String nickname;
 
     @NotBlank
-    @Size(min = 10, max = 15) // Validation for phone number (length restrictions)
-    @Column(name = "phone_number", length = 15, unique = true) // New phoneNumber field
-    private String phoneNumber; // Added phone number field
+    @Size(min = 10, max = 15)
+    @Column(name = "phone_number", length = 15, unique = true)
+    private String phoneNumber;
 
     @JsonIgnore
     @Column(name = "activated")
