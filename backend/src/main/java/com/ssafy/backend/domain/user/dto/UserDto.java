@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-// json의 순서를 결정하는 DTO[입력 표시되는 영역 결정]
+// JSON의 순서를 결정하는 DTO [입력 표시되는 영역 결정]
 // 클라이언트의 정보를 받아오는 영역 / 노출되어도 상관 없는 정보
 @Getter
 @Setter
@@ -30,4 +30,8 @@ public class UserDto {
     @NotBlank
     @Size(min = 3, max = 100)
     private String nickname;
+
+    @NotBlank
+    @Size(min = 10, max = 15)
+    private String phoneNumber;
 }

@@ -2,6 +2,8 @@ package com.ssafy.backend.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,6 +40,11 @@ public class User implements UserDetails {  // UserDetails 인터페이스 구�
     @Column(name = "nickname", length = 100)
     private String nickname;
 
+    @NotBlank
+    @Size(min = 10, max = 15) // Validation for phone number (length restrictions)
+    @Column(name = "phone_number", length = 15, unique = true) // New phoneNumber field
+    private String phoneNumber; // Added phone number field
+
     @JsonIgnore
     @Column(name = "activated")
     private boolean activated;
@@ -56,7 +63,6 @@ public class User implements UserDetails {  // UserDetails 인터페이스 구�
     private Set<Authority> authorities;
 
     // UserDetails 인터페이스 구현 메서드들
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // authorities 컬렉션을 GrantedAuthority로 변환
