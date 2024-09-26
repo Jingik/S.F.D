@@ -25,36 +25,36 @@ export const RegisterPage = () => {
 
   const nav = useNavigate();
 
-  // 이메일 입력 체크
-  function onChangeEmail(e: any) {
+  async function onChangeEmail(e: any) {
     const trimEmail = removeWhitespace(e.target.value);
     setEmail(trimEmail);
-    setEmailMessage(() => {
-      if (!validateEmail(trimEmail)) {
-        return '이메일 형식을 확인해주세요';
-      }
-      if (checkDuplicateEmail(trimEmail)) {
-        return '중복된 이메일입니다';
-      }
-      return '사용 가능한 이메일입니다.';
-    });
+
+    if (!validateEmail(trimEmail)) {
+      setEmailMessage('이메일 형식을 확인해주세요');
+      return;
+    }
+
+    const isEmailAvailable = await checkDuplicateEmail(trimEmail);
+    setEmailMessage(
+      isEmailAvailable ? '중복된 이메일입니다.' : '사용 가능한 이메일입니다.',
+    );
   }
 
-  // // 이메일 중복 체크
-  function checkDuplicateEmail(email: string) {
-    axios
-      .get('http://j11b103.p.ssafy.io:8080/api/user/check-email', {
-        params: { email: email },
-      })
-      .then((response: any) => {
-        console.log(response);
-        return response.data;
-      })
-      .catch((e: any) => {
-        console.log('axios error: ' + e);
-        return;
-      });
-    return true;
+  // 이메일 중복 체크
+  async function checkDuplicateEmail(email: string): Promise<boolean> {
+    try {
+      const response = await axios.get(
+        'http://j11b103.p.ssafy.io:8080/api/user/check-email',
+        {
+          params: { email: email },
+        },
+      );
+      console.log(response.data);
+      return response.data; // 이 부분이 boolean인지 확인
+    } catch (error) {
+      console.log('axios error: ' + error);
+      return false; // 오류 발생 시 false 반환
+    }
   }
 
   // 비밀번호 입력 체크
