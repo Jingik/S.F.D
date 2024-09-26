@@ -15,6 +15,7 @@ export const RegisterPage = () => {
   const [emailMessage, setEmailMessage] = useState('');
   const [name, setName] = useState('');
   const [nickname, setNickname] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [pw, setPw] = useState('');
   const [pwMessage, setPwMessage] = useState('');
   const [checkPw, setCheckPw] = useState('');
@@ -32,27 +33,29 @@ export const RegisterPage = () => {
       if (!validateEmail(trimEmail)) {
         return '이메일 형식을 확인해주세요';
       }
-      // if (checkDuplicateEmail(trimEmail)) {
-      //   return '중복된 이메일입니다';
-      // }
+      if (checkDuplicateEmail(trimEmail)) {
+        return '중복된 이메일입니다';
+      }
       return '사용 가능한 이메일입니다.';
     });
   }
 
   // // 이메일 중복 체크
-  // function checkDuplicateEmail(trimEmail: string) {
-  //   axios
-  //     .get('https://j11b103.p.ssafy.io:8080/api/user/{이메일?}', { email: trimEmail })
-  //     .then((response: any) => {
-  //       console.log(response);
-  //       return response.data;
-  //     })
-  //     .catch((e: any) => {
-  //       console.log('axios error: ' + e);
-  //       return;
-  //     });
-  //   return true;
-  // }
+  function checkDuplicateEmail(email: string) {
+    axios
+      .get('http://j11b103.p.ssafy.io:8080/api/user/check-email', {
+        params: { email: email },
+      })
+      .then((response: any) => {
+        console.log(response);
+        return response.data;
+      })
+      .catch((e: any) => {
+        console.log('axios error: ' + e);
+        return;
+      });
+    return true;
+  }
 
   // 비밀번호 입력 체크
   function onChangePw(e: any) {
@@ -85,6 +88,7 @@ export const RegisterPage = () => {
         email !== '' &&
         name !== '' &&
         nickname !== '' &&
+        phoneNumber !== '' &&
         pw !== '' &&
         checkPw !== '' &&
         pw === checkPw
@@ -101,6 +105,7 @@ export const RegisterPage = () => {
     emailMessage,
     name,
     nickname,
+    phoneNumber,
     pw,
     pwMessage,
     checkPw,
@@ -118,13 +123,14 @@ export const RegisterPage = () => {
       password: pw,
       name: name,
       nickname: nickname,
+      phoneNumber: phoneNumber,
     };
 
     axios
-      .post('https://j11b103.p.ssafy.io:8080/api/user/signup', user)
+      .post('http://j11b103.p.ssafy.io:8080/api/user/signup', user)
       .then((response: any) => {
         console.log(response);
-        alert('로그인이 완료되었습니다!');
+        alert('회원가입이 완료되었습니다!');
         nav('/login');
       })
       .catch((e: any) => {
@@ -194,6 +200,19 @@ export const RegisterPage = () => {
               onChange={(e: any) => setNickname(e.target.value)}
               value={nickname}
               placeholder="별명"
+            />
+            <p className="flex self-end text-xs text-[#E32626] p-1">{}</p>
+          </div>
+
+          {/* 전화번호 */}
+          <div className="flex flex-col">
+            <p className="flex self-start text-lg p-1">전화번호</p>
+            <input
+              type="text"
+              className={styles.input}
+              onChange={(e: any) => setPhoneNumber(e.target.value)}
+              value={phoneNumber}
+              placeholder="01012345678"
             />
             <p className="flex self-end text-xs text-[#E32626] p-1">{}</p>
           </div>

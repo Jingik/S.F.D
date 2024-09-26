@@ -1,8 +1,8 @@
 import styles from '@/pages/Pages.module.css';
 import { useState } from 'react';
 
-import { BarChart } from '../components/feature/BarChart';
-import { LineChart } from '../components/feature/LineChart';
+import { BarChart } from '@components/feature/BarChart';
+import { LineChart } from '@components/feature/LineChart';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 

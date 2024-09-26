@@ -2,7 +2,7 @@ import styles from '@components/feature/Feature.module.css';
 import { SidebarButton } from './SidebarButton';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { axiosSecurity } from '../common/util';
+import { axiosSecurity } from '@components/common/util';
 
 const propId = 0;
 
@@ -70,7 +70,7 @@ export const Sidebar = () => {
     axiosSecurity.get(`/user/info`).then((response: any) => {
       setUserNickname(response.data.nickname);
     });
-  }, [setUserNickname]);
+  }, [userNickname]);
 
   return (
     <>
