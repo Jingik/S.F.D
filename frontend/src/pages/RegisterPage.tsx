@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import {
-  validateEmail,
   removeWhitespace,
+  validateEmail,
   validatePassword,
+  validatePhoneNumber,
 } from '@components/common/util';
 import axios from 'axios';
 import { Button } from '@components/feature/Button';
@@ -16,6 +17,7 @@ export const RegisterPage = () => {
   const [name, setName] = useState('');
   const [nickname, setNickname] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneNumberMessage, setPhoneNumberMessage] = useState('');
   const [pw, setPw] = useState('');
   const [pwMessage, setPwMessage] = useState('');
   const [checkPw, setCheckPw] = useState('');
@@ -30,13 +32,13 @@ export const RegisterPage = () => {
     setEmail(trimEmail);
 
     if (!validateEmail(trimEmail)) {
-      setEmailMessage('이메일 형식을 확인해주세요');
+      setEmailMessage('이메일 형식을 확인해주세요!');
       return;
     }
 
     const isEmailAvailable = await checkDuplicateEmail(trimEmail);
     setEmailMessage(
-      isEmailAvailable ? '중복된 이메일입니다.' : '사용 가능한 이메일입니다.',
+      isEmailAvailable ? '중복된 이메일입니다!' : '사용 가능한 이메일입니다.',
     );
   }
 
@@ -49,11 +51,10 @@ export const RegisterPage = () => {
           params: { email: email },
         },
       );
-      console.log(response.data);
-      return response.data; // 이 부분이 boolean인지 확인
+      return response.data;
     } catch (error) {
       console.log('axios error: ' + error);
-      return false; // 오류 발생 시 false 반환
+      return false;
     }
   }
 
@@ -73,7 +74,18 @@ export const RegisterPage = () => {
     const trimCheckPW = removeWhitespace(e.target.value);
     setCheckPw(trimCheckPW);
     setCheckPwMessage(() =>
-      pw === trimCheckPW ? '' : '비밀번호가 일치하지 않습니다.',
+      pw === trimCheckPW ? '' : '비밀번호가 일치하지 않습니다...',
+    );
+  }
+
+  // 전화번호 입력 체크
+  function onChangePhoneNumer(e: any) {
+    const trimCheckPhoneNumber = removeWhitespace(e.target.value);
+    setPhoneNumber(trimCheckPhoneNumber);
+    setPhoneNumberMessage(() =>
+      validatePhoneNumber(trimCheckPhoneNumber)
+        ? ''
+        : '"-"를 제외하고 숫자만 입력해주세요!',
     );
   }
 
@@ -89,6 +101,7 @@ export const RegisterPage = () => {
         name !== '' &&
         nickname !== '' &&
         phoneNumber !== '' &&
+        phoneNumberMessage !== '' &&
         pw !== '' &&
         checkPw !== '' &&
         pw === checkPw
@@ -106,6 +119,7 @@ export const RegisterPage = () => {
     name,
     nickname,
     phoneNumber,
+    phoneNumberMessage,
     pw,
     pwMessage,
     checkPw,
@@ -151,7 +165,7 @@ export const RegisterPage = () => {
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
       {/* 상단 제목 */}
-      <p className="text-5xl p-4 font-extrabold">회원가입</p>
+      <p className="text-5xl p-6 pt-14 font-extrabold">회원가입</p>
       <p className="text-base p-2">환영합니다!!</p>
 
       {/* 회원정보 입력 영역 */}
@@ -208,13 +222,15 @@ export const RegisterPage = () => {
           <div className="flex flex-col">
             <p className="flex self-start text-lg p-1">전화번호</p>
             <input
-              type="text"
+              type="tel"
               className={styles.input}
-              onChange={(e: any) => setPhoneNumber(e.target.value)}
+              onChange={onChangePhoneNumer}
               value={phoneNumber}
               placeholder="01012345678"
             />
-            <p className="flex self-end text-xs text-[#E32626] p-1">{}</p>
+            <p className="flex self-end text-xs text-[#E32626] p-1">
+              {phoneNumberMessage}
+            </p>
           </div>
 
           {/* 비밀번호 */}
