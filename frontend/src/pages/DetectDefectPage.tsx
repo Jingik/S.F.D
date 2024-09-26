@@ -1,11 +1,11 @@
+import { useEffect, useState } from 'react';
 import styles from '@/pages/Pages.module.css';
 import { LineChart } from '@components/feature/LineChart';
+import { BarChart } from '../components/feature/BarChart';
 
 import clock from '@/assets/images/clock.png';
 import earth from '@/assets/images/earth.png';
 import bulb from '@/assets/images/craked_bulb.png';
-import { BarChart } from '../components/feature/BarChart';
-import { useEffect, useState } from 'react';
 
 // 임시 데이터
 const time = 16;
