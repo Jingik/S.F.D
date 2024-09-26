@@ -9,7 +9,7 @@ export function MainPage() {
     <>
       <div className="flex flex-col items-center">
         {/* 상단 회원 메뉴 */}
-        <div className="flex flex-row justify-center border-solid border-[#999999] border-b-2 w-[80%]">
+        <div className="flex flex-row justify-center border-solid border-[#999999] border-b-2 w-[70%]">
           <button
             className={styles.topTextButton}
             onClick={() => nav('/login')}
@@ -25,7 +25,7 @@ export function MainPage() {
         </div>
 
         {/* SFD gif */}
-        <div className="m-4 w-[80%]">
+        <div className="m-4 w-[60%]">
           <img src={SFD_gif} alt="SFD_gif" />
         </div>
 

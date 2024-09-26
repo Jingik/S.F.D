@@ -9,10 +9,19 @@ export const axiosSecurity = axios.create({
   },
 });
 
-const token = JSON.parse(localStorage.getItem('token')!);
-if (token) {
-  axiosSecurity.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
-}
+// 요청 인터셉터 추가
+axiosSecurity.interceptors.request.use(
+  (config) => {
+    const token = JSON.parse(localStorage.getItem('token')!);
+    if (token) {
+      config.headers.Authorization = `Bearer ${token.accessToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
 
 // --------------------------------------------------------------------------------
 

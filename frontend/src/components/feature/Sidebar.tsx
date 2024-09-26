@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SidebarButton } from '@components/feature/SidebarButton';
-import { axiosSecurity } from '@components/common/util';
+import { useUser } from '@components/common/UserContext';
 import styles from '@components/feature/Feature.module.css';
 
 import logoExplain from '@/assets/images/logo_explain.png';
@@ -55,7 +55,7 @@ const buttonProps = [
 export const Sidebar = () => {
   const nav = useNavigate();
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
-  const [userNickname, setUserNickname] = useState('');
+  const { user } = useUser();
 
   function crossLine(width: number) {
     return (
@@ -72,12 +72,6 @@ export const Sidebar = () => {
   function gotoMain() {
     nav('/domain');
   }
-
-  useEffect(() => {
-    axiosSecurity.get(`/user/info`).then((response: any) => {
-      setUserNickname(response.data.nickname);
-    });
-  }, [userNickname]);
 
   return (
     <>
@@ -101,7 +95,7 @@ export const Sidebar = () => {
 
         {crossLine(80)}
 
-        <p>{userNickname}님 안녕하세요!</p>
+        <p>{user.nickname}님 안녕하세요!</p>
 
         {crossLine(80)}
 
