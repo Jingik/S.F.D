@@ -58,6 +58,8 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/api/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html").permitAll()
                         // 로그인, 회원가입 허용
                         .requestMatchers("/api/user/login", "/api/user/signup", "/api/user/find-password", "/api/user/find-email", "/api/user/check-email").permitAll()
+                        // admin 경로에 ADMIN 권한 필요
+//                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         // 나머지 요청은 인증 필요
                         .anyRequest().authenticated()
                 )
