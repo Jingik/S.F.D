@@ -28,3 +28,5 @@ pip install ultralytics
 - test.py에서 절대 경로로 경로 입력
 - 가중치 등 저장이 다른 YOLO 폴더에 될 수 있음에 주의
 - train 종료 시 나타나는 주소로 탐색
+
+- 추가
