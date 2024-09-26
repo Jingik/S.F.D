@@ -10,4 +10,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
     // email을 사용하여 권한 정보와 함께 유저 정보를 가져오는 메소드
     @EntityGraph(attributePaths = "authorities")  // 권한 정보를 함께 가져오기 위해 EntityGraph 사용
     Optional<User> findByEmail(String email);
+
+    Optional<User> findByPhoneNumber(String phoneNumber);
+
+    Optional<User> findByEmailAndName(String email, String name);
 }

@@ -4,6 +4,7 @@ import com.ssafy.backend.domain.user.dto.LoginDto;
 import com.ssafy.backend.domain.user.dto.TokenDto;
 import com.ssafy.backend.global.config.JwtFilter;
 import com.ssafy.backend.global.config.TokenProvider;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -25,6 +26,11 @@ public class AuthController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
+    @Operation(
+            summary = "로그인 API",
+            description = "이메일 & 비밀번호 입력 후 로그인 진행, response body : access & refresh token 발급 " +
+                    "header : access token 추가"
+    )
     @PostMapping("/login")
     public ResponseEntity<TokenDto> authorize(@Valid @RequestBody LoginDto loginDto) {
         // UsernamePasswordAuthenticationToken 생성
@@ -46,6 +52,10 @@ public class AuthController {
         return new ResponseEntity<>(tokenDto, httpHeaders, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "access token 만료시 갱신하는 API",
+            description = "refresh token을 request body로 설정 & 새로운 access token & refresh token 반환"
+    )
     @PostMapping("/refresh")
     public ResponseEntity<TokenDto> refreshAccessToken(@RequestBody String refreshToken) {
         // TokenProvider의 refreshTokens 메서드를 사용하여 새로운 Access Token과 Refresh Token 생성
