@@ -12,7 +12,7 @@ export const LoginPage = () => {
   const nav = useNavigate();
 
   // 로그인 시도할 때
-  function handleLogin() {
+  async function handleLogin() {
     if (email === '') {
       alert('이메일을 입력하세요!');
       return;
@@ -28,20 +28,25 @@ export const LoginPage = () => {
       password: pw,
     };
 
-    axios
-      .post('http://j11b103.p.ssafy.io:8080/api/user/login', user)
-      .then((response: any) => {
-        // 성공 시 토큰을 로컬스토리지에 저장
-        localStorage.setItem('token', JSON.stringify(response.data));
-        setTimeout(function () {}, 1000);
-      })
-      .then(() => {
-        nav('/domain');
-      })
-      .catch((e: any) => {
-        console.error('로그인 실패: ' + e);
-        alert('로그인에 실패했습니다...');
-      });
+    const response = await axios.post(
+      'http://j11b103.p.ssafy.io:8080/api/user/login',
+      user,
+    );
+    console.log(response);
+    localStorage.setItem('token', JSON.stringify(response.data));
+    nav('/domain');
+    // .then((response: any) => {
+    //   // 성공 시 토큰을 로컬스토리지에 저장
+    //   localStorage.setItem('token', JSON.stringify(response.data));
+    //   setTimeout(function () {}, 1000);
+    // })
+    // .then(() => {
+    //   nav('/domain');
+    // })
+    // .catch((e: any) => {
+    //   console.error('로그인 실패: ' + e);
+    //   alert('로그인에 실패했습니다...');
+    // });
   }
 
   function onSubmitLogin(e: React.FormEvent) {

@@ -1,8 +1,8 @@
-import styles from '@components/feature/Feature.module.css';
-import { SidebarButton } from './SidebarButton';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SidebarButton } from '@components/feature/SidebarButton';
 import { axiosSecurity } from '@components/common/util';
+import styles from '@components/feature/Feature.module.css';
 
 const propId = 0;
 
@@ -87,10 +87,7 @@ export const Sidebar = () => {
               <p className="font-bold text-5xl">SFD</p>
             </div>
             <div className="flex flex-[1] flex-col mr-2">
-              <img
-                src="src/assets/images/logo_explain.png"
-                alt="logo_explain"
-              />
+              <img src="/images/logo_explain.png" alt="logo_explain" />
             </div>
           </div>
         </button>
