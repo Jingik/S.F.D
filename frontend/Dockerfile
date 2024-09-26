@@ -4,18 +4,37 @@ FROM node:18.18.0 AS build
 # 작업 디렉토리 설정
 WORKDIR /app
 
-# 패키지 파일만 먼저 복사하여 의존성 설치 캐시 최적화
-COPY package.json yarn.lock tsconfig.json /app/
+# package 파일 및 yarn.lock 복사
+COPY package.json yarn.lock ./
 
-# 패키지 설치 (이 단계는 캐시를 재사용할 수 있음)
+# 의존성 설치
 RUN yarn install
 
-# 나머지 소스 파일 복사 (소스 코드가 변경될 때만 이 단계 이후로 실행됨)
-COPY . /app
+# 나머지 설정 파일 및 소스 코드 복사
+COPY tsconfig.json tsconfig.node.json tsconfig.app.json vite.config.ts tailwind.config.js postcss.config.js /app/
+COPY .prettierrc.cjs eslint.config.js .gitignore ./
 
-# React Native Metro Bundler 서버 시작
-CMD ["yarn", "start"]
+# 소스 코드 복사
+COPY . .
 
-# 3000번 포트 오픈
-EXPOSE 3000
+# 애플리케이션 빌드
+RUN yarn build
+
+# 2단계: 실행 환경 설정
+FROM nginx:stable-alpine
+
+# 빌드된 React 앱을 Nginx의 정적 파일 경로로 복사
+COPY --from=build /app/dist /usr/share/nginx/html
+
+# 기본 nginx 설정 파일을 삭제
+RUN rm /etc/nginx/conf.d/default.conf
+
+# custom 설정파일을 컨테이너 내부로 복사
+COPY nginx.conf /etc/nginx/conf.d
+
+# 컨테이너의 80번 포트를 열어준다
+EXPOSE 80
+
+# 컨테이너 실행 시 Nginx 실행
+CMD ["nginx", "-g", "daemon off;"]
 
