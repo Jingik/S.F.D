@@ -2,8 +2,6 @@ package com.ssafy.backend.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -40,10 +38,8 @@ public class User implements UserDetails {  // UserDetails 인터페이스 구�
     @Column(name = "nickname", length = 100)
     private String nickname;
 
-    @NotBlank
-    @Size(min = 10, max = 15)
     @Column(name = "phone_number", length = 15, unique = true)
-    private String phoneNumber;
+    private String phoneNumber;  // 누락된 phoneNumber 필드 추가
 
     @JsonIgnore
     @Column(name = "activated")
@@ -65,10 +61,18 @@ public class User implements UserDetails {  // UserDetails 인터페이스 구�
     // UserDetails 인터페이스 구현 메서드들
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // authorities 컬렉션을 GrantedAuthority로 변환
         return this.authorities.stream()
-                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))  // Authority의 이름을 SimpleGrantedAuthority로 변환
+                .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))  // Authority 객체에서 이름을 가져와 GrantedAuthority로 변환
                 .collect(Collectors.toSet());
+    }
+
+    // Set<Authority>를 직접 관리
+    public Set<Authority> getAuthoritiesSet() {
+        return this.authorities;
+    }
+
+    public void setAuthorities(Set<Authority> authorities) {
+        this.authorities = authorities;
     }
 
     @Override

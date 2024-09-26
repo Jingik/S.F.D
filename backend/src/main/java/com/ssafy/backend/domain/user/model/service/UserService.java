@@ -19,7 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-
+    // 회원가입
     @Transactional
     public User signup(UserDto userDto) {
         if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {  // 이메일 중복만 확인
@@ -45,12 +45,13 @@ public class UserService {
     }
 
 
-    // 유저,권한 정보를 가져오는 메소드
+    // 이메일을 통해 유저,권한 정보를 확인
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities(String email) {
         return userRepository.findByEmail(email);
     }
 
+    // 현재 로그인한 사용자 정보 확인
     @Transactional(readOnly = true)
     public Optional<User> getMyUserWithAuthorities() {
         return SecurityUtil.getCurrentUsername()
@@ -60,19 +61,19 @@ public class UserService {
                 });
     }
 
-    // Check Email Duplication
+    // 이메일 중복 체크
     public boolean checkEmailDuplicate(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
 
-    // Find Email by Phone
+    // 이메일 찾기
     public String findEmailByPhone(String phoneNumber) {
         return userRepository.findByPhoneNumber(phoneNumber)
                 .map(User::getEmail)
                 .orElse(null);
     }
 
-    // Find Password by Email and Name
+    // 비밀번호 찾기
     public String findPasswordByEmailAndName(String email, String name) {
         return userRepository.findByEmailAndName(email, name)
                 .map(User::getPassword)
