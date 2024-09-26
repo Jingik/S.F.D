@@ -1,5 +1,5 @@
-import styles from '@components/feature/Feature.module.css';
 import { useNavigate } from 'react-router-dom';
+import styles from '@components/feature/Feature.module.css';
 
 interface PropsType {
   imgName: string;
@@ -33,7 +33,7 @@ export const SidebarButton = ({
       >
         <div className={styles.sidebarLocation}>
           <img
-            src={`src/assets/images/${imgName}`}
+            src={`images/${imgName}`}
             alt="iconImg"
             className="w-[2rem] h-auto m-2 items-center justify-center"
           />
