@@ -1,5 +1,6 @@
 import { Route, Routes, useLocation } from 'react-router-dom';
 import { PublicRoute, ProtectedRoute } from '@components/common/ProtectedRoute';
+import { UserProvider } from '@components/common/UserContext';
 
 import { Sidebar } from '@components/feature/Sidebar'; // 사이드바
 
@@ -22,30 +23,32 @@ export function App() {
     location.pathname.startsWith('/user');
 
   return (
-    <div className="flex w-full h-full">
-      {!hideSidebar && (
-        <div className="flex-[1] h-full flex justify-center">
-          <Sidebar />
-        </div>
-      )}
+    <UserProvider>
+      <div className="flex w-full h-full">
+        {!hideSidebar && (
+          <div className="flex-[1] h-full flex justify-center">
+            <Sidebar />
+          </div>
+        )}
 
-      <div className="flex-[4] h-full">
-        <Routes>
-          {/* 로그인 했으면 진입 금지 */}
-          <Route element={<PublicRoute />}>
-            <Route path="/" element={<MainPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-          </Route>
-          {/* 로그인 안했으면 진입 금지 */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/domain" element={<SelectDomainPage />} />
-            <Route path="/detect" element={<DetectDefectPage />} />
-            <Route path="/history" element={<HistoryPage />} />
-            <Route path="/user" element={<UserInfoPage />}></Route>
-          </Route>
-        </Routes>
+        <div className="flex-[4] h-full">
+          <Routes>
+            {/* 로그인 했으면 진입 금지 */}
+            <Route element={<PublicRoute />}>
+              <Route path="/" element={<MainPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+            </Route>
+            {/* 로그인 안했으면 진입 금지 */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/domain" element={<SelectDomainPage />} />
+              <Route path="/detect" element={<DetectDefectPage />} />
+              <Route path="/history" element={<HistoryPage />} />
+              <Route path="/user" element={<UserInfoPage />}></Route>
+            </Route>
+          </Routes>
+        </div>
       </div>
-    </div>
+    </UserProvider>
   );
 }

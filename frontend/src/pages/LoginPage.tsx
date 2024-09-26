@@ -2,14 +2,39 @@ import { useState } from 'react';
 import styles from '@/pages/Pages.module.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { axiosSecurity } from '../components/common/util';
+import { useUser } from '@components/common/UserContext';
 
 import SFDLogo from '@/assets/images/SFD_logo.png';
+
+interface User {
+  nickname: string;
+  email: string;
+  phoneNumber: string;
+  name: string;
+}
 
 export const LoginPage = () => {
   const [email, onChangeEmail] = useState('');
   const [pw, onChangePw] = useState('');
-
+  const { setUser } = useUser();
   const nav = useNavigate();
+
+  // 유저 정보 요청
+  async function getUserInfo() {
+    try {
+      const response = await axiosSecurity.get(`/user/info`);
+      return response.data;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  // 로그인 엔터키로 시도할 때
+  function onSubmitLogin(e: React.FormEvent) {
+    e.preventDefault();
+    handleLogin();
+  }
 
   // 로그인 시도할 때
   async function handleLogin() {
@@ -23,35 +48,36 @@ export const LoginPage = () => {
       return;
     }
 
-    const user = {
-      email: email,
-      password: pw,
-    };
+    try {
+      const response = await axios.post(
+        'http://j11b103.p.ssafy.io:8080/api/user/login',
+        {
+          email: email,
+          password: pw,
+        },
+      );
+      localStorage.setItem('token', JSON.stringify(response.data));
+    } catch (error) {
+      console.error('로그인 실패: ' + error);
+      console.error('로그인에 실패했습니다...:', error);
+      return;
+    }
 
-    const response = await axios.post(
-      'http://j11b103.p.ssafy.io:8080/api/user/login',
-      user,
-    );
-    console.log(response);
-    localStorage.setItem('token', JSON.stringify(response.data));
-    nav('/domain');
-    // .then((response: any) => {
-    //   // 성공 시 토큰을 로컬스토리지에 저장
-    //   localStorage.setItem('token', JSON.stringify(response.data));
-    //   setTimeout(function () {}, 1000);
-    // })
-    // .then(() => {
-    //   nav('/domain');
-    // })
-    // .catch((e: any) => {
-    //   console.error('로그인 실패: ' + e);
-    //   alert('로그인에 실패했습니다...');
-    // });
-  }
+    // 로그인 성공 후 사용자 정보 가져오기
+    try {
+      const user: User = await getUserInfo();
+      // 사용자 정보 설정
+      setUser({
+        nickname: user.nickname,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        name: user.name,
+      });
 
-  function onSubmitLogin(e: React.FormEvent) {
-    e.preventDefault();
-    handleLogin();
+      nav('/domain');
+    } catch (error) {
+      console.error('사용자 정보 설정 실패: ', error);
+    }
   }
 
   return (
