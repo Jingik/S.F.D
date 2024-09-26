@@ -11,7 +11,7 @@ def get_args_parser():
 
     # 필요한 인자 추가
     parser.add_argument('--data', type=str, default='./dataset.yaml', help='Path to dataset YAML file')
-    parser.add_argument('--weights', type=str, default='yolov8l.pt', help='Path to pre-trained weights')
+    parser.add_argument('--model_version', type=str, default='l', help="YOLOv8 model version (e.g., 'n', 's', 'm', 'l', 'x')")
     parser.add_argument('--epochs', type=int, default=20, help='Number of epochs to train')
     parser.add_argument('--img_size', type=int, default=640, help='Input image size')
     parser.add_argument('--batch_size', type=int, default=32, help='Batch size for training')
@@ -25,8 +25,11 @@ def main(args):
     # 절대 경로로 dataset.yaml 파일 경로 설정
     data_path = os.path.abspath(args.data)
 
+    # YOLOv8 모델 버전 지정 (예: yolov8n.pt, yolov8s.pt, yolov8m.pt 등)
+    weights_path = f'yolov8{args.model_version}.pt'
+
     # YOLOv8 모델 불러오기 (pre-trained weights 사용)
-    model = YOLO(args.weights)  # 가중치 경로를 argparse로 받음
+    model = YOLO(weights_path)  # 가중치 경로를 argparse로 받음
 
     # 모델 학습 시작
     model.train(
