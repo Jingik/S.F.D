@@ -60,4 +60,23 @@ public class UserService {
                 });
     }
 
+    // Check Email Duplication
+    public boolean checkEmailDuplicate(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    // Find Email by Phone
+    public String findEmailByPhone(String phoneNumber) {
+        return userRepository.findByPhoneNumber(phoneNumber)
+                .map(User::getEmail)
+                .orElse(null);
+    }
+
+    // Find Password by Email and Name
+    public String findPasswordByEmailAndName(String email, String name) {
+        return userRepository.findByEmailAndName(email, name)
+                .map(User::getPassword)
+                .orElse(null);
+    }
+
 }
