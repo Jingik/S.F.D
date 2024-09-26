@@ -4,42 +4,49 @@ import { SidebarButton } from '@components/feature/SidebarButton';
 import { axiosSecurity } from '@components/common/util';
 import styles from '@components/feature/Feature.module.css';
 
+import logoExplain from '@/assets/images/logo_explain.png';
+import domain from '@/assets/images/sidebar_domain.png';
+import detect from '@/assets/images/sidebar_detect.png';
+import history from '@/assets/images/sidebar_history.png';
+import user from '@/assets/images/sidebar_user.png';
+import logout from '@/assets/images/sidebar_logout.png';
+
 const propId = 0;
 
 const buttonProps = [
   {
     id: propId,
-    imgName: 'sidebar_domain.png',
+    imgSrc: domain,
     name: '품목 선택',
     goto: '/domain',
   },
   {
     id: propId + 1,
-    imgName: 'sidebar_detect.png',
+    imgSrc: detect,
     name: '불량 검출',
     goto: '/detect',
   },
   {
     id: propId + 2,
-    imgName: 'sidebar_history.png',
+    imgSrc: history,
     name: '전체기록 조회',
     goto: '/history',
   },
   {
     id: propId - 1,
-    imgName: '',
+    imgSrc: '',
     name: '',
     goto: '',
   },
   {
     id: propId + 3,
-    imgName: 'sidebar_user.png',
+    imgSrc: user,
     name: '회원 정보',
     goto: '/user',
   },
   {
     id: propId + 4,
-    imgName: 'sidebar_logout.png',
+    imgSrc: logout,
     name: '로그아웃',
     goto: '/',
   },
@@ -87,7 +94,7 @@ export const Sidebar = () => {
               <p className="font-bold text-5xl">SFD</p>
             </div>
             <div className="flex flex-[1] flex-col mr-2">
-              <img src="/images/logo_explain.png" alt="logo_explain" />
+              <img src={logoExplain} alt="logo_explain" />
             </div>
           </div>
         </button>
@@ -103,7 +110,7 @@ export const Sidebar = () => {
             return prop.id !== propId - 1 ? (
               <li key={prop.id} onClick={() => handleSelect(prop.id)}>
                 <SidebarButton
-                  imgName={prop.imgName}
+                  imgSrc={prop.imgSrc}
                   name={prop.name}
                   goto={prop.goto}
                   isSelected={selectedButtonIndex === prop.id}

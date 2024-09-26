@@ -8,7 +8,7 @@ export default defineConfig({
     port: 3000,
   },
   plugins: [react()],
-  publicDir: path.resolve(__dirname, 'src/assets/'),
+  publicDir: path.resolve(__dirname, 'public'),
   resolve: {
     alias: [
       { find: '@', replacement: path.resolve(__dirname, 'src') },
@@ -22,7 +22,15 @@ export default defineConfig({
     global: 'window',
   },
   build: {
-    outDir: 'dist',
+    outDir: 'dist', // dist 아래에 빌드됨
     emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, 'index.html'),
+      },
+      output: {
+        assetFileNames: 'assets/[name].[ext]', // 모든 자산 파일을 assets 폴더에 복사
+      },
+    },
   },
 });
