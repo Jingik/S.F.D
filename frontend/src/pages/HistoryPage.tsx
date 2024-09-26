@@ -8,6 +8,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import clock from '@/assets/images/clock.png';
 import bulb from '@/assets/images/craked_bulb.png';
+
 // 임시 데이터
 const time = 3;
 
