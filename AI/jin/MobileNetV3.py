@@ -128,7 +128,7 @@ for epoch in range(num_epochs):
     print(f'Validation results for Epoch {epoch+1}:')
     accuracy = evaluate(model, val_loader, criterion, device)
     
-    # 모델 저장 (에포크마다)
+    # 모델 저장 (에포크마다).
     model_filename = f'mobilenetv4_epoch_{epoch+1}.pth'
     model_save_full_path = os.path.join(model_save_path, model_filename)
     torch.save(model.state_dict(), model_save_full_path)
