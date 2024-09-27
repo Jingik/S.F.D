@@ -74,48 +74,46 @@ export const Sidebar = () => {
   }
 
   return (
-    <>
-      <div className={styles.sidebar}>
-        <button
-          onClick={() => {
-            handleSelect(0);
-            gotoMain();
-          }}
-          className="w-full m-3"
-        >
-          <div className="flex flex-row">
-            <div className="flex flex-[1] justify-end items-center mr-4">
-              <p className="font-bold text-5xl">SFD</p>
-            </div>
-            <div className="flex flex-[1] flex-col mr-2">
-              <img src={logoExplain} alt="logo_explain" />
-            </div>
+    <div className={styles.sidebar}>
+      <button
+        onClick={() => {
+          handleSelect(0);
+          gotoMain();
+        }}
+        className="w-full m-3"
+      >
+        <div className="flex flex-row">
+          <div className="flex flex-[1] justify-end items-center mr-4">
+            <p className="font-bold text-5xl">SFD</p>
           </div>
-        </button>
+          <div className="flex flex-[1] flex-col mr-2">
+            <img src={logoExplain} alt="logo_explain" />
+          </div>
+        </div>
+      </button>
 
-        {crossLine(80)}
+      {crossLine(80)}
 
-        <p>{user.nickname}님 안녕하세요!</p>
+      <p>{user.nickname}님 안녕하세요!</p>
 
-        {crossLine(80)}
+      {crossLine(80)}
 
-        <ol>
-          {buttonProps.map((prop) => {
-            return prop.id !== propId - 1 ? (
-              <li key={prop.id} onClick={() => handleSelect(prop.id)}>
-                <SidebarButton
-                  imgSrc={prop.imgSrc}
-                  name={prop.name}
-                  goto={prop.goto}
-                  isSelected={selectedButtonIndex === prop.id}
-                />
-              </li>
-            ) : (
-              crossLine(100)
-            );
-          })}
-        </ol>
-      </div>
-    </>
+      <ol>
+        {buttonProps.map((prop) => {
+          return prop.id !== propId - 1 ? (
+            <li key={prop.id} onClick={() => handleSelect(prop.id)}>
+              <SidebarButton
+                imgSrc={prop.imgSrc}
+                name={prop.name}
+                goto={prop.goto}
+                isSelected={selectedButtonIndex === prop.id}
+              />
+            </li>
+          ) : (
+            crossLine(100)
+          );
+        })}
+      </ol>
+    </div>
   );
 };

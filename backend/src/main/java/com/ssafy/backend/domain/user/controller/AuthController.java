@@ -5,6 +5,7 @@ import com.ssafy.backend.domain.user.dto.TokenDto;
 import com.ssafy.backend.global.config.JwtFilter;
 import com.ssafy.backend.global.config.TokenProvider;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -20,8 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/auth")
 @RequiredArgsConstructor
+@Tag(name = "로그인 관련 기능 API", description = "로그인 및 토큰 갱신 API 임다.")
 public class AuthController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;

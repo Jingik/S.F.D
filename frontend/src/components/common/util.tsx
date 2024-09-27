@@ -43,3 +43,9 @@ export const validatePassword = (password: string) => {
   const regex = /^(?=.*[a-zA-Z])(?=.*[~!@#$%^*+=-])(?=.*[0-9]).{8,25}$/;
   return regex.test(password);
 };
+
+// 전화번호 형식 확인
+export const validatePhoneNumber = (phoneNumber: string) => {
+  const regex = /^\d{3}\d{3,4}\d{4}$/;
+  return regex.test(phoneNumber);
+};
