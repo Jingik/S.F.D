@@ -4,6 +4,7 @@ import com.ssafy.backend.domain.user.dto.UserDto;
 import com.ssafy.backend.domain.user.entity.User;
 import com.ssafy.backend.domain.user.model.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/user")
+@Tag(name = "유저 기능 API", description = "유저의 기능을 관리하는 API 입니다.")
 public class UserController {
     private final UserService userService;
 
@@ -34,16 +36,6 @@ public class UserController {
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
     public ResponseEntity<User> getMyUserInfo() {
         return ResponseEntity.ok(userService.getMyUserWithAuthorities().get());
-    }
-
-    @Operation(
-            summary = "사용자 검색 [관리자 기능]",
-            description = "이메일 입력시 해당 유저의 정보 반환"
-    )
-    @GetMapping("/info/{email}")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<User> getUserInfo(@PathVariable String email) {
-        return ResponseEntity.ok(userService.getUserWithAuthorities(email).get());
     }
     
     @Operation(
