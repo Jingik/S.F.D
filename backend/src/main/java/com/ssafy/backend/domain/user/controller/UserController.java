@@ -41,7 +41,7 @@ public class UserController {
             description = "이메일 입력시 해당 유저의 정보 반환"
     )
     @GetMapping("/info/{email}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> getUserInfo(@PathVariable String email) {
         return ResponseEntity.ok(userService.getUserWithAuthorities(email).get());
     }
