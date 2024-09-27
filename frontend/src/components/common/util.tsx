@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const SFD_URL = 'http://j11b103.p.ssafy.io:8080/api';
+export const SFD_URL = 'https://j11b103.p.ssafy.io/api';
 
 // axios 모듈화
 export const axiosSecurity = axios.create({
