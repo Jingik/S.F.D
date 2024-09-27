@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
+  SFD_URL,
   removeWhitespace,
   validateEmail,
   validatePassword,
@@ -45,12 +46,9 @@ export const RegisterPage = () => {
   // 이메일 중복 체크
   async function checkDuplicateEmail(email: string): Promise<boolean> {
     try {
-      const response = await axios.get(
-        'http://j11b103.p.ssafy.io:8080/api/user/check-email',
-        {
-          params: { email: email },
-        },
-      );
+      const response = await axios.get(`${SFD_URL}/user/check-email`, {
+        params: { email: email },
+      });
       return response.data;
     } catch (error) {
       console.log('axios error: ' + error);
@@ -141,7 +139,7 @@ export const RegisterPage = () => {
     };
 
     axios
-      .post('http://j11b103.p.ssafy.io:8080/api/user/signup', user)
+      .post(`${SFD_URL}/user/signup`, user)
       .then((response: any) => {
         console.log(response);
         alert('회원가입이 완료되었습니다!');
@@ -163,10 +161,10 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-full h-full">
+    <div className="flex flex-col justify-center items-center w-full">
       {/* 상단 제목 */}
-      <p className="text-5xl p-6 pt-14 font-extrabold">회원가입</p>
-      <p className="text-base p-2">환영합니다!!</p>
+      <p className="text-5xl m-6 mt-14 font-extrabold">회원가입</p>
+      <p className="text-base m-2">환영합니다!!</p>
 
       {/* 회원정보 입력 영역 */}
       <form onSubmit={onSubmitRegister} className="w-full">
