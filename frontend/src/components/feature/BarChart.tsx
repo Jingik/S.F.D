@@ -50,7 +50,7 @@ export const BarChart = ({ data }: any) => {
     <ResponsiveBar
       data={data}
       theme={theme}
-      margin={{ top: 30, right: 30, bottom: 30, left: 40 }}
+      margin={{ top: 30, right: 30, bottom: 50, left: 40 }}
       keys={['count']}
       indexBy="type"
       padding={0.75}
@@ -64,7 +64,7 @@ export const BarChart = ({ data }: any) => {
         tickValues: data.length,
         tickSize: 0,
         tickPadding: 5,
-        tickRotation: 0,
+        tickRotation: -30,
       }}
       axisLeft={{
         tickValues: 6,

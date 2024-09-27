@@ -56,7 +56,7 @@ export const LoginPage = () => {
 
     try {
       const response = await axios.post(
-        'http://j11b103.p.ssafy.io:8080/api/user/login',
+        'http://j11b103.p.ssafy.io:8080/api/auth/login',
         {
           email: email,
           password: pw,

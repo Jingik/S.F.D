@@ -3,15 +3,13 @@ import { useState } from 'react';
 
 import { BarChart } from '@components/feature/BarChart';
 import { LineChart } from '@components/feature/LineChart';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import datePickerStyle from '@/pages/DatePicker.module.css';
+import { DatePickerCustom } from '@components/feature/DatePickerCustom';
 
 import clock from '@/assets/images/clock.png';
 import bulb from '@/assets/images/craked_bulb.png';
 
 // 임시 데이터
-const time = 3;
+const dateData = 3;
 
 const data_line = [
   {
@@ -19,23 +17,23 @@ const data_line = [
     color: '#ffffff',
     data: [
       {
-        x: `${time}`,
+        x: `${dateData}`,
         y: 8,
       },
       {
-        x: `${time + 1}`,
+        x: `${dateData + 1}`,
         y: 25,
       },
       {
-        x: `${time + 2}`,
+        x: `${dateData + 2}`,
         y: 15,
       },
       {
-        x: `${time + 3}`,
+        x: `${dateData + 3}`,
         y: 10,
       },
       {
-        x: `${time + 4}`,
+        x: `${dateData + 4}`,
         y: 19,
       },
     ],
@@ -71,25 +69,8 @@ const data_bar = [
 
 export const HistoryPage = () => {
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
-  const [startDate, setStartDate] = useState(new Date());
-  const years = Array.from(
-    { length: new Date().getFullYear() + 1 - 2000 },
-    (_, i) => new Date().getFullYear() - i,
-  );
-  const months = [
-    '1',
-    '2',
-    '3',
-    '4',
-    '5',
-    '6',
-    '7',
-    '8',
-    '9',
-    '10',
-    '11',
-    '12',
-  ];
+  const [date, setDate] = useState('');
+  console.log(date);
 
   function handleClick(index: number) {
     setSelectedButtonIndex(index);
@@ -154,72 +135,14 @@ export const HistoryPage = () => {
             {/* 텍스트 영역 */}
             <div className="flex flex-row justify-between items-end">
               <p className="mx-4 mt-2">● 불량 사진 탐색</p>
-              <p className="mr-4 text-[#999999] text-xs">날짜 및 시간 선택</p>
+              <p className="mr-4 text-[#999999] text-xs">
+                불량 유형 또는 시간 선택
+              </p>
             </div>
 
             {/* 날짜선택(date picker) 컴포넌트 */}
             <div className="flex justify-center mt-2">
-              <DatePicker
-                renderCustomHeader={({
-                  date,
-                  changeYear,
-                  changeMonth,
-                  decreaseMonth,
-                  increaseMonth,
-                  prevMonthButtonDisabled,
-                  nextMonthButtonDisabled,
-                }) => (
-                  <div
-                    style={{
-                      margin: 10,
-                      display: 'flex',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <button
-                      onClick={decreaseMonth}
-                      disabled={prevMonthButtonDisabled}
-                    >
-                      {'<'}
-                    </button>
-                    <select
-                      value={date.getFullYear()}
-                      onChange={({ target: { value } }) => changeYear(value)}
-                    >
-                      {years.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-
-                    <select
-                      value={months[date.getMonth()]}
-                      onChange={({ target: { value } }) =>
-                        changeMonth(months.indexOf(value))
-                      }
-                    >
-                      {months.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-
-                    <button
-                      onClick={increaseMonth}
-                      disabled={nextMonthButtonDisabled}
-                    >
-                      {'>'}
-                    </button>
-                  </div>
-                )}
-                selected={startDate}
-                onChange={(date) => setStartDate(date!)}
-                showIcon
-                dateFormat="YY-MM-dd"
-                className={datePickerStyle.calender}
-              />
+              <DatePickerCustom setDate={setDate} />
             </div>
 
             {/* 해당 날짜의 불량 선택 표 컴포넌트 */}
