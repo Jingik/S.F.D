@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styles from '@/pages/Pages.module.css';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { axiosSecurity } from '../components/common/util';
+import { SFD_URL, axiosSecurity } from '@components/common/util';
 import { useUser } from '@components/common/UserContext';
 
 import SFDLogo from '@/assets/images/SFD_logo.png';
@@ -55,13 +55,10 @@ export const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post(
-        'http://j11b103.p.ssafy.io:8080/api/auth/login',
-        {
-          email: email,
-          password: pw,
-        },
-      );
+      const response = await axios.post(`${SFD_URL}/auth/login`, {
+        email: email,
+        password: pw,
+      });
       localStorage.setItem('token', JSON.stringify(response.data));
     } catch (error) {
       console.error('로그인 실패: ' + error);
