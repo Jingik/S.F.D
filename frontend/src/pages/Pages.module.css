@@ -1,10 +1,28 @@
 .boxLayout {
+  width: auto;
+  height: 100%;
   display: flex;
   flex-direction: column;
   background-color: white;
   border-radius: 0.5rem;
-  margin: 1rem 1rem 0rem 0rem;
+  margin-left: 1rem;
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
+}
+
+.mediaContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: auto;
+  height: 100%;
+  min-height: 10rem;
+  max-height: 15rem;
+  border-radius: 1rem;
+  margin: 1rem;
+  font-size: 2rem;
+  text-align: center;
+  /* 도입되면 삭제 */
+  border: dashed #999999 2px;
 }
 
 .input {
@@ -43,6 +61,8 @@
   border: solid 1px #999999;
   font-weight: 600;
   width: 40%;
+  min-width: 250px;
+  max-width: 400px;
   padding: 1rem;
 }
 
@@ -77,8 +97,10 @@
 /* 선형 그래프 배경 */
 .lineChart {
   align-self: center;
-  height: 15rem;
   width: 90%;
+  height: 100%;
+  min-height: 10rem;
+  max-height: 15rem;
   margin: 1rem;
   border-radius: 1rem;
   background: linear-gradient(#80d479, #47c93c);
@@ -87,8 +109,10 @@
 /* 막대 그래프 배경 */
 .barChart {
   align-self: center;
-  height: 15rem;
   width: 90%;
+  height: 100%;
+  min-height: 10rem;
+  max-height: 15rem;
   margin: 1rem;
   border-radius: 1rem;
   background: linear-gradient(#e29191, #e36161);
@@ -100,8 +124,10 @@
   flex-direction: column;
   align-items: center;
   background: linear-gradient(#99c9eb, #64b1e9);
-  width: auto;
-  height: 13rem;
+  width: 90%;
+  height: 100%;
+  min-height: 10rem;
+  max-height: 15rem;
   margin: 1rem;
   color: white;
   border-radius: 1rem;

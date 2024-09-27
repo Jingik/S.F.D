@@ -5,6 +5,7 @@ import { BarChart } from '@components/feature/BarChart';
 import { LineChart } from '@components/feature/LineChart';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import datePickerStyle from '@/pages/DatePicker.module.css';
 
 import clock from '@/assets/images/clock.png';
 import bulb from '@/assets/images/craked_bulb.png';
@@ -69,120 +70,193 @@ const data_bar = [
 ];
 
 export const HistoryPage = () => {
-  const [startDate, setStartDate] = useState(new Date());
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
+  const [startDate, setStartDate] = useState(new Date());
+  const years = Array.from(
+    { length: new Date().getFullYear() + 1 - 2000 },
+    (_, i) => new Date().getFullYear() - i,
+  );
+  const months = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+  ];
 
   function handleClick(index: number) {
     setSelectedButtonIndex(index);
   }
 
   return (
-    <>
-      <div className="flex flex-col">
-        {/* 윗줄 */}
-        <div className="flex flex-row">
-          {/* 총 불량 개수 통계 */}
-          <div className={`${styles.boxLayout} flex-[1]`}>
-            {/* 통계 그래프 영역 */}
-            <div className={`${styles.barChart}`}>
-              <BarChart data={data_bar} />
-            </div>
-
-            {/* 텍스트 영역 */}
-            <p className="mx-4 my-1">▲ 총 불량 개수 통계</p>
-            <div className="table">
-              <ul className={`${styles.tableRow} ml-2`}>
-                <li>↑</li>
-                <li>vertical</li>
-                <li>불량 개수</li>
-              </ul>
-              <ul className={`${styles.tableRow} ml-2`}>
-                <li>→</li>
-                <li>horizontal</li>
-                <li>불량 종류</li>
-              </ul>
-            </div>
+    <div className="flex flex-col w-full h-full">
+      {/* 윗줄 */}
+      <div className="flex flex-row mb-4 w-full h-full">
+        {/* 총 불량 개수 통계 */}
+        <div className={`${styles.boxLayout} flex-[1]`}>
+          {/* 통계 그래프 영역 */}
+          <div className={`${styles.barChart}`}>
+            <BarChart data={data_bar} />
           </div>
 
-          {/* 날짜 당 불량 개수 통계 */}
-          <div className={`${styles.boxLayout} flex-[1]`}>
-            {/* 통계 그래프 영역 */}
-            <div className={styles.lineChart}>
-              <LineChart data={data_line} />
-            </div>
-
-            {/* 텍스트 영역 */}
-            <p className="mx-4 my-1">■ 날짜 당 불량 개수 통계</p>
-            <div className="table">
-              <ul className={`${styles.tableRow} ml-2`}>
-                <li>↑</li>
-                <li>vertical</li>
-                <li>불량 개수</li>
-              </ul>
-              <ul className={`${styles.tableRow} ml-2`}>
-                <li>→</li>
-                <li>horizontal</li>
-                <li>탐지 날짜</li>
-              </ul>
-            </div>
+          {/* 텍스트 영역 */}
+          <p className="mx-4 mb-1">▲ 총 불량 개수 통계</p>
+          <div className="table">
+            <ul className={`${styles.tableRow} ml-2`}>
+              <li>↑</li>
+              <li>vertical</li>
+              <li>불량 개수</li>
+            </ul>
+            <ul className={`${styles.tableRow} ml-2`}>
+              <li>→</li>
+              <li>horizontal</li>
+              <li>불량 종류</li>
+            </ul>
           </div>
         </div>
 
-        {/* 아래줄 */}
+        {/* 날짜 당 불량 개수 통계 */}
         <div className={`${styles.boxLayout} flex-[1]`}>
-          <div className="flex flex-row">
-            {/* 불량 사진 탐색 */}
-            <div className="flex-[1]">
-              {/* 텍스트 영역 */}
-              <div className="flex flex-row justify-between items-end">
-                <p className="mx-4 my-1">● 불량 사진 탐색</p>
-                <p className="mr-4 text-[#999999] text-xs">날짜 및 시간 선택</p>
-              </div>
+          {/* 통계 그래프 영역 */}
+          <div className={styles.lineChart}>
+            <LineChart data={data_line} />
+          </div>
 
-              {/* 날짜선택(date picker) 컴포넌트 */}
-              <div>
-                <DatePicker
-                  selected={startDate}
-                  onChange={(date: any) => setStartDate(date)}
-                  dateFormat="YY-MM-dd"
-                />
-              </div>
+          {/* 텍스트 영역 */}
+          <p className="mx-4 mb-1">■ 날짜 당 불량 개수 통계</p>
+          <div className="table">
+            <ul className={`${styles.tableRow} ml-2`}>
+              <li>↑</li>
+              <li>vertical</li>
+              <li>불량 개수</li>
+            </ul>
+            <ul className={`${styles.tableRow} ml-2`}>
+              <li>→</li>
+              <li>horizontal</li>
+              <li>탐지 날짜</li>
+            </ul>
+          </div>
+        </div>
+      </div>
 
-              {/* 해당 날짜의 불량 선택 표 컴포넌트 */}
-              <table className={styles.tableSet}>
-                <thead>
-                  <tr className="border-solid border-[#1c93e9] border-b-2">
-                    <th>불량 유형</th>
-                    <th>검출 시간</th>
-                  </tr>
-                </thead>
+      {/* 아래줄 */}
+      <div className={`${styles.boxLayout} flex-[1]`}>
+        <div className="flex flex-row w-full h-full">
+          {/* 불량 사진 탐색 */}
+          <div className="flex-[1] flex flex-col">
+            {/* 텍스트 영역 */}
+            <div className="flex flex-row justify-between items-end">
+              <p className="mx-4 mt-2">● 불량 사진 탐색</p>
+              <p className="mr-4 text-[#999999] text-xs">날짜 및 시간 선택</p>
+            </div>
 
-                <tbody>
-                  <tr>
-                    <td>
-                      <button
-                        className={
-                          selectedButtonIndex === -1
-                            ? ''
-                            : 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
-                        }
-                      >
-                        데이터가
-                      </button>
-                    </td>
-                    <td>
-                      <button
-                        className={
-                          selectedButtonIndex === -1
-                            ? ''
-                            : 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
-                        }
-                      >
-                        없습니다
-                      </button>
-                    </td>
-                  </tr>
-                  {/* {
+            {/* 날짜선택(date picker) 컴포넌트 */}
+            <div className="flex justify-center mt-2">
+              <DatePicker
+                renderCustomHeader={({
+                  date,
+                  changeYear,
+                  changeMonth,
+                  decreaseMonth,
+                  increaseMonth,
+                  prevMonthButtonDisabled,
+                  nextMonthButtonDisabled,
+                }) => (
+                  <div
+                    style={{
+                      margin: 10,
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <button
+                      onClick={decreaseMonth}
+                      disabled={prevMonthButtonDisabled}
+                    >
+                      {'<'}
+                    </button>
+                    <select
+                      value={date.getFullYear()}
+                      onChange={({ target: { value } }) => changeYear(value)}
+                    >
+                      {years.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+
+                    <select
+                      value={months[date.getMonth()]}
+                      onChange={({ target: { value } }) =>
+                        changeMonth(months.indexOf(value))
+                      }
+                    >
+                      {months.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+
+                    <button
+                      onClick={increaseMonth}
+                      disabled={nextMonthButtonDisabled}
+                    >
+                      {'>'}
+                    </button>
+                  </div>
+                )}
+                selected={startDate}
+                onChange={(date) => setStartDate(date!)}
+                showIcon
+                dateFormat="YY-MM-dd"
+                className={datePickerStyle.calender}
+              />
+            </div>
+
+            {/* 해당 날짜의 불량 선택 표 컴포넌트 */}
+            <table className={styles.tableSet}>
+              <thead>
+                <tr className="border-solid border-[#1c93e9] border-b-2">
+                  <th>불량 유형</th>
+                  <th>검출 시간</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr>
+                  <td>
+                    <button
+                      className={
+                        selectedButtonIndex === -1
+                          ? ''
+                          : 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                      }
+                    >
+                      데이터가
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className={
+                        selectedButtonIndex === -1
+                          ? ''
+                          : 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                      }
+                    >
+                      없습니다
+                    </button>
+                  </td>
+                </tr>
+                {/* {
                 !Arrays ? (
                 <tr>
                   <button className={isSelected ? 'selected' : ''}>
@@ -202,38 +276,40 @@ export const HistoryPage = () => {
                 </tr>
                   )) 
                 }*/}
-                </tbody>
-              </table>
-            </div>
+              </tbody>
+            </table>
+          </div>
 
-            <div className="border-solid border-[#999999] border-r-2 my-4" />
+          <div className="border-solid border-[#999999] border-r-2 my-4" />
 
-            {/* 불량사진 영역 */}
-            <div className="flex-[1]">
-              {/* 불량사진 컴포넌트 */}
-              <p className="text-[#E32626] mx-4 my-1">탐지된 불량 사진</p>
-              <div className="table">
-                <ul className={styles.tableRow}>
-                  <li>
-                    <img src={clock} alt="clock" />
-                  </li>
-                  <li>captured at</li>
-                  <li>
-                    {} | {}
-                  </li>
-                </ul>
-                <ul className={styles.tableRow}>
-                  <li>
-                    <img src={bulb} alt="bulb" />
-                  </li>
-                  <li>type</li>
-                  <li>{}</li>
-                </ul>
-              </div>
+          {/* 불량사진 영역 */}
+          <div className="flex-[1] flex flex-col">
+            {/* 사진 영역 */}
+            <div className={styles.mediaContainer}>탐지된 불량 사진</div>
+
+            {/* 텍스트 영역 */}
+            <p className="text-[#E32626] mx-4 my-1">탐지된 불량 사진</p>
+            <div className="table">
+              <ul className={styles.tableRow}>
+                <li>
+                  <img src={clock} alt="clock" />
+                </li>
+                <li>captured at</li>
+                <li>
+                  {} | {}
+                </li>
+              </ul>
+              <ul className={styles.tableRow}>
+                <li>
+                  <img src={bulb} alt="bulb" />
+                </li>
+                <li>type</li>
+                <li>{}</li>
+              </ul>
             </div>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
