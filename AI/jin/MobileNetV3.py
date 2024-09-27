@@ -17,7 +17,7 @@ torch.set_num_interop_threads(1)
 
 # 데이터셋 경로와 모델 저장 경로를 입력 받습니다
 dataset_path = './datasets/Nut2'  # 사용자 데이터셋 경로 (TRUE/FALSE 폴더 포함)
-model_save_path = './models_trans'  # 모델 저장 경로
+model_save_path = './models_trans'  # 모델 저장 경로.
 
 # 경로가 없으면 생성
 if not os.path.exists(model_save_path):
