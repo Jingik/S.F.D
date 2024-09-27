@@ -48,6 +48,12 @@ export const LoginPage = () => {
       return;
     }
 
+    // 테스트 코드
+    if (email === 'ssafy@ssafy.com' && pw === '1234') {
+      localStorage.setItem('token', 'test');
+      nav('/domain');
+    }
+
     try {
       const response = await axios.post(
         'http://j11b103.p.ssafy.io:8080/api/user/login',
@@ -81,7 +87,7 @@ export const LoginPage = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center items-center w-full h-full">
+    <div className="flex flex-col justify-center items-center w-full">
       {/* 제목 영역 */}
       <div className="flex justify-center items-center m-10">
         <button onClick={() => nav('/')}>
@@ -89,7 +95,7 @@ export const LoginPage = () => {
         </button>
       </div>
       <div className="flex justify-center items-center">
-        <p className="text-4xl font-extrabold m-4">로그인</p>
+        <p className="text-4xl font-extrabold mb-10">로그인</p>
       </div>
 
       <form onSubmit={onSubmitLogin} className="w-full">
@@ -113,7 +119,7 @@ export const LoginPage = () => {
 
         {/* 버튼 영역 */}
         <div className="w-full h-full flex flex-col justify-center items-center">
-          <button className="flex justify-center items-center w-[40%] rounded-lg bg-[#148EE6] text-white text-xl font-semibold p-4 m-3">
+          <button className="flex justify-center items-center w-[40%] min-w-[250px] max-w-[400px] rounded-lg bg-[#148EE6] text-white text-xl font-semibold p-4 m-3">
             로그인
           </button>
           <button

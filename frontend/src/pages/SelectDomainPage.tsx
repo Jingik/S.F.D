@@ -3,7 +3,7 @@ import styles from '@/pages/Pages.module.css';
 export const SelectDomainPage = () => {
   return (
     <>
-      <div className={`${styles.boxLayout} h-[41rem]`}>
+      <div className={`${styles.boxLayout} h-full`}>
         {/* 윗부분 */}
         <div className="flex justify-between">
           <p className="m-6 text-3xl font-bold">□ 불량을 검출할 품목명 선택</p>
