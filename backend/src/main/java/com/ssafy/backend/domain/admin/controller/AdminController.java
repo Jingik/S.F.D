@@ -2,7 +2,9 @@ package com.ssafy.backend.domain.admin.controller;
 
 import com.ssafy.backend.domain.admin.model.service.AdminService;
 import com.ssafy.backend.domain.user.entity.User;
+import com.ssafy.backend.domain.user.model.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,8 +16,10 @@ import java.util.List;
 @RequestMapping("/admin")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ADMIN')")  // 클래스 레벨에서 한 번만 선언
+@Tag(name = "관리자 기능 API", description = "관리자 전용 API를 제공하는 컨트롤러입니다.")
 public class AdminController {
     private final AdminService adminService;
+    private final UserService userService;
 
     @Operation(
             summary = "유저 서비스 활성화",
@@ -69,5 +73,16 @@ public class AdminController {
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = adminService.getAllUsers();
         return ResponseEntity.ok(users);
+    }
+
+    @Operation(
+            summary = "사용자 검색 [관리자 기능]",
+            description = "이메일 입력 시 해당 유저의 정보 반환"
+    )
+    @GetMapping("/info/{email}")
+    public ResponseEntity<User> getUserInfo(@PathVariable String email) {
+        return userService.getUserWithAuthorities(email)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());  // 유저를 찾지 못할 경우 404 반환
     }
 }
