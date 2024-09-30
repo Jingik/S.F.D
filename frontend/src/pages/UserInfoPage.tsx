@@ -138,15 +138,14 @@ export const UserInfoPage = () => {
     };
 
     axiosSecurity
-      .post(`${SFD_URL}/user/signup`, user)
+      .post(`${SFD_URL}/user/??`, user)
       .then((response: any) => {
         console.log(response);
-        alert('회원가입이 완료되었습니다!');
-        nav('/login');
+        alert('회원 정보가 수정되었습니다!');
       })
       .catch((e: any) => {
-        console.error('회원 가입 에러발생: ' + e);
-        alert('회원가입에 문제가 생겼습니다...');
+        console.error('회원 정보 수정 에러발생: ' + e);
+        alert('정보 수정에 문제가 생겼습니다...');
         return;
       });
   }
