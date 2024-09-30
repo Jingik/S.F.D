@@ -24,7 +24,7 @@ export const SelectDomainPage = () => {
         <ol>
           {domainList.map((domain, index) => (
             <li key={index}>
-              <button>{domain}</button>
+              <button className="">{domain}</button>
             </li>
           ))}
         </ol>
