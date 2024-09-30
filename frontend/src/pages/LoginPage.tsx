@@ -62,7 +62,7 @@ export const LoginPage = () => {
       localStorage.setItem('token', JSON.stringify(response.data));
     } catch (error) {
       console.error('로그인 실패: ' + error);
-      console.error('로그인에 실패했습니다...:', error);
+      alert('로그인에 실패했습니다...');
       return;
     }
 

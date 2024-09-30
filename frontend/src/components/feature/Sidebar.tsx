@@ -1,72 +1,65 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { SidebarButton } from '@components/feature/SidebarButton';
 import { useUser } from '@components/common/UserContext';
 import styles from '@components/feature/Feature.module.css';
 
 import logoExplain from '@/assets/images/logo_explain.png';
-import domain from '@/assets/images/sidebar_domain.png';
-import detect from '@/assets/images/sidebar_detect.png';
-import history from '@/assets/images/sidebar_history.png';
-import user from '@/assets/images/sidebar_user.png';
-import logout from '@/assets/images/sidebar_logout.png';
-
-const propId = 0;
-
-const buttonProps = [
-  {
-    id: propId,
-    imgSrc: domain,
-    name: '품목 선택',
-    goto: '/domain',
-  },
-  {
-    id: propId + 1,
-    imgSrc: detect,
-    name: '불량 검출',
-    goto: '/detect',
-  },
-  {
-    id: propId + 2,
-    imgSrc: history,
-    name: '전체기록 조회',
-    goto: '/history',
-  },
-  {
-    id: propId - 1,
-    imgSrc: '',
-    name: '',
-    goto: '',
-  },
-  {
-    id: propId + 3,
-    imgSrc: user,
-    name: '회원 정보',
-    goto: '/user',
-  },
-  {
-    id: propId + 4,
-    imgSrc: logout,
-    name: '로그아웃',
-    goto: '/',
-  },
-];
+import domainImg from '@/assets/images/sidebar_domain.png';
+import detectImg from '@/assets/images/sidebar_detect.png';
+import historyImg from '@/assets/images/sidebar_history.png';
+import userImg from '@/assets/images/sidebar_user.png';
+import logoutImg from '@/assets/images/sidebar_logout.png';
 
 export const Sidebar = () => {
   const nav = useNavigate();
-  const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
   const { user } = useUser();
+  const location = useLocation();
 
-  function crossLine(width: number) {
+  const propId = 0;
+
+  const buttonProps = [
+    {
+      id: propId,
+      imgSrc: domainImg,
+      name: '품목 선택',
+      goto: '/domain',
+    },
+    {
+      id: propId + 1,
+      imgSrc: detectImg,
+      name: '불량 검출',
+      goto: '/detect',
+    },
+    {
+      id: propId + 2,
+      imgSrc: historyImg,
+      name: '전체기록 조회',
+      goto: '/history',
+    },
+    {
+      id: propId - 1,
+      imgSrc: '',
+      name: '',
+      goto: '',
+    },
+    {
+      id: propId + 3,
+      imgSrc: userImg,
+      name: '회원 정보',
+      goto: '/user',
+    },
+    {
+      id: propId + 4,
+      imgSrc: logoutImg,
+      name: '로그아웃',
+      goto: '/',
+    },
+  ];
+
+  function crossLine() {
     return (
-      <div
-        className={`border-solid border-[#999999] border-b-2 m-2 w-[${width}%]`}
-      />
+      <div className={`border-solid border-[#999999] border-b-2 m-2 w-[95%]`} />
     );
-  }
-
-  function handleSelect(index: number) {
-    setSelectedButtonIndex(index);
   }
 
   function gotoMain() {
@@ -77,7 +70,6 @@ export const Sidebar = () => {
     <div className={styles.sidebar}>
       <button
         onClick={() => {
-          handleSelect(0);
           gotoMain();
         }}
         className="w-full m-3"
@@ -92,25 +84,23 @@ export const Sidebar = () => {
         </div>
       </button>
 
-      {crossLine(80)}
-
-      <p>{user.nickname}님 안녕하세요!</p>
-
-      {crossLine(80)}
+      <div className="border-solid border-[#999999] border-y-2 m-2 p-4 w-[80%] flex justify-center">
+        <p>{user.nickname}님 안녕하세요!</p>
+      </div>
 
       <ol>
         {buttonProps.map((prop) => {
           return prop.id !== propId - 1 ? (
-            <li key={prop.id} onClick={() => handleSelect(prop.id)}>
+            <li key={prop.id}>
               <SidebarButton
                 imgSrc={prop.imgSrc}
                 name={prop.name}
                 goto={prop.goto}
-                isSelected={selectedButtonIndex === prop.id}
+                isSelected={prop.goto === location.pathname}
               />
             </li>
           ) : (
-            crossLine(100)
+            crossLine()
           );
         })}
       </ol>

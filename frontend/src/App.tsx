@@ -8,19 +8,33 @@ import { MainPage } from '@/pages/MainPage'; // 메인 페이지
 import { LoginPage } from '@/pages/LoginPage'; // 로그인 페이지
 import { RegisterPage } from '@/pages/RegisterPage'; // 회원가입 페이지
 import { SelectDomainPage } from '@/pages/SelectDomainPage'; // 품목 선택 페이지
+import { DomainRequestPage } from '@/pages/DomainRequestPage'; // 품목 선택 페이지
 import { DetectDefectPage } from '@/pages/DetectDefectPage'; // 불량 검출 페이지
 import { HistoryPage } from '@/pages/HistoryPage'; // 전체 기록 조회 페이지
 import { UserInfoPage } from '@/pages/UserInfoPage'; // 회원 정보 페이지
+import { NotFoundPage } from '@/pages/NotFoundPage'; // 잘못된 주소 페이지
 
 export function App() {
   const location = useLocation();
 
-  // 홈, 로그인 안한 로그인, 회원가입, 회원정보는 사이드바X
+  // 홈, 로그인 안한 로그인, 회원가입, 잘못된 페이지는 사이드바X
   const hideSidebar =
     location.pathname === '/' ||
     location.pathname === '/login' ||
     location.pathname === '/register' ||
-    location.pathname.startsWith('/user');
+    location.pathname === '/notfound' ||
+    location.pathname === '*' || // 모든 잘못된 경로에 대해 hideSidebar 활성화
+    ![
+      '/',
+      '/login',
+      '/register',
+      '/domain',
+      '/domain/request',
+      '/detect',
+      '/history',
+      '/user',
+    ].includes(location.pathname);
+  // 유효한 경로들을 지정하여 그 외에는 사이드바를 숨기도록 처리
 
   return (
     <UserProvider>
@@ -41,11 +55,14 @@ export function App() {
             </Route>
             {/* 로그인 안했으면 진입 금지 */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/domain" element={<SelectDomainPage />} />
+              <Route path="/domain/*" element={<SelectDomainPage />}>
+                <Route path="request" element={<DomainRequestPage />} />
+              </Route>
               <Route path="/detect" element={<DetectDefectPage />} />
               <Route path="/history" element={<HistoryPage />} />
               <Route path="/user" element={<UserInfoPage />}></Route>
             </Route>
+            <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </div>
       </div>
