@@ -15,12 +15,11 @@ import { UserInfoPage } from '@/pages/UserInfoPage'; // 회원 정보 페이지
 export function App() {
   const location = useLocation();
 
-  // 홈, 로그인 안한 로그인, 회원가입, 회원정보는 사이드바X
+  // 홈, 로그인 안한 로그인, 회원가입은 사이드바X
   const hideSidebar =
     location.pathname === '/' ||
     location.pathname === '/login' ||
-    location.pathname === '/register' ||
-    location.pathname.startsWith('/user');
+    location.pathname === '/register';
 
   return (
     <UserProvider>

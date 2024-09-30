@@ -119,7 +119,7 @@ export const DetectDefectPage = () => {
       {/* 윗줄 */}
       <div className="flex flex-row mb-4 w-full h-full">
         {/* 카메라 띄우기 */}
-        <div className={`${styles.boxLayout} flex-[5]`}>
+        <div className={`${styles.boxLayout} flex-[1]`}>
           {/* 카메라 컴포넌트 */}
           <div className={styles.mediaContainer}>비디오 영역</div>
 
@@ -150,7 +150,7 @@ export const DetectDefectPage = () => {
         </div>
 
         {/* 불량 사진 띄우기 */}
-        <div className={`${styles.boxLayout} flex-[4]`}>
+        <div className={`${styles.boxLayout} flex-[1]`}>
           {/* 불량사진 컴포넌트 */}
           <div className={styles.mediaContainer}>
             {!defectImg ? (

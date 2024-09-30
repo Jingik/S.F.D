@@ -69,7 +69,7 @@ const data_bar = [
 
 export const HistoryPage = () => {
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(new Date());
   console.log(date);
 
   function handleClick(index: number) {
