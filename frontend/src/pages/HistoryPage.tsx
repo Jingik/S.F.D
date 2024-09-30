@@ -69,7 +69,7 @@ const data_bar = [
 
 export const HistoryPage = () => {
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
-  const [date, setDate] = useState('');
+  const [date, setDate] = useState(new Date());
   console.log(date);
 
   function handleClick(index: number) {
@@ -79,7 +79,7 @@ export const HistoryPage = () => {
   return (
     <div className="flex flex-col w-full h-full">
       {/* 윗줄 */}
-      <div className="flex flex-row mb-4 w-full h-full">
+      <div className="flex flex-row mb-4 w-full">
         {/* 총 불량 개수 통계 */}
         <div className={`${styles.boxLayout} flex-[1]`}>
           {/* 통계 그래프 영역 */}

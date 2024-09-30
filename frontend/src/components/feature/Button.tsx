@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import styles from '@components/feature/Button.module.css';
+import styles from '@/pages/Pages.module.css';
 
 interface PropsType {
   name: string;
@@ -13,7 +13,7 @@ export const Button = ({ name, color, path }: PropsType) => {
   return (
     <button
       onClick={() => path !== null && nav(path!)}
-      className={`${styles.button} ${styles.text}`}
+      className={styles.button}
       style={{ backgroundColor: color }}
     >
       {name}
