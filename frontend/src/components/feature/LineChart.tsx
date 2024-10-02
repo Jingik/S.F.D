@@ -39,7 +39,7 @@ const theme = {
   },
 };
 
-export const LineChart = ({ data }: any) => {
+export const LineChart = ({ data }: { data: any }) => {
   let maxY = 0;
 
   data[0].data.forEach((element: any) => {
@@ -80,11 +80,12 @@ export const LineChart = ({ data }: any) => {
       gridYValues={6}
       colors={['white']}
       lineWidth={3}
-      pointSize={12}
       areaOpacity={0}
       enableCrosshair={false}
       enableTouchCrosshair={false}
       useMesh={true}
+      pointSize={12}
+      pointBorderWidth={5}
     />
   );
 };
