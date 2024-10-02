@@ -15,12 +15,14 @@ export const DomainRequestPage = () => {
 
   function handleAbnormalPicture(picture: object) {}
 
+  // 전송하기 버튼
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
 
-    const sendData = {};
+    const sendData = { domain: domainName };
 
-    axiosSecurity.post('', sendData);
+    axiosSecurity.post('/domain/request', sendData);
+    nav('/domain');
   }
 
   return (

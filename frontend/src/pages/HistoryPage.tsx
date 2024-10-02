@@ -46,16 +46,8 @@ const data_bar = [
     count: 73,
   },
   {
-    type: 'pitted surface',
-    count: 12,
-  },
-  {
     type: 'inclusion',
     count: 38,
-  },
-  {
-    type: 'crazing',
-    count: 0,
   },
   {
     type: 'fracture',
@@ -70,32 +62,32 @@ const data_bar = [
 export const HistoryPage = () => {
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
   const [date, setDate] = useState(new Date());
-  console.log(date);
+  // console.log(date);
 
   function handleClick(index: number) {
     setSelectedButtonIndex(index);
   }
 
   return (
-    <div className="flex flex-col w-full h-full">
-      {/* 윗줄 */}
-      <div className="flex flex-row mb-4 w-full">
+    <div className="flex flex-row w-full h-full">
+      {/* 왼줄 */}
+      <div className="flex flex-col flex-[1]">
         {/* 총 불량 개수 통계 */}
-        <div className={`${styles.boxLayout} flex-[1]`}>
+        <div className={`${styles.boxLayout} mb-4`}>
+          <p className="m-4">▲ 총 불량 개수 통계</p>
           {/* 통계 그래프 영역 */}
           <div className={`${styles.barChart}`}>
             <BarChart data={data_bar} />
           </div>
 
           {/* 텍스트 영역 */}
-          <p className="mx-4 mb-1">▲ 총 불량 개수 통계</p>
-          <div className="table">
-            <ul className={`${styles.tableRow} ml-2`}>
+          <div className="table m-2">
+            <ul className={`${styles.tableRow}`}>
               <li>↑</li>
               <li>vertical</li>
               <li>불량 개수</li>
             </ul>
-            <ul className={`${styles.tableRow} ml-2`}>
+            <ul className={`${styles.tableRow}`}>
               <li>→</li>
               <li>horizontal</li>
               <li>불량 종류</li>
@@ -104,21 +96,21 @@ export const HistoryPage = () => {
         </div>
 
         {/* 날짜 당 불량 개수 통계 */}
-        <div className={`${styles.boxLayout} flex-[1]`}>
+        <div className={`${styles.boxLayout}`}>
+          <p className="m-4">■ 날짜 당 불량 개수 통계</p>
           {/* 통계 그래프 영역 */}
           <div className={styles.lineChart}>
             <LineChart data={data_line} />
           </div>
 
           {/* 텍스트 영역 */}
-          <p className="mx-4 mb-1">■ 날짜 당 불량 개수 통계</p>
-          <div className="table">
-            <ul className={`${styles.tableRow} ml-2`}>
+          <div className="table m-2">
+            <ul className={`${styles.tableRow}`}>
               <li>↑</li>
               <li>vertical</li>
               <li>불량 개수</li>
             </ul>
-            <ul className={`${styles.tableRow} ml-2`}>
+            <ul className={`${styles.tableRow}`}>
               <li>→</li>
               <li>horizontal</li>
               <li>탐지 날짜</li>
@@ -127,14 +119,14 @@ export const HistoryPage = () => {
         </div>
       </div>
 
-      {/* 아래줄 */}
+      {/* 오른줄 */}
       <div className={`${styles.boxLayout} flex-[1]`}>
-        <div className="flex flex-row w-full h-full">
+        <div className="flex flex-col w-full h-full">
           {/* 불량 사진 탐색 */}
           <div className="flex-[1] flex flex-col">
             {/* 텍스트 영역 */}
             <div className="flex flex-row justify-between items-end">
-              <p className="mx-4 mt-2">● 불량 사진 탐색</p>
+              <p className="m-4">● 불량 사진 탐색</p>
               <p className="mr-4 text-[#999999] text-xs">
                 불량 유형 또는 시간 선택
               </p>
@@ -203,23 +195,24 @@ export const HistoryPage = () => {
             </table>
           </div>
 
-          <div className="border-solid border-[#999999] border-r-2 my-4" />
+          <div className="border-solid border-[#999999] border-b-[1px] mx-4" />
 
           {/* 불량사진 영역 */}
           <div className="flex-[1] flex flex-col">
             {/* 사진 영역 */}
-            <div className={styles.mediaContainer}>탐지된 불량 사진</div>
+            <div className={styles.mediaContainer}>선택된 불량 사진</div>
 
             {/* 텍스트 영역 */}
-            <p className="text-[#E32626] mx-4 my-1">탐지된 불량 사진</p>
-            <div className="table">
+            <div className="table mb-4">
               <ul className={styles.tableRow}>
                 <li>
                   <img src={clock} alt="clock" />
                 </li>
                 <li>captured at</li>
                 <li>
-                  {} | {}
+                  {!selectedButtonIndex
+                    ? '선택된 불량 날짜가 없습니다!'
+                    : defectImg.capturedDate | defectImg.capturedTime}
                 </li>
               </ul>
               <ul className={styles.tableRow}>
@@ -227,7 +220,11 @@ export const HistoryPage = () => {
                   <img src={bulb} alt="bulb" />
                 </li>
                 <li>type</li>
-                <li>{}</li>
+                <li>
+                  {!selectedButtonIndex
+                    ? '선택된 불량 날짜가 없습니다!'
+                    : defectImg.type}
+                </li>
               </ul>
             </div>
           </div>
