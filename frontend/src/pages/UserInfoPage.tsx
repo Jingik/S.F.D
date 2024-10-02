@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useUser } from '@components/common/UserContext';
 import {
   SFD_URL,
@@ -158,12 +157,10 @@ export const UserInfoPage = () => {
     sendRegister();
   };
 
-  const nav = useNavigate();
-
   return (
     <div className={styles.boxLayout}>
-      <div className="m-4">
-        <div className="text-2xl font-bold">😃 회원 정보</div>
+      <div className="m-6">
+        <div className="text-3xl font-bold">😃 회원 정보</div>
         <div className="text-lg">정보를 수정하시려면 내용을 변경해주세요.</div>
         <div className="text-sm">(업데이트 예정)</div>
       </div>

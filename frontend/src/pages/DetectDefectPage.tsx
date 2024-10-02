@@ -124,8 +124,9 @@ export const DetectDefectPage = () => {
           <div className={styles.mediaContainer}>비디오 영역</div>
 
           <p className="mx-4 mb-1">
-            <span className="mr-1 text-[#E32626]">●</span>
-            <span>실시간 불량 탐지</span>
+            {/* 깜빡이도록 커스텀 */}
+            <span className={`${styles.twinkle} mr-1 text-[#E32626]`}>●</span>
+            <span className={`${styles.blink}`}>실시간 불량 탐지</span>
           </p>
           <div className="table">
             <ul className={styles.tableRow}>
@@ -160,7 +161,9 @@ export const DetectDefectPage = () => {
             )}
           </div>
 
-          <p className="text-[#E32626] mx-4 mb-1">! Defect Detected</p>
+          <p className={`text-[#E32626] mx-4 mb-1 ${styles.blink}`}>
+            ! Defect Detected
+          </p>
           <div className="table">
             <ul className={styles.tableRow}>
               <li>
@@ -183,16 +186,18 @@ export const DetectDefectPage = () => {
       </div>
 
       {/* 아래줄 */}
-      <div className="flex flex-row w-full h-full">
+      <div className={`flex flex-row w-full h-full`}>
         {/* 시간 당 불량 개수 통계 */}
         <div className={`${styles.boxLayout} flex-[1]`}>
           {/* 통계 그래프 영역 */}
-          <div className={styles.lineChart}>
+          <div className={`${styles.lineChart} ${styles.borderLine}`}>
             <LineChart data={data_line} />
           </div>
 
           {/* 텍스트 영역 */}
-          <p className="mx-4 mb-1">■ 시간 당 불량 개수 통계</p>
+          <p className={`mx-4 mb-1 ${styles.blink}`}>
+            ■ 시간 당 불량 개수 통계
+          </p>
           <div className="table">
             <ul className={`${styles.tableRow} ml-2`}>
               <li>↑</li>
@@ -210,12 +215,12 @@ export const DetectDefectPage = () => {
         {/* 불량 종류 통계 */}
         <div className={`${styles.boxLayout} flex-[1]`}>
           {/* 통계 그래프 영역 */}
-          <div className={styles.barChart}>
+          <div className={`${styles.barChart} ${styles.borderBar}`}>
             <BarChart data={data_bar} />
           </div>
 
           {/* 텍스트 영역 */}
-          <p className="mx-4 mb-1">▲ 불량 종류 통계</p>
+          <p className={`mx-4 mb-1 ${styles.blink}`}>▲ 불량 종류 통계</p>
           <div className="table">
             <ul className={`${styles.tableRow} ml-2`}>
               <li>↑</li>
