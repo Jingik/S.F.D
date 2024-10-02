@@ -174,6 +174,8 @@ export const RegisterPage = () => {
             <p className="flex self-start text-lg p-1">이메일</p>
             <input
               type="email"
+              name="email"
+              autoComplete="email"
               className={styles.input}
               onChange={onChangeEmail}
               value={email}
@@ -195,6 +197,8 @@ export const RegisterPage = () => {
             <p className="flex self-start text-lg p-1">이름</p>
             <input
               type="text"
+              name="name"
+              autoComplete="name"
               className={styles.input}
               onChange={(e: any) => setName(e.target.value)}
               value={name}
@@ -208,6 +212,8 @@ export const RegisterPage = () => {
             <p className="flex self-start text-lg p-1">별명</p>
             <input
               type="text"
+              name="nickname"
+              autoComplete="cc-name"
               className={styles.input}
               onChange={(e: any) => setNickname(e.target.value)}
               value={nickname}
@@ -221,6 +227,8 @@ export const RegisterPage = () => {
             <p className="flex self-start text-lg p-1">전화번호</p>
             <input
               type="tel"
+              name="tel"
+              autoComplete="tel"
               className={styles.input}
               onChange={onChangePhoneNumer}
               value={phoneNumber}
@@ -236,6 +244,8 @@ export const RegisterPage = () => {
             <p className="flex self-start text-lg p-1">비밀번호</p>
             <input
               type="password"
+              name="password"
+              autoComplete="new-password"
               className={styles.input}
               onChange={onChangePw}
               value={pw}
@@ -251,6 +261,8 @@ export const RegisterPage = () => {
             <p className="flex self-start text-lg p-1">비밀번호 확인</p>
             <input
               type="password"
+              name="passwordCheck"
+              autoComplete="current-password"
               className={styles.input}
               onChange={onChangeCheckPw}
               value={checkPw}
