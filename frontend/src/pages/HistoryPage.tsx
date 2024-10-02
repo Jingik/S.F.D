@@ -211,8 +211,8 @@ export const HistoryPage = () => {
                 <li>captured at</li>
                 <li>
                   {!selectedButtonIndex
-                    ? '선택된 불량 날짜가 없습니다!'
-                    : defectImg.capturedDate | defectImg.capturedTime}
+                    ? '선택된 불량 시간이 없습니다!'
+                    : '불량 날짜 | 불량 시간'}
                 </li>
               </ul>
               <ul className={styles.tableRow}>
@@ -222,8 +222,8 @@ export const HistoryPage = () => {
                 <li>type</li>
                 <li>
                   {!selectedButtonIndex
-                    ? '선택된 불량 날짜가 없습니다!'
-                    : defectImg.type}
+                    ? '선택된 불량 시간이 없습니다!'
+                    : '불량 종류'}
                 </li>
               </ul>
             </div>
