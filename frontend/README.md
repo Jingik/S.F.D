@@ -91,3 +91,7 @@ socket 또는 폴링 방식 통신 중 불량 탐지 시 back에서 불량 종�
 ### 카테고리 요청 페이지(DomainRequestPage.tsx)
 
 - 불량 사진 전송할 때 어떤 불량인지도 보내줘야하는지?
+
+### 카테고리 선택 페이지(SelectDomainPage.tsx)
+
+- 어떤 물품을 탐지해야하는지 보내주려고 하는데 '링크/domain' post로 {domain: "물품 종류"} 객체를 실어서 보낸다.

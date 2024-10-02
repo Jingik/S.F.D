@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import styles from '@/pages/Pages.module.css';
+import { axiosSecurity } from '../components/common/util';
 
 export const SelectDomainPage = () => {
   const [isSelected, setIsSelected] = useState(NaN);
@@ -9,11 +10,16 @@ export const SelectDomainPage = () => {
 
   const isDomainPage = location.pathname === '/domain';
 
+  const domainList = ['너트', '각설탕', '지우개'];
+
   function handleClick(index: number) {
     setIsSelected(index);
   }
 
-  const domainList = ['너트', '각설탕', '지우개'];
+  function submitDomain() {
+    // axiosSecurity.post('/domain', { domain: domainList[isSelected] });
+    // nav('/detect');
+  }
 
   return (
     <div className={`${styles.boxLayout} h-full`}>
@@ -61,7 +67,7 @@ export const SelectDomainPage = () => {
                   ? { backgroundColor: '#47C93C' }
                   : { backgroundColor: '#999999' }
               }
-              onClick={() => nav('/detect')}
+              onClick={submitDomain}
               disabled={isNaN(isSelected)}
             >
               불량 검사하기

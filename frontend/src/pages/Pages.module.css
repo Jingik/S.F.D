@@ -17,7 +17,7 @@
   width: auto;
   height: 100%;
   min-height: 10rem;
-  max-height: 15rem;
+  max-height: 20rem;
   border-radius: 1rem;
   margin: 1rem;
   font-size: 2rem;
@@ -89,6 +89,10 @@
   color: #999999;
 }
 
+.tableRow :nth-child(3) {
+  color: #333333;
+}
+
 .tableRow > li > img {
   margin-left: 0.5rem;
   width: auto;
@@ -102,7 +106,6 @@
   height: 100%;
   min-height: 10rem;
   max-height: 15rem;
-  margin: 1rem;
   border-radius: 1rem;
   background: linear-gradient(#80d479, #47c93c);
 }
@@ -114,7 +117,6 @@
   height: 100%;
   min-height: 10rem;
   max-height: 15rem;
-  margin: 1rem;
   border-radius: 1rem;
   background: linear-gradient(#e29191, #e36161);
 }
@@ -193,6 +195,7 @@
 
 /* 표 css */
 .tableSet {
+  align-self: center;
   display: flex;
   flex-direction: column;
   align-items: center;
