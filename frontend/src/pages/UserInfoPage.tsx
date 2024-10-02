@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useUser } from '@components/common/UserContext';
 import {
   SFD_URL,
@@ -158,12 +157,10 @@ export const UserInfoPage = () => {
     sendRegister();
   };
 
-  const nav = useNavigate();
-
   return (
     <div className={styles.boxLayout}>
-      <div className="m-4">
-        <div className="text-2xl font-bold">😃 회원 정보</div>
+      <div className="m-6">
+        <div className="text-3xl font-bold">😃 회원 정보</div>
         <div className="text-lg">정보를 수정하시려면 내용을 변경해주세요.</div>
         <div className="text-sm">(업데이트 예정)</div>
       </div>
@@ -176,6 +173,8 @@ export const UserInfoPage = () => {
             <p className="flex self-start text-lg p-1">이메일</p>
             <input
               type="email"
+              name="email"
+              autoComplete="email"
               className={styles.input}
               onChange={onChangeEmail}
               value={email}
@@ -198,6 +197,8 @@ export const UserInfoPage = () => {
             <p className="flex self-start text-lg p-1">이름</p>
             <input
               type="text"
+              name="name"
+              autoComplete="name"
               className={styles.input}
               onChange={(e: any) => setName(e.target.value)}
               value={name}
@@ -212,6 +213,8 @@ export const UserInfoPage = () => {
             <p className="flex self-start text-lg p-1">별명</p>
             <input
               type="text"
+              name="nickname"
+              autoComplete="cc-name"
               className={styles.input}
               onChange={(e: any) => setNickname(e.target.value)}
               value={nickname}
@@ -226,6 +229,8 @@ export const UserInfoPage = () => {
             <p className="flex self-start text-lg p-1">전화번호</p>
             <input
               type="tel"
+              name="tel"
+              autoComplete="tel"
               className={styles.input}
               onChange={onChangePhoneNumer}
               value={phoneNumber}
@@ -242,6 +247,8 @@ export const UserInfoPage = () => {
             <p className="flex self-start text-lg p-1">비밀번호</p>
             <input
               type="password"
+              name="password"
+              autoComplete="current-password"
               className={styles.input}
               onChange={onChangePw}
               value={pw}
@@ -258,6 +265,8 @@ export const UserInfoPage = () => {
             <p className="flex self-start text-lg p-1">비밀번호 확인</p>
             <input
               type="password"
+              name="passwordCheck"
+              autoComplete="current-password"
               className={styles.input}
               onChange={onChangeCheckPw}
               value={checkPw}

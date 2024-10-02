@@ -1,4 +1,10 @@
-import { createContext, useState, useContext, ReactNode } from 'react';
+import {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from 'react';
 
 interface User {
   nickname: string;
@@ -24,12 +30,16 @@ export const useUser = () => {
 };
 
 export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User>({
-    nickname: '',
-    email: '',
-    phoneNumber: '',
-    name: '',
+  const [user, setUser] = useState<User>(() => {
+    const storedUser = localStorage.getItem('user');
+    return storedUser
+      ? JSON.parse(storedUser)
+      : { nickname: '', email: '', phoneNumber: '', name: '' };
   });
+
+  useEffect(() => {
+    localStorage.setItem('user', JSON.stringify(user));
+  }, [user]);
 
   const clearUser = () => {
     setUser({
@@ -38,6 +48,7 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       phoneNumber: '',
       name: '',
     });
+    localStorage.removeItem('user');
   };
 
   return (

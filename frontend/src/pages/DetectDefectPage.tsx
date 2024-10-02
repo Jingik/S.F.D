@@ -45,16 +45,8 @@ const data_bar = [
     count: 23,
   },
   {
-    type: 'pitted surface',
-    count: 10,
-  },
-  {
     type: 'inclusion',
     count: 14,
-  },
-  {
-    type: 'crazing',
-    count: 3,
   },
   {
     type: 'fracture',
@@ -72,6 +64,7 @@ export const DetectDefectPage = () => {
   const [todayDate, setTodayDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [currentTime, setCurrentTime] = useState('');
+  const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
 
   // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
   useEffect(() => {
@@ -115,17 +108,15 @@ export const DetectDefectPage = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full h-full">
-      {/* 윗줄 */}
-      <div className="flex flex-row mb-4 w-full h-full">
-        {/* 카메라 띄우기 */}
-        <div className={`${styles.boxLayout} flex-[1]`}>
-          {/* 카메라 컴포넌트 */}
-          <div className={styles.mediaContainer}>비디오 영역</div>
-
-          <p className="mx-4 mb-1">
-            <span className="mr-1 text-[#E32626]">●</span>
-            <span>실시간 불량 탐지</span>
+    <div className="flex flex-row w-full h-full">
+      {/* 왼쪽줄 */}
+      <div className="flex flex-col mb-4 w-full h-full">
+        {/* 불량 사진 띄우기 */}
+        <div className={`${styles.boxLayout}`}>
+          <p className="m-4 mb-1">
+            {/* 깜빡이도록 커스텀 */}
+            <span className={`${styles.twinkle} mr-1 text-[#E32626]`}>●</span>
+            <span className={`${styles.blink}`}>실시간 불량 탐지</span>
           </p>
           <div className="table">
             <ul className={styles.tableRow}>
@@ -147,59 +138,109 @@ export const DetectDefectPage = () => {
               </li>
             </ul>
           </div>
-        </div>
 
-        {/* 불량 사진 띄우기 */}
-        <div className={`${styles.boxLayout} flex-[1]`}>
           {/* 불량사진 컴포넌트 */}
           <div className={styles.mediaContainer}>
             {!defectImg ? (
-              '탐지된 불량 데이터가  없습니다!'
+              '탐지된 불량이 없습니다!'
             ) : (
               <img src="" alt="defect" />
             )}
           </div>
 
-          <p className="text-[#E32626] mx-4 mb-1">! Defect Detected</p>
+          {/* 사진 설명 텍스트 */}
           <div className="table">
             <ul className={styles.tableRow}>
               <li>
                 <img src={clock} alt="clock" />
               </li>
               <li>captured at</li>
-              <li>
-                {} | {}
-              </li>
+              <li>{!defectImg ? '탐지된 불량이 없습니다!' : '탐지 시간'}</li>
             </ul>
             <ul className={styles.tableRow}>
               <li>
                 <img src={bulb} alt="bulb" />
               </li>
               <li>type</li>
-              <li>{}</li>
+              <li>{!defectImg ? '탐지된 불량이 없습니다!' : '불량 종류'}</li>
             </ul>
           </div>
+
+          {/* 해당 시간의 불량 선택 표 컴포넌트 */}
+          <table className={styles.tableSet}>
+            <thead>
+              <tr className="border-solid border-[#1c93e9] border-b-2">
+                <th>불량 유형</th>
+                <th>검출 시간</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr>
+                <td>
+                  <button
+                    className={
+                      selectedButtonIndex === -1
+                        ? ''
+                        : 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                    }
+                  >
+                    데이터가
+                  </button>
+                </td>
+                <td>
+                  <button
+                    className={
+                      selectedButtonIndex === -1
+                        ? ''
+                        : 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                    }
+                  >
+                    없습니다
+                  </button>
+                </td>
+              </tr>
+              {/* {
+                !Arrays ? (
+                <tr>
+                  <button className={isSelected ? 'selected' : ''}>
+                    <td>데이터가</td>
+                    <td>없습니다</td>
+                  </button>
+                </tr>
+                ) : (Arrays.map((data, index) => (
+                <tr key={index}>
+                  <button
+                    className={selectedButtonIndex === index ? 'selected' : ''}
+                    onClick={() => handleClick(index)}
+                  >
+                    <td>{data.type}</td>
+                    <td>{data.detectedTime}</td>
+                  </button>
+                </tr>
+                  )) 
+                }*/}
+            </tbody>
+          </table>
         </div>
       </div>
 
-      {/* 아래줄 */}
-      <div className="flex flex-row w-full h-full">
-        {/* 시간 당 불량 개수 통계 */}
-        <div className={`${styles.boxLayout} flex-[1]`}>
+      {/* 오른쪽줄 */}
+      <div className={`flex flex-col w-full h-full`}>
+        <div className={`${styles.boxLayout} mb-4`}>
+          <p className={`m-4 ${styles.blink}`}>■ 시간 당 불량 개수 통계</p>
           {/* 통계 그래프 영역 */}
-          <div className={styles.lineChart}>
+          <div className={`${styles.lineChart} ${styles.borderLine}`}>
             <LineChart data={data_line} />
           </div>
 
-          {/* 텍스트 영역 */}
-          <p className="mx-4 mb-1">■ 시간 당 불량 개수 통계</p>
-          <div className="table">
-            <ul className={`${styles.tableRow} ml-2`}>
+          <div className="table m-2">
+            <ul className={`${styles.tableRow}`}>
               <li>↑</li>
               <li>vertical</li>
               <li>불량 개수</li>
             </ul>
-            <ul className={`${styles.tableRow} ml-2`}>
+            <ul className={`${styles.tableRow}`}>
               <li>→</li>
               <li>horizontal</li>
               <li>탐지 시간</li>
@@ -208,21 +249,21 @@ export const DetectDefectPage = () => {
         </div>
 
         {/* 불량 종류 통계 */}
-        <div className={`${styles.boxLayout} flex-[1]`}>
+        <div className={`${styles.boxLayout}`}>
           {/* 통계 그래프 영역 */}
-          <div className={styles.barChart}>
+          <p className={`m-4 ${styles.blink}`}>▲ 불량 종류 통계</p>
+          <div className={`${styles.barChart} ${styles.borderBar}`}>
             <BarChart data={data_bar} />
           </div>
 
           {/* 텍스트 영역 */}
-          <p className="mx-4 mb-1">▲ 불량 종류 통계</p>
-          <div className="table">
-            <ul className={`${styles.tableRow} ml-2`}>
+          <div className="table m-2">
+            <ul className={`${styles.tableRow}`}>
               <li>↑</li>
               <li>vertical</li>
               <li>불량 개수</li>
             </ul>
-            <ul className={`${styles.tableRow} ml-2`}>
+            <ul className={`${styles.tableRow}`}>
               <li>→</li>
               <li>horizontal</li>
               <li>불량 종류</li>
