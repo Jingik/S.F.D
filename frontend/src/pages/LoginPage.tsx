@@ -100,6 +100,8 @@ export const LoginPage = () => {
         <div className="w-full h-full flex flex-col justify-center items-center">
           <input
             type="email"
+            name="email"
+            autoComplete="email"
             className={`${styles.loginInput} ${styles.upperInput} text-base`}
             onChange={(e: any) => onChangeEmail(e.target.value)}
             value={email}
@@ -107,6 +109,8 @@ export const LoginPage = () => {
           />
           <input
             type="password"
+            name="password"
+            autoComplete="current-password"
             className={`${styles.loginInput} ${styles.bottomInput} text-base`}
             onChange={(e: any) => onChangePw(e.target.value)}
             value={pw}
