@@ -26,6 +26,47 @@ axiosSecurity.interceptors.request.use(
   },
 );
 
+// 응답 인터셉터 추가 (401 처리 및 토큰 갱신)
+axiosSecurity.interceptors.response.use(
+  // 정상 응답일 때는 그대로 반환
+  (response) => response,
+
+  async (error) => {
+    const originalRequest = error.config;
+
+    // 401 에러가 발생하고, 원래 요청이 이미 다시 시도된 것이 아니면
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      // 재시도를 방지하기 위해 플래그 설정
+      originalRequest._retry = true;
+
+      try {
+        // Refresh Token으로 새로운 Access Token 발급 요청
+        const refreshToken = JSON.parse(
+          localStorage.getItem('token')!,
+        )?.refreshToken;
+        const response = await axios.post(`${SFD_URL}/auth/refresh`, {
+          refreshToken,
+        });
+
+        // 새로운 토큰 저장
+        localStorage.setItem('token', JSON.stringify(response.data));
+
+        // 새로운 Access Token으로 요청 헤더 업데이트 후 재시도
+        originalRequest.headers.Authorization = `Bearer ${response.data.accessToken}`;
+        return axiosSecurity(originalRequest);
+      } catch (refreshError) {
+        // refresh 요청이 실패하면 로그아웃 처리나 추가적인 에러 처리
+        console.error('Token refresh failed', refreshError);
+        localStorage.removeItem('token');
+        // 필요시 로그인 페이지로 리다이렉트
+        window.location.href = '/login';
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+
 // --------------------------------------------------------------------------------
 
 // 공백 제거

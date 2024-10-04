@@ -42,11 +42,11 @@ const data_line = [
 
 const data_bar = [
   {
-    type: 'scratch',
+    type: 'scratches',
     count: 73,
   },
   {
-    type: 'inclusion',
+    type: 'rusting',
     count: 38,
   },
   {
@@ -54,7 +54,7 @@ const data_bar = [
     count: 30,
   },
   {
-    type: 'strain',
+    type: 'deformation',
     count: 49,
   },
 ];

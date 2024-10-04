@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
-import styles from '@/pages/Pages.module.css';
+import { SFD_URL } from '@components/common/util';
 import { LineChart } from '@components/feature/LineChart';
-import { BarChart } from '../components/feature/BarChart';
+import { BarChart } from '@components/feature/BarChart';
+import { axiosSecurity } from '@components/common/util';
+import styles from '@/pages/Pages.module.css';
 
 import clock from '@/assets/images/clock.png';
 import earth from '@/assets/images/earth.png';
@@ -41,11 +43,11 @@ const data_line = [
 
 const data_bar = [
   {
-    type: 'scratch',
+    type: 'scratches',
     count: 23,
   },
   {
-    type: 'inclusion',
+    type: 'rusting',
     count: 14,
   },
   {
@@ -53,7 +55,7 @@ const data_bar = [
     count: 0,
   },
   {
-    type: 'strain',
+    type: 'deformation',
     count: 7,
   },
 ];
@@ -65,9 +67,33 @@ export const DetectDefectPage = () => {
   const [startTime, setStartTime] = useState('');
   const [currentTime, setCurrentTime] = useState('');
   const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
+  const [tableData, setTableData] = useState([{}]);
 
-  // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
+  // 데이터 요청
+  async function requestData() {
+    const response = await axiosSecurity.get('/defectData', {
+      date: todayDate,
+    });
+
+    console.log(response);
+
+    response.data.forEach((data: any) => {
+      const setObject = {
+        id: data.object_detection_id,
+        type: data.analysis_details,
+        date: data.timestamp.substring(0, 10),
+        time: data.timestamp.substring(11, 18),
+        confidence: data.confidence,
+      };
+
+      setTableData([setObject, ...tableData]);
+    });
+
+    console.log(tableData);
+  }
+
   useEffect(() => {
+    // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
     const day = new Date();
     const year = day.getFullYear().toString().substring(2);
     const month = (day.getMonth() + 1).toString().padStart(2, '0');
@@ -78,6 +104,31 @@ export const DetectDefectPage = () => {
 
     setStartDate(`${year}-${month}-${date}`);
     setStartTime(`${hour}:${minute}:${seconds}`);
+
+    // 페이지 진입 시 데이터 요청 및 SSE 연결
+    requestData();
+
+    // SSE 연결
+    const sseEvents = new EventSource(`${SFD_URL}/createEventStream`, {
+      withCredentials: true,
+    });
+
+    sseEvents.onopen = function () {
+      // 연결 됐을 때
+      console.log('연결되었습니다!');
+    };
+    sseEvents.onerror = function (error) {
+      console.error('연결에 문제가 생겼습니다...' + JSON.stringify(error));
+    };
+    sseEvents.onmessage = function (stream) {
+      // 메세지 받았을 때
+      const parsedData = JSON.parse(stream.data);
+      console.log(parsedData);
+    };
+
+    return () => {
+      sseEvents.close();
+    };
   }, []);
 
   // 실시간으로 현재 날짜와 시간 업데이트
@@ -100,7 +151,7 @@ export const DetectDefectPage = () => {
       animationFrameId = requestAnimationFrame(updateCurrentTime);
     };
 
-    // 처음 호출
+    // 처음 호출하여 시간 업데이트
     animationFrameId = requestAnimationFrame(updateCurrentTime);
 
     // 컴포넌트 언마운트 시 requestAnimationFrame 중단
