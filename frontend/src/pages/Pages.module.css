@@ -223,11 +223,13 @@
   justify-content: space-around;
 }
 
-.tableSet > thead > tr > th,
-.tableSet > tbody > tr > td {
-  width: 100%;
+.tableSet > thead > tr > th {
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
+}
+
+.tableSet > tbody > tr > td {
+  width: 100%;
   overflow-y: auto;
 }
 

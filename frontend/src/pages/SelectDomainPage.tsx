@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { axiosSecurity } from '@components/common/util';
 import styles from '@/pages/Pages.module.css';
-import { axiosSecurity } from '../components/common/util';
 
 export const SelectDomainPage = () => {
   const [isSelected, setIsSelected] = useState(NaN);
@@ -17,7 +17,7 @@ export const SelectDomainPage = () => {
   }
 
   function submitDomain() {
-    // axiosSecurity.post('/domain', { domain: domainList[isSelected] });
+    axiosSecurity.post('/domain', { domain: domainList[isSelected] });
     nav('/detect');
   }
 
