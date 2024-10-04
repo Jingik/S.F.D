@@ -29,6 +29,6 @@ public class Scanners {
     @Column(name = "completed_at")
     private LocalDateTime completedAt;
 
-    @Column(name = "is_completed")
-    private Boolean isCompleted;
+    @Column(name = "is_using")
+    private Boolean isUsing;  // true: 사용 중, false: 사용 종료
 }
