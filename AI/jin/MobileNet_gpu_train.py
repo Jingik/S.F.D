@@ -9,7 +9,7 @@ import json
 import os
 # GPU 설정 (가장 먼저 설정해야 함)
 os.environ["CUDA_DEVICE_ORDER"] = "PCI_BUS_ID"
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"  # 1번 GPU 사용 설정
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"  # 1번 GPU 사용 설정..
 
 from pathlib import Path
 
