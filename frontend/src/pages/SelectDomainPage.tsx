@@ -18,7 +18,7 @@ export const SelectDomainPage = () => {
 
   function submitDomain() {
     // axiosSecurity.post('/domain', { domain: domainList[isSelected] });
-    // nav('/detect');
+    nav('/detect');
   }
 
   return (
