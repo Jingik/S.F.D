@@ -108,20 +108,20 @@ export const DetectDefectPage = () => {
     // 페이지 진입 시 데이터 요청 및 SSE 연결
     requestData();
 
-    // SSE 연결
     const sseEvents = new EventSource(`${SFD_URL}/createEventStream`, {
       withCredentials: true,
     });
 
+    // 연결 됐을 때
     sseEvents.onopen = function () {
-      // 연결 됐을 때
       console.log('연결되었습니다!');
     };
+    // 에러일 때
     sseEvents.onerror = function (error) {
       console.error('연결에 문제가 생겼습니다...' + JSON.stringify(error));
     };
+    // 메세지 받았을 때
     sseEvents.onmessage = function (stream) {
-      // 메세지 받았을 때
       const parsedData = JSON.parse(stream.data);
       console.log(parsedData);
     };
