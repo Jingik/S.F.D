@@ -162,7 +162,6 @@ export const UserInfoPage = () => {
       <div className="m-6">
         <div className="text-3xl font-bold">😃 회원 정보</div>
         <div className="text-lg">정보를 수정하시려면 내용을 변경해주세요.</div>
-        <div className="text-sm">(업데이트 예정)</div>
       </div>
 
       {/* 회원정보 입력 영역 */}
