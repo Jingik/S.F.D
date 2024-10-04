@@ -19,6 +19,22 @@ import numpy as np
 import pathlib
 pathlib.PosixPath = pathlib.WindowsPath
 
+# 서버로 크롭된 이미지와 예측 결과를 전송하는 함수
+def request_cropped_img_with_prediction(url, image_path, predicted_class):
+    # URL이 지정되지 않았을 경우 기본 로컬 서버 주소 사용
+    if url is None:
+        url = 'http://localhost:5000/upload'
+
+    # 전송할 데이터를 준비
+    # 'file' 필드에 이미지 파일을, 'prediction' 필드에 예측 결과를 포함
+    with open(image_path, 'rb') as img:
+        files = {'file': img}
+        data = {'prediction': predicted_class}  # 예측 결과를 같이 보냄
+        response = requests.post(url, files=files, data=data)  # 서버로 전송
+
+    # 응답 결과 출력
+    print(f"Status code: {response.status_code}")  # 응답 상태 코드 출력
+    print(f"Response: {response.json()}")  # 서버에서 받은 응답 내용 출력
 
 # 잘라낸 이미지를 특정 URL로 전송하는 함수
 def request_cropped_img(url, image_path):
@@ -128,8 +144,8 @@ def run(
     detected_num = 0  # 탐지된 객체 수를 카운트하는 변수 초기화
 
     """
-    YOLOv5 탐지 알고리즘을 실행하는 함수입니다. 다양한 입력 소스(이미지, 비디오, 디렉토리, 웹캠 등)를 처리하며, 
-    모델 가중치와 다양한 옵션을 설정하여 탐지를 수행합니다.
+    YOLOv5 탐지 알고리즘과 양/불 판정을 실행하는 함수입니다. 다양한 입력 소스(이미지, 비디오, 디렉토리, 웹캠 등)를 처리하며, 
+    모델 가중치와 다양한 옵션을 설정하여 탐지와 판정을 수행합니다.
 
     Args:
         weights: YOLOv5 모델 가중치 파일 경로
