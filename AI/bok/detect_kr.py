@@ -62,10 +62,10 @@ with tf.device('/cpu:0'):
     classification_model = keras.layers.TFSMLayer('final_model', call_endpoint='serving_default')  # 분류 모델 로드
     
     # 모델 로드
-    model = tf.saved_model.load('final_model')
+    clmodel = tf.saved_model.load('final_model')
 
     # 서명 출력
-    print(model.signatures)
+    print(clmodel.signatures)
     
 # Ultralytics 유틸리티들
 from ultralytics.utils.plotting import Annotator, colors, save_one_box
@@ -303,6 +303,8 @@ def run(
                         ### 모델 분류 결과 출력 ###
                         LOGGER.info(f"Image classified as {'False' if predicted_class == 1 else 'True'}")
                         ############################
+                        # 여기서 서버 통신 로직 작성
+                        
                         
                         # request_cropped_img(None, file_path)  # 크롭된 이미지를 서버로 전송
                         failed = False
