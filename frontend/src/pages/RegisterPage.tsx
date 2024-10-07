@@ -62,7 +62,7 @@ export const RegisterPage = () => {
     setPw(trimPassWord);
     setPwMessage(
       validatePassword(trimPassWord)
-        ? ''
+        ? '적합한 비밀번호입니다.'
         : '영어 대소문자, 숫자, 특수문자 포함 8자 이상',
     );
   }
@@ -72,7 +72,9 @@ export const RegisterPage = () => {
     const trimCheckPW = removeWhitespace(e.target.value);
     setCheckPw(trimCheckPW);
     setCheckPwMessage(() =>
-      pw === trimCheckPW ? '' : '비밀번호가 일치하지 않습니다...',
+      pw === trimCheckPW
+        ? '비밀번호가 일치합니다.'
+        : '비밀번호가 일치하지 않습니다...',
     );
   }
 
@@ -82,7 +84,7 @@ export const RegisterPage = () => {
     setPhoneNumber(trimCheckPhoneNumber);
     setPhoneNumberMessage(() =>
       validatePhoneNumber(trimCheckPhoneNumber)
-        ? ''
+        ? '올바른 전화번호 형식입니다.'
         : '"-"를 제외하고 숫자만 입력해주세요!',
     );
   }
@@ -92,16 +94,16 @@ export const RegisterPage = () => {
     // 회원가입 버튼 활성화 & 비활성화
     function checkDisable() {
       if (
-        emailMessage === '사용 가능한 이메일입니다.' &&
-        pwMessage === '' &&
-        checkPwMessage === '' &&
         email !== '' &&
+        emailMessage === '사용 가능한 이메일입니다.' &&
         name !== '' &&
         nickname !== '' &&
         phoneNumber !== '' &&
-        phoneNumberMessage !== '' &&
+        phoneNumberMessage === '올바른 전화번호 형식입니다.' &&
         pw !== '' &&
+        pwMessage === '적합한 비밀번호입니다.' &&
         checkPw !== '' &&
+        checkPwMessage === '비밀번호가 일치합니다.' &&
         pw === checkPw
       ) {
         setIsDisable(false);
@@ -234,7 +236,13 @@ export const RegisterPage = () => {
               value={phoneNumber}
               placeholder="01012345678"
             />
-            <p className="flex self-end text-xs text-[#E32626] p-1">
+            <p
+              className={
+                phoneNumberMessage === '올바른 전화번호 형식입니다.'
+                  ? 'flex self-end text-xs text-[#47C93C] p-1'
+                  : 'flex self-end text-xs text-[#E32626] p-1'
+              }
+            >
               {phoneNumberMessage}
             </p>
           </div>
@@ -251,7 +259,13 @@ export const RegisterPage = () => {
               value={pw}
               placeholder="비밀번호"
             />
-            <p className="flex self-end text-xs text-[#E32626] p-1">
+            <p
+              className={
+                pwMessage === '적합한 비밀번호입니다.'
+                  ? 'flex self-end text-xs text-[#47C93C] p-1'
+                  : 'flex self-end text-xs text-[#E32626] p-1'
+              }
+            >
               {pwMessage}
             </p>
           </div>
@@ -268,7 +282,13 @@ export const RegisterPage = () => {
               value={checkPw}
               placeholder="비밀번호를 한 번 더 입력해주세요"
             />
-            <p className="flex self-end text-xs text-[#E32626] p-1">
+            <p
+              className={
+                checkPwMessage === '비밀번호가 일치합니다.'
+                  ? 'flex self-end text-xs text-[#47C93C] p-1'
+                  : 'flex self-end text-xs text-[#E32626] p-1'
+              }
+            >
               {checkPwMessage}
             </p>
           </div>
