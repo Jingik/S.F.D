@@ -12,12 +12,23 @@ from tensorflow import keras
 import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 import numpy as np
-# from tensorflow.keras.models import load_model
-# from sklearn.metrics import precision_score, recall_score, confusion_matrix
+
+from models.model import ClassificationModel
+from omegaconf import OmegaConf
+import torch.nn.functional as F
+from transforms import Transforms
+import torchvision
 
 # 윈도우 모드에서 실행
 import pathlib
 pathlib.PosixPath = pathlib.WindowsPath
+
+def predict(model, image, config):
+    transforms = Transforms(config['dataset']['img_size'])
+    test_transform = transforms.val_test_transform()
+    img_tensor = test_transform(image).unsqueeze_(0)
+    prediction = torch.argmax(F.softmax(model(img_tensor))).item()
+    return prediction
 
 # 서버로 크롭된 이미지와 예측 결과를 전송하는 함수
 def request_cropped_img_with_prediction(url, image_path, predicted_class):
@@ -73,16 +84,15 @@ if str(ROOT) not in sys.path:
     sys.path.append(str(ROOT))  # 루트를 PATH에 추가
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # 상대 경로로 변환
 
-# TensorFlow 모델 로드 (CPU로 강제 설정)
-with tf.device('/cpu:0'):
-    classification_model = keras.layers.TFSMLayer('final_model', call_endpoint='serving_default')  # 분류 모델 로드
-    
-    # 모델 로드
-    clmodel = tf.saved_model.load('final_model')
+# 분류모델 로드
+cls_checkpoint = torch.load('test_exp/tensorboard_logs_csv_logs/0_1/checkpoints/last.ckpt', map_location=torch.device('cpu'))
+cls_config = OmegaConf.load('config.yaml')
+cls_model = ClassificationModel(cls_config)
+# 모델에 저장된 가중치 로드
+cls_model.load_state_dict(cls_checkpoint['state_dict'])
+# 모델을 평가 모드로 전환 (학습이 아닌 추론 모드)
+cls_model.eval()
 
-    # 서명 출력
-    print(clmodel.signatures)
-    
 # Ultralytics 유틸리티들
 from ultralytics.utils.plotting import Annotator, colors, save_one_box
 
@@ -295,20 +305,19 @@ def run(
                         
                         ### 여기부터 분류 모델 적용 ###
                         print('분류 대상 이미지 주소 :', file_path)
-                        img = tf.keras.preprocessing.image.load_img(file_path, target_size=(299, 299))  # 이미지 로드 및 크기 맞춤
-                        img_array = tf.keras.preprocessing.image.img_to_array(img)  # 이미지를 배열로 변환
-                        img_array = np.expand_dims(img_array, axis=0)  # 배치 차원 추가
-                        img_array /= 255.0  # 0-1로 스케일링
-
+                        
+                        image = cv2.imread(os.path.join(file_path))
+                        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+                        
                         # 예측 수행 (TFSMLayer를 함수처럼 호출)
-                        prediction = classification_model(img_array)  # .predict() 대신 함수 호출 방식 사용
-
+                        prediction = predict(cls_model, image, cls_config)
+                        
                         # 예측 결과를 사용해 클래스 결정
-                        predicted_class = np.argmax(prediction['dense_1'].numpy(), axis=1)
+                        predicted_class = prediction
                         
                         print(predicted_class, '로 예측')
                         # True/False 폴더로 저장 (분류에 따라)
-                        if predicted_class == 1:  # 불량이면 'False' 폴더로
+                        if predicted_class == 0:  # 불량이면 'False' 폴더로
                             output_dir = save_dir / "False" / f"sfd001_{formatted_time}.jpg"
                         else:  # 양품이면 'True' 폴더로
                             output_dir = save_dir / "True" / f"sfd001_{formatted_time}.jpg"
@@ -317,7 +326,7 @@ def run(
                         save_one_box(xyxy, imc, gain=1.2, pad=100, file=output_dir, BGR=True)
 
                         ### 모델 분류 결과 출력 ###
-                        LOGGER.info(f"Image classified as {'False' if predicted_class == 1 else 'True'}")
+                        LOGGER.info(f"Image classified as {'False' if predicted_class == 0 else 'True'}")
                         ############################
                         # 여기서 서버 통신 로직 작성
                         
