@@ -64,7 +64,6 @@ export const BarChart = ({ data }: any) => {
         tickValues: data.length,
         tickSize: 0,
         tickPadding: 5,
-        tickRotation: -30,
       }}
       axisLeft={{
         tickValues: 6,

@@ -21,6 +21,16 @@
   margin: 1rem;
   font-size: 2rem;
   text-align: center;
+  background-color: white;
+}
+
+.mediaContainerNone {
+  color: #999999;
+  font-size: 1rem;
+  border: dashed 2px #999999;
+  border-radius: 1rem;
+  padding: 1rem;
+  background-color: white;
 }
 
 .input {
@@ -143,7 +153,18 @@
   }
 }
 
-/* border 애니메이션 */
+/* 초마다 깜빡이기 */
+.blinkSeconds {
+  animation: blinkSeconds 1s step-end infinite;
+}
+
+@keyframes blinkSeconds {
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Line Chart border 애니메이션 */
 .borderLine {
   animation: borderLine 3s infinite ease-in-out;
   border: 4px solid;
@@ -151,22 +172,23 @@
 
 @keyframes borderLine {
   0% {
-    border-color: #ffffff;
+    border-color: #10982b;
   }
   25% {
     border-color: #ffffff;
   }
   50% {
-    border-color: #10982b;
+    border-color: #ffffff;
   }
   75% {
     border-color: #ffffff;
   }
   100% {
-    border-color: #ffffff;
+    border-color: #10982b;
   }
 }
 
+/* Bar Chart border 애니메이션 */
 .borderBar {
   animation: borderBar 3s infinite ease-in-out;
   border: 4px solid;
@@ -177,13 +199,61 @@
     border-color: #ffffff;
   }
   25% {
-    border-color: #ffffff;
+    border-color: #b84f4f;
   }
   50% {
-    border-color: #b84f4f;
+    border-color: #ffffff;
   }
   75% {
     border-color: #ffffff;
+  }
+  100% {
+    border-color: #ffffff;
+  }
+}
+
+/* Table border 애니메이션 */
+.borderTable {
+  animation: borderTable 3s infinite ease-in-out;
+  border: 4px solid;
+}
+
+@keyframes borderTable {
+  0% {
+    border-color: #ffffff;
+  }
+  25% {
+    border-color: #ffffff;
+  }
+  50% {
+    border-color: #148ee6;
+  }
+  75% {
+    border-color: #ffffff;
+  }
+  100% {
+    border-color: #ffffff;
+  }
+}
+
+/* Img border 애니메이션 */
+.borderImg {
+  animation: borderImg 3s infinite ease-in-out;
+  border: 5px solid;
+}
+
+@keyframes borderImg {
+  0% {
+    border-color: #ffffff;
+  }
+  25% {
+    border-color: #ffffff;
+  }
+  50% {
+    border-color: #ffffff;
+  }
+  75% {
+    border-color: #333333;
   }
   100% {
     border-color: #ffffff;
