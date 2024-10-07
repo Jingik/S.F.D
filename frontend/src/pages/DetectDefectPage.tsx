@@ -163,6 +163,7 @@ export const DetectDefectPage = () => {
             date: todayDate,
           });
         } catch (e) {
+          console.log(e + '로 인해 데이터를 대체합니다');
           response = {
             data: [
               {
@@ -345,9 +346,17 @@ export const DetectDefectPage = () => {
           {/* 불량사진 컴포넌트 */}
           <div className={styles.mediaContainer}>
             {defectImg.imgSrc === '' ? (
-              '탐지된 불량이 없습니다!'
+              <div
+                className={`${styles.mediaContainer} p-4 rounded-lg border-dashed border-2 border-[#999999]`}
+              >
+                탐지된 불량이 없습니다!
+              </div>
             ) : (
-              <img src={defectImg.imgSrc} alt="defect" />
+              <img
+                src={defectImg.imgSrc}
+                alt="defectImg"
+                className="rounded-lg"
+              />
             )}
           </div>
 
@@ -361,7 +370,7 @@ export const DetectDefectPage = () => {
               <li>
                 {defectImg.imgSrc === ''
                   ? '탐지된 불량이 없습니다!'
-                  : '탐지 시간'}
+                  : defectImg.time}
               </li>
             </ul>
             <ul className={styles.tableRow}>
@@ -372,7 +381,7 @@ export const DetectDefectPage = () => {
               <li>
                 {defectImg.imgSrc === ''
                   ? '탐지된 불량이 없습니다!'
-                  : '불량 종류'}
+                  : defectImg.type}
               </li>
             </ul>
           </div>

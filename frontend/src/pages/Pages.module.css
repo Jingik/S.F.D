@@ -21,8 +21,6 @@
   margin: 1rem;
   font-size: 2rem;
   text-align: center;
-  /* 도입되면 삭제 */
-  border: dashed #999999 2px;
 }
 
 .input {

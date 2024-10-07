@@ -56,6 +56,7 @@ export const HistoryPage = () => {
     try {
       response = await axiosSecurity.get(`/getImg/${data.id}`);
     } catch (e) {
+      console.log(e + '로 인해 데이터를 대체합니다');
       response = {
         data: {
           object_url:
@@ -88,6 +89,7 @@ export const HistoryPage = () => {
         try {
           response = await axiosSecurity.get('/defectAllData');
         } catch (e) {
+          console.log(e + '로 인해 데이터를 대체합니다');
           response = {
             data: [
               {
@@ -360,9 +362,17 @@ export const HistoryPage = () => {
             {/* 사진 영역 */}
             <div className={styles.mediaContainer}>
               {selectedButtonId === -1 ? (
-                '선택된 불량 사진이 없습니다!'
+                <div
+                  className={`${styles.mediaContainer} p-4 rounded-lg border-dashed border-2 border-[#999999]`}
+                >
+                  선택된 불량 사진이 없습니다!
+                </div>
               ) : (
-                <img src={defectImg.imgSrc} />
+                <img
+                  src={defectImg.imgSrc}
+                  alt="defectImg"
+                  className="rounded-lg"
+                />
               )}
             </div>
 
