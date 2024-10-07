@@ -104,13 +104,17 @@ export const DetectDefectPage = () => {
 
   // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
   useEffect(() => {
-    const day = new Date();
-    const year = day.getFullYear().toString().substring(2);
-    const month = (day.getMonth() + 1).toString().padStart(2, '0');
-    const date = day.getDate().toString().padStart(2, '0');
-    const hour = day.getHours().toString().padStart(2, '0');
-    const minute = day.getMinutes().toString().padStart(2, '0');
-    const seconds = day.getSeconds().toString().padStart(2, '0');
+    const today = new Date();
+    const offset = today.getTimezoneOffset() * 60000;
+    const dateOffset = new Date(today.getTime() - offset);
+    const day = dateOffset.toISOString();
+
+    const year = day.substring(2, 4);
+    const month = day.substring(5, 7);
+    const date = day.substring(8, 10);
+    const hour = day.substring(11, 13);
+    const minute = day.substring(14, 16);
+    const seconds = day.substring(17, 19);
 
     setStartDate(`${year}-${month}-${date}`);
     setStartTime(`${hour}:${minute}:${seconds}`);
@@ -159,8 +163,8 @@ export const DetectDefectPage = () => {
                 id: 8,
                 object_detection_id: 26,
                 analysis_details: 'deformation',
-                timestamp: '2024-10-02 08:01:32',
-                confidence: 0.83593913269,
+                timestamp: '2024-10-02 08:01:18',
+                confidence: 0.835938975913269,
               },
               {
                 id: 9,
@@ -237,6 +241,10 @@ export const DetectDefectPage = () => {
 
   // tableData에 있는 시간들 모조리 x축으로 추가 및 개수 세서 반영하기
   useEffect(() => {
+    if (tableData.length === 0 || tableData[0].type === '') {
+      return;
+    }
+
     const timeCountsObj: { [key: string]: number } = {};
 
     tableData.forEach((data: any) => {
@@ -254,12 +262,33 @@ export const DetectDefectPage = () => {
 
   // timeCounts가 업데이트될 때마다 로그 찍기 및 lineData 업데이트
   useEffect(() => {
+    if (Object.keys(timeCounts).length === 0) {
+      setLineData([
+        {
+          id: 'count',
+          color: '#ffffff',
+          data: [{ x: '0', y: 0 }],
+        },
+      ]);
+      return;
+    }
+
     console.log('Updated timeCounts: ', timeCounts);
 
     const timeDataArray = Object.keys(timeCounts).map((hour) => ({
       x: hour,
       y: timeCounts[hour],
     }));
+
+    timeDataArray.sort((a: any, b: any) => {
+      if (a.x < b.x) {
+        return -1;
+      } else if (a.x > b.x) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
 
     console.log('Time Data Array: ', timeDataArray);
 

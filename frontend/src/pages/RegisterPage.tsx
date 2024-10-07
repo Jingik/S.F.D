@@ -84,7 +84,7 @@ export const RegisterPage = () => {
     setPhoneNumber(trimCheckPhoneNumber);
     setPhoneNumberMessage(() =>
       validatePhoneNumber(trimCheckPhoneNumber)
-        ? ''
+        ? '올바른 전화번호 형식입니다.'
         : '"-"를 제외하고 숫자만 입력해주세요!',
     );
   }
@@ -99,7 +99,7 @@ export const RegisterPage = () => {
         name !== '' &&
         nickname !== '' &&
         phoneNumber !== '' &&
-        phoneNumberMessage === '' &&
+        phoneNumberMessage === '올바른 전화번호 형식입니다.' &&
         pw !== '' &&
         pwMessage === '적합한 비밀번호입니다.' &&
         checkPw !== '' &&
@@ -111,8 +111,6 @@ export const RegisterPage = () => {
         setIsDisable(true);
       }
     }
-
-    console.log(isDisable);
 
     checkDisable();
   }, [
@@ -238,7 +236,13 @@ export const RegisterPage = () => {
               value={phoneNumber}
               placeholder="01012345678"
             />
-            <p className="flex self-end text-xs text-[#E32626] p-1">
+            <p
+              className={
+                phoneNumberMessage === '올바른 전화번호 형식입니다.'
+                  ? 'flex self-end text-xs text-[#47C93C] p-1'
+                  : 'flex self-end text-xs text-[#E32626] p-1'
+              }
+            >
               {phoneNumberMessage}
             </p>
           </div>

@@ -40,7 +40,6 @@ export const HistoryPage = () => {
     fracture: 0,
     deformation: 0,
   });
-  const [lineCounts, setLineCounts] = useState();
   const [defectImg, setDefectImg] = useState({
     imgSrc: '',
     date: '',
