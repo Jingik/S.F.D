@@ -1,4 +1,4 @@
-package com.ssafy.backend.domain.defectanalysis.repository;
+package com.ssafy.backend.domain.defectanalysis.model.repository;
 
 import com.ssafy.backend.domain.defectanalysis.entity.DefectAnalysis;
 import org.springframework.data.jpa.repository.JpaRepository;

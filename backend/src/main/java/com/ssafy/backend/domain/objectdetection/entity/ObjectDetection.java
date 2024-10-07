@@ -8,27 +8,25 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "object_detection")
 public class ObjectDetection {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id;  // 기본 키
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "scanners_id", nullable = false)
-    private Scanners scanners;
+    private Scanners scanners;  // 스캐너와 연관 관계
 
     @Column(name = "object_url")
-    private String objectUrl;
+    private String objectUrl;  // 객체가 저장된 URL
 
     @Column(name = "completed_at")
-    private LocalDateTime completedAt;
+    private LocalDateTime completedAt;  // 작업 완료 시간
 
     @Column(name = "detection_type")
-    private Integer detectionType;  // 1: Normal, 0: Defective
+    private Integer detectionType;  // 탐지 유형 (0: 정상, 1: 불량)
 }
