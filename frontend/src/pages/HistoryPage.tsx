@@ -187,6 +187,7 @@ export const HistoryPage = () => {
           }),
         );
 
+        // 막대그래프에서의 불량 종류의 개수 세기
         const newbarCounts = {
           scratches: 0,
           rusting: 0,
@@ -194,7 +195,6 @@ export const HistoryPage = () => {
           deformation: 0,
         };
 
-        // 막대그래프에서의 불량 종류의 개수 세기
         newTableData.forEach((data: any) => {
           newbarCounts[data.type as keyof typeof newbarCounts]++;
         });

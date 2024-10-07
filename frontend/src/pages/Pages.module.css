@@ -215,6 +215,10 @@
   width: 100%;
 }
 
+.tableSet > tbody {
+  overflow-y: auto;
+}
+
 .tableSet > thead > tr,
 .tableSet > tbody > tr {
   display: flex;
