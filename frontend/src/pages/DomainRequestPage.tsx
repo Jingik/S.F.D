@@ -72,6 +72,9 @@ export const DomainRequestPage = () => {
               id="abnormalPicture"
               className={styles.input}
               onChange={handleAbnormalPicture}
+              accept="image/jpeg, image/png, image/jpg"
+              multiple
+              required
             />
           </div>
         </div>
