@@ -9,105 +9,72 @@ import clock from '@/assets/images/clock.png';
 import earth from '@/assets/images/earth.png';
 import bulb from '@/assets/images/craked_bulb.png';
 
-// 임시 데이터
-const time = 16;
-
-const data_line = [
-  {
-    id: 'count',
-    color: '#ffffff',
-    data: [
-      {
-        x: `${time}`,
-        y: 1,
-      },
-      {
-        x: `${time + 1}`,
-        y: 1,
-      },
-      {
-        x: `${time + 2}`,
-        y: 2,
-      },
-      {
-        x: `${time + 3}`,
-        y: 2,
-      },
-      {
-        x: `${time + 4}`,
-        y: 0,
-      },
-    ],
-  },
-];
-
-const data_bar = [
-  {
-    type: 'scratches',
-    count: 23,
-  },
-  {
-    type: 'rusting',
-    count: 14,
-  },
-  {
-    type: 'fracture',
-    count: 0,
-  },
-  {
-    type: 'deformation',
-    count: 7,
-  },
-];
-
 export const DetectDefectPage = () => {
-  const [defectImg, setDefectImg] = useState(null);
+  const [lineData, setLineData] = useState([
+    {
+      id: 'count',
+      color: '#ffffff',
+      data: [
+        {
+          x: '0',
+          y: 0,
+        },
+      ],
+    },
+  ]);
+  const [barData, setBarData] = useState([{}]);
+  const [tableData, setTableData] = useState([
+    {
+      id: 0,
+      type: '',
+      date: '',
+      time: '',
+      confidence: 0,
+    },
+  ]);
+  const [timeCounts, setTimeCounts] = useState<{ [key: string]: number }>({});
+  const [defectImg, setDefectImg] = useState({
+    imgSrc: '',
+    date: '',
+    time: '',
+    type: '',
+  });
   const [startDate, setStartDate] = useState('');
   const [todayDate, setTodayDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [currentTime, setCurrentTime] = useState('');
-  const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
-  const [tableData, setTableData] = useState([{}]);
+  const [selectedButtonId, setSelectedButtonId] = useState(-1);
 
-  // 데이터 요청
-  async function requestData() {
-    const response = await axiosSecurity.get('/defectData', {
-      date: todayDate,
-    });
+  // 표 버튼 클릭했을 때
+  async function handleClick(data: any) {
+    setSelectedButtonId(data.id);
+
+    let response: any;
+
+    try {
+      response = await axiosSecurity.get(`/getImg/${data.id}`);
+    } catch (e) {
+      response = {
+        data: {
+          object_url:
+            'https://sfdssafy.s3.amazonaws.com/images/sfd001_20241004111259795.jpg',
+          completed_at: '2024-10-04 11:13:01',
+        },
+      };
+    }
 
     console.log(response);
 
-    response.data.forEach((data: any) => {
-      const setObject = {
-        id: data.object_detection_id,
-        type: data.analysis_details,
-        date: data.timestamp.substring(0, 10),
-        time: data.timestamp.substring(11, 18),
-        confidence: data.confidence,
-      };
-
-      setTableData([setObject, ...tableData]);
+    setDefectImg({
+      imgSrc: response.data.object_url,
+      date: data.date,
+      time: data.time,
+      type: data.type,
     });
-
-    console.log(tableData);
   }
 
+  // SSE 연결
   useEffect(() => {
-    // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
-    const day = new Date();
-    const year = day.getFullYear().toString().substring(2);
-    const month = (day.getMonth() + 1).toString().padStart(2, '0');
-    const date = day.getDate().toString().padStart(2, '0');
-    const hour = day.getHours().toString().padStart(2, '0');
-    const minute = day.getMinutes().toString().padStart(2, '0');
-    const seconds = day.getSeconds().toString().padStart(2, '0');
-
-    setStartDate(`${year}-${month}-${date}`);
-    setStartTime(`${hour}:${minute}:${seconds}`);
-
-    // 페이지 진입 시 데이터 요청 및 SSE 연결
-    requestData();
-
     const sseEvents = new EventSource(`${SFD_URL}/createEventStream`, {
       withCredentials: true,
     });
@@ -124,15 +91,31 @@ export const DetectDefectPage = () => {
     sseEvents.onmessage = function (stream) {
       const parsedData = JSON.parse(stream.data);
       console.log(parsedData);
+      // 받은 데이터로 지금 시간대에 count 하나 추가
+      // 표 버튼 최신으로 하나 추가, 그 버튼 선택하기 > selectedButtonId = 새로 추가된 데이터
+      // 불량 종류 count 하나 추가
     };
 
+    // SSE 연결 해제
     return () => {
       sseEvents.close();
     };
   }, []);
 
-  // 실시간으로 현재 날짜와 시간 업데이트
+  // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
   useEffect(() => {
+    const day = new Date();
+    const year = day.getFullYear().toString().substring(2);
+    const month = (day.getMonth() + 1).toString().padStart(2, '0');
+    const date = day.getDate().toString().padStart(2, '0');
+    const hour = day.getHours().toString().padStart(2, '0');
+    const minute = day.getMinutes().toString().padStart(2, '0');
+    const seconds = day.getSeconds().toString().padStart(2, '0');
+
+    setStartDate(`${year}-${month}-${date}`);
+    setStartTime(`${hour}:${minute}:${seconds}`);
+
+    // 실시간으로 현재 날짜와 시간 업데이트
     let animationFrameId: any;
 
     const updateCurrentTime = () => {
@@ -158,6 +141,137 @@ export const DetectDefectPage = () => {
     return () => cancelAnimationFrame(animationFrameId);
   }, []);
 
+  // 데이터 요청 및 가공
+  useEffect(() => {
+    async function fetchData() {
+      // 데이터 요청
+      async function requestData() {
+        let response: any;
+
+        try {
+          response = await axiosSecurity.get('/defectData', {
+            date: todayDate,
+          });
+        } catch (e) {
+          response = {
+            data: [
+              {
+                id: 8,
+                object_detection_id: 26,
+                analysis_details: 'deformation',
+                timestamp: '2024-10-02 08:01:32',
+                confidence: 0.83593913269,
+              },
+              {
+                id: 9,
+                object_detection_id: 27,
+                analysis_details: 'deformation',
+                timestamp: '2024-10-02 16:01:32',
+                confidence: 0.845427393913269,
+              },
+              {
+                id: 10,
+                object_detection_id: 28,
+                analysis_details: 'deformation',
+                timestamp: '2024-10-02 16:01:33',
+                confidence: 0.9203153252601624,
+              },
+              {
+                id: 11,
+                object_detection_id: 29,
+                analysis_details: 'deformation',
+                timestamp: '2024-10-02 17:04:23',
+                confidence: 0.9203153252601624,
+              },
+              {
+                id: 12,
+                object_detection_id: 30,
+                analysis_details: 'deformation',
+                timestamp: '2024-10-02 18:27:32',
+                confidence: 0.9203153252601624,
+              },
+            ],
+          };
+        }
+
+        console.log(response);
+
+        const newTableData = response.data.map((data: any) => {
+          return {
+            id: data.object_detection_id,
+            type: data.analysis_details,
+            date: data.timestamp.substring(0, 10),
+            time: data.timestamp.substring(11, 19),
+            confidence: data.confidence,
+          };
+        });
+
+        setTableData(newTableData.reverse());
+      }
+
+      // 페이지 진입 시 데이터 요청
+      await requestData();
+
+      setBarData(() => [
+        {
+          type: 'scratches',
+          count: 23,
+        },
+        {
+          type: 'rusting',
+          count: 14,
+        },
+        {
+          type: 'fracture',
+          count: 0,
+        },
+        {
+          type: 'deformation',
+          count: 7,
+        },
+      ]);
+    }
+
+    fetchData();
+  }, [startTime]);
+
+  // tableData에 있는 시간들 모조리 x축으로 추가 및 개수 세서 반영하기
+  useEffect(() => {
+    const timeCountsObj: { [key: string]: number } = {};
+
+    tableData.forEach((data: any) => {
+      const hour = data.time.substring(0, 2);
+
+      if (timeCountsObj[hour]) {
+        timeCountsObj[hour]++;
+      } else {
+        timeCountsObj[hour] = 1;
+      }
+    });
+
+    setTimeCounts(timeCountsObj);
+  }, [tableData]);
+
+  // timeCounts가 업데이트될 때마다 로그 찍기 및 lineData 업데이트
+  useEffect(() => {
+    console.log('Updated timeCounts: ', timeCounts);
+
+    const timeDataArray = Object.keys(timeCounts).map((hour) => ({
+      x: hour,
+      y: timeCounts[hour],
+    }));
+
+    console.log('Time Data Array: ', timeDataArray);
+
+    setLineData([
+      {
+        id: 'count',
+        color: '#ffffff',
+        data: timeDataArray,
+      },
+    ]);
+  }, [timeCounts]);
+
   return (
     <div className="flex flex-row w-full h-full">
       {/* 왼쪽줄 */}
@@ -165,7 +279,6 @@ export const DetectDefectPage = () => {
         {/* 불량 사진 띄우기 */}
         <div className={`${styles.boxLayout}`}>
           <p className="m-4 mb-1">
-            {/* 깜빡이도록 커스텀 */}
             <span className={`${styles.twinkle} mr-1 text-[#E32626]`}>●</span>
             <span className={`${styles.blink}`}>실시간 불량 탐지</span>
           </p>
@@ -192,10 +305,10 @@ export const DetectDefectPage = () => {
 
           {/* 불량사진 컴포넌트 */}
           <div className={styles.mediaContainer}>
-            {!defectImg ? (
+            {defectImg.imgSrc === '' ? (
               '탐지된 불량이 없습니다!'
             ) : (
-              <img src="" alt="defect" />
+              <img src={defectImg.imgSrc} alt="defect" />
             )}
           </div>
 
@@ -206,14 +319,22 @@ export const DetectDefectPage = () => {
                 <img src={clock} alt="clock" />
               </li>
               <li>captured at</li>
-              <li>{!defectImg ? '탐지된 불량이 없습니다!' : '탐지 시간'}</li>
+              <li>
+                {defectImg.imgSrc === ''
+                  ? '탐지된 불량이 없습니다!'
+                  : '탐지 시간'}
+              </li>
             </ul>
             <ul className={styles.tableRow}>
               <li>
                 <img src={bulb} alt="bulb" />
               </li>
               <li>type</li>
-              <li>{!defectImg ? '탐지된 불량이 없습니다!' : '불량 종류'}</li>
+              <li>
+                {defectImg.imgSrc === ''
+                  ? '탐지된 불량이 없습니다!'
+                  : '불량 종류'}
+              </li>
             </ul>
           </div>
 
@@ -227,50 +348,61 @@ export const DetectDefectPage = () => {
             </thead>
 
             <tbody>
-              <tr>
-                <td>
-                  <button
-                    className={
-                      selectedButtonIndex === -1
-                        ? ''
-                        : 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
-                    }
-                  >
-                    데이터가
-                  </button>
-                </td>
-                <td>
-                  <button
-                    className={
-                      selectedButtonIndex === -1
-                        ? ''
-                        : 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
-                    }
-                  >
-                    없습니다
-                  </button>
-                </td>
-              </tr>
-              {/* {
-                !Arrays ? (
+              {tableData[0].type === '' ? (
                 <tr>
-                  <button className={isSelected ? 'selected' : ''}>
-                    <td>데이터가</td>
-                    <td>없습니다</td>
-                  </button>
+                  <td>
+                    <button
+                      className={
+                        selectedButtonId === -1
+                          ? ''
+                          : 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                      }
+                    >
+                      데이터가
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className={
+                        selectedButtonId === -1
+                          ? ''
+                          : 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                      }
+                    >
+                      없습니다
+                    </button>
+                  </td>
                 </tr>
-                ) : (Arrays.map((data, index) => (
-                <tr key={index}>
-                  <button
-                    className={selectedButtonIndex === index ? 'selected' : ''}
-                    onClick={() => handleClick(index)}
-                  >
-                    <td>{data.type}</td>
-                    <td>{data.detectedTime}</td>
-                  </button>
-                </tr>
-                  )) 
-                }*/}
+              ) : (
+                tableData.map((data: any, index: number) => (
+                  <tr key={index}>
+                    <td>
+                      <button
+                        onClick={() => handleClick(data)}
+                        className={
+                          selectedButtonId === data.id
+                            ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                            : ''
+                        }
+                      >
+                        {data.type}
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => handleClick(data)}
+                        className={
+                          selectedButtonId === data.id
+                            ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                            : ''
+                        }
+                      >
+                        {data.time}
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -282,7 +414,7 @@ export const DetectDefectPage = () => {
           <p className={`m-4 ${styles.blink}`}>■ 시간 당 불량 개수 통계</p>
           {/* 통계 그래프 영역 */}
           <div className={`${styles.lineChart} ${styles.borderLine}`}>
-            <LineChart data={data_line} />
+            <LineChart data={lineData} />
           </div>
 
           <div className="table m-2">
@@ -304,7 +436,7 @@ export const DetectDefectPage = () => {
           {/* 통계 그래프 영역 */}
           <p className={`m-4 ${styles.blink}`}>▲ 불량 종류 통계</p>
           <div className={`${styles.barChart} ${styles.borderBar}`}>
-            <BarChart data={data_bar} />
+            <BarChart data={barData} />
           </div>
 
           {/* 텍스트 영역 */}
