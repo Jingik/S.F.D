@@ -22,14 +22,19 @@ export const HistoryPage = () => {
     {
       id: 'count',
       color: '#ffffff',
-      data: [{}],
+      data: [
+        {
+          x: '',
+          y: 0,
+        },
+      ],
     },
   ]);
   const [barData, setBarData] = useState([{}]);
   const [tableData, setTableData] = useState<TableData[]>([]);
-  const [selectedButtonIndex, setSelectedButtonIndex] = useState(0);
+  const [selectedButtonId, setSelectedButtonId] = useState(-1);
   const [date, setDate] = useState(new Date());
-  const [counts, setCounts] = useState({
+  const [barCounts, setBarCounts] = useState({
     scratches: 0,
     rusting: 0,
     fracture: 0,
@@ -44,7 +49,7 @@ export const HistoryPage = () => {
 
   // 표 버튼 클릭했을 때
   async function handleClick(data: any) {
-    setSelectedButtonIndex(data.id);
+    setSelectedButtonId(data.id);
 
     let response: any;
 
@@ -70,25 +75,16 @@ export const HistoryPage = () => {
     });
   }
 
-  // 불량 종류 개수 세기
-  function countType(type: string) {
-    setCounts((prevCounts) => ({
-      ...prevCounts,
-      [type]: prevCounts[type as keyof typeof counts] + 1,
-    }));
-  }
-
   useEffect(() => {
-    const dateData = Number.parseInt(date.toISOString().substring(8, 10));
+    const offset = date.getTimezoneOffset() * 60000;
+    const dateOffset = new Date(date.getTime() - offset);
+    const dateData = Number.parseInt(dateOffset.toISOString().substring(8, 10));
 
     async function fetchData() {
       // 데이터 요청
       async function requestData() {
-        console.log(date);
-
         let response: any;
 
-        // 선택된 날짜로 요청
         try {
           response = await axiosSecurity.get('/defectAllData');
         } catch (e) {
@@ -98,21 +94,29 @@ export const HistoryPage = () => {
                 id: 9,
                 object_detection_id: 27,
                 analysis_details: 'deformation',
-                timestamp: '2024-10-02 16:01:32',
+                timestamp: '2024-10-03 16:01:32',
                 confidence: 0.845427393913269,
               },
               {
                 id: 10,
                 object_detection_id: 28,
                 analysis_details: 'deformation',
-                timestamp: '2024-10-02 16:01:33',
+                timestamp: '2024-10-03 16:01:33',
                 confidence: 0.9203153252601624,
+              },
+              {
+                id: 11,
+                object_detection_id: 29,
+                analysis_details: 'deformation',
+                timestamp: '2024-10-07 22:01:33',
+                confidence: 0.9203154253242624,
               },
             ],
           };
         }
 
-        console.log(response);
+        // // 응답이 잘 오는지 보기
+        // console.log(response);
 
         const newTableData = response.data.map((data: any) => {
           return {
@@ -124,53 +128,80 @@ export const HistoryPage = () => {
           };
         });
 
-        setTableData(newTableData);
+        setLineData(() => {
+          return [
+            {
+              id: 'count',
+              color: '#ffffff',
+              data: [
+                {
+                  x: `${dateData - 4}`,
+                  y: newTableData.filter(
+                    (data: any) =>
+                      data.date.substring(8, 10) ===
+                      String(dateData - 4).padStart(2, '0'),
+                  ).length,
+                },
+                {
+                  x: `${dateData - 3}`,
+                  y: newTableData.filter(
+                    (data: any) =>
+                      data.date.substring(8, 10) ===
+                      String(dateData - 3).padStart(2, '0'),
+                  ).length,
+                },
+                {
+                  x: `${dateData - 2}`,
+                  y: newTableData.filter(
+                    (data: any) =>
+                      data.date.substring(8, 10) ===
+                      String(dateData - 2).padStart(2, '0'),
+                  ).length,
+                },
+                {
+                  x: `${dateData - 1}`,
+                  y: newTableData.filter(
+                    (data: any) =>
+                      data.date.substring(8, 10) ===
+                      String(dateData - 1).padStart(2, '0'),
+                  ).length,
+                },
+                {
+                  x: `${dateData}`,
+                  y: newTableData.filter(
+                    (data: any) =>
+                      data.date.substring(8, 10) ===
+                      String(dateData).padStart(2, '0'),
+                  ).length,
+                },
+              ],
+            },
+          ];
+        });
 
-        const newCounts = {
+        setTableData(
+          newTableData.filter((data: any) => {
+            return (
+              data.date.substring(8, 10) === String(dateData).padStart(2, '0')
+            );
+          }),
+        );
+
+        const newbarCounts = {
           scratches: 0,
           rusting: 0,
           fracture: 0,
           deformation: 0,
         };
 
+        // 막대그래프에서의 불량 종류의 개수 세기
         newTableData.forEach((data: any) => {
-          newCounts[data.type as keyof typeof newCounts]++;
+          newbarCounts[data.type as keyof typeof newbarCounts]++;
         });
-        setCounts(newCounts);
+        setBarCounts(newbarCounts);
       }
 
       await requestData();
-      console.log(tableData);
-
-      // 임시 데이터
-      setLineData(() => [
-        {
-          id: 'count',
-          color: '#ffffff',
-          data: [
-            {
-              x: `${dateData - 4}`,
-              y: 8,
-            },
-            {
-              x: `${dateData - 3}`,
-              y: 25,
-            },
-            {
-              x: `${dateData - 2}`,
-              y: 15,
-            },
-            {
-              x: `${dateData - 1}`,
-              y: 10,
-            },
-            {
-              x: `${dateData}`,
-              y: 19,
-            },
-          ],
-        },
-      ]);
     }
 
     fetchData();
@@ -179,12 +210,12 @@ export const HistoryPage = () => {
   useEffect(() => {
     // 상태 변경 후 barData를 동기화
     setBarData([
-      { type: 'scratches', count: counts.scratches },
-      { type: 'rusting', count: counts.rusting },
-      { type: 'fracture', count: counts.fracture },
-      { type: 'deformation', count: counts.deformation },
+      { type: 'scratches', count: barCounts.scratches },
+      { type: 'rusting', count: barCounts.rusting },
+      { type: 'fracture', count: barCounts.fracture },
+      { type: 'deformation', count: barCounts.deformation },
     ]);
-  }, [counts]);
+  }, [barCounts]);
 
   return (
     <div className="flex flex-row w-full h-full">
@@ -270,9 +301,9 @@ export const HistoryPage = () => {
                     <td>
                       <button
                         className={
-                          selectedButtonIndex === -1
-                            ? ''
-                            : 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                          selectedButtonId === -1
+                            ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                            : ''
                         }
                       >
                         데이터가
@@ -281,9 +312,9 @@ export const HistoryPage = () => {
                     <td>
                       <button
                         className={
-                          selectedButtonIndex === -1
-                            ? ''
-                            : 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                          selectedButtonId === -1
+                            ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                            : ''
                         }
                       >
                         없습니다
@@ -297,7 +328,7 @@ export const HistoryPage = () => {
                         <button
                           onClick={() => handleClick(data)}
                           className={
-                            selectedButtonIndex === data.id
+                            selectedButtonId === data.id
                               ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
                               : ''
                           }
@@ -309,7 +340,7 @@ export const HistoryPage = () => {
                         <button
                           onClick={() => handleClick(data)}
                           className={
-                            selectedButtonIndex === data.id
+                            selectedButtonId === data.id
                               ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
                               : ''
                           }
@@ -328,7 +359,7 @@ export const HistoryPage = () => {
           <div className="flex-[1] flex flex-col">
             {/* 사진 영역 */}
             <div className={styles.mediaContainer}>
-              {!selectedButtonIndex ? (
+              {selectedButtonId === -1 ? (
                 '선택된 불량 사진이 없습니다!'
               ) : (
                 <img src={defectImg.imgSrc} />
@@ -343,7 +374,7 @@ export const HistoryPage = () => {
                 </li>
                 <li>captured at</li>
                 <li>
-                  {!selectedButtonIndex
+                  {selectedButtonId === -1
                     ? '선택된 불량 시간이 없습니다!'
                     : `${defectImg.date} | ${defectImg.time}`}
                 </li>
@@ -354,7 +385,7 @@ export const HistoryPage = () => {
                 </li>
                 <li>type</li>
                 <li>
-                  {!selectedButtonIndex
+                  {selectedButtonId === -1
                     ? '선택된 불량 시간이 없습니다!'
                     : defectImg.type}
                 </li>
