@@ -23,6 +23,12 @@ export const DetectDefectPage = () => {
     },
   ]);
   const [barData, setBarData] = useState([{}]);
+  const [barCounts, setBarCounts] = useState({
+    scratches: 0,
+    rusting: 0,
+    fracture: 0,
+    deformation: 0,
+  });
   const [tableData, setTableData] = useState([
     {
       id: 0,
@@ -211,35 +217,29 @@ export const DetectDefectPage = () => {
         });
 
         setTableData(newTableData.reverse());
+
+        // 막대그래프에서의 불량 종류의 개수 세기
+        const newbarCounts = {
+          scratches: 0,
+          rusting: 0,
+          fracture: 0,
+          deformation: 0,
+        };
+
+        newTableData.forEach((data: any) => {
+          newbarCounts[data.type as keyof typeof newbarCounts]++;
+        });
+        setBarCounts(newbarCounts);
       }
 
       // 페이지 진입 시 데이터 요청
       await requestData();
-
-      setBarData(() => [
-        {
-          type: 'scratches',
-          count: 23,
-        },
-        {
-          type: 'rusting',
-          count: 14,
-        },
-        {
-          type: 'fracture',
-          count: 0,
-        },
-        {
-          type: 'deformation',
-          count: 7,
-        },
-      ]);
     }
 
     fetchData();
   }, [startTime]);
 
-  // tableData에 있는 시간들 모조리 x축으로 추가 및 개수 세서 반영하기
+  // tableData에 있는 시간들 모조리 lineChart의 x축에 맞게 count추가
   useEffect(() => {
     if (tableData.length === 0 || tableData[0].type === '') {
       return;
@@ -273,7 +273,7 @@ export const DetectDefectPage = () => {
       return;
     }
 
-    console.log('Updated timeCounts: ', timeCounts);
+    // console.log('Updated timeCounts: ', timeCounts);
 
     const timeDataArray = Object.keys(timeCounts).map((hour) => ({
       x: hour,
@@ -290,7 +290,7 @@ export const DetectDefectPage = () => {
       }
     });
 
-    console.log('Time Data Array: ', timeDataArray);
+    // console.log('Time Data Array: ', timeDataArray);
 
     setLineData([
       {
@@ -300,6 +300,16 @@ export const DetectDefectPage = () => {
       },
     ]);
   }, [timeCounts]);
+
+  useEffect(() => {
+    // 상태 변경 후 barData를 동기화
+    setBarData([
+      { type: 'scratches', count: barCounts.scratches },
+      { type: 'rusting', count: barCounts.rusting },
+      { type: 'fracture', count: barCounts.fracture },
+      { type: 'deformation', count: barCounts.deformation },
+    ]);
+  }, [barCounts]);
 
   return (
     <div className="flex flex-row w-full h-full">
