@@ -21,8 +21,6 @@ export const UserInfoPage = () => {
   const [phoneNumberMessage, setPhoneNumberMessage] = useState('');
   const [pw, setPw] = useState('');
   const [pwMessage, setPwMessage] = useState('');
-  const [checkPw, setCheckPw] = useState('');
-  const [checkPwMessage, setCheckPwMessage] = useState('');
   const [isDisable, setIsDisable] = useState(true);
   const [buttonColor, setButtonColor] = useState('#148EE6');
 
@@ -65,15 +63,6 @@ export const UserInfoPage = () => {
     );
   }
 
-  // 비밀번호 확인 입력 체크
-  function onChangeCheckPw(e: any) {
-    const trimCheckPW = removeWhitespace(e.target.value);
-    setCheckPw(trimCheckPW);
-    setCheckPwMessage(() =>
-      pw === trimCheckPW ? '' : '비밀번호가 일치하지 않습니다...',
-    );
-  }
-
   // 전화번호 입력 체크
   function onChangePhoneNumer(e: any) {
     const trimCheckPhoneNumber = removeWhitespace(e.target.value);
@@ -92,15 +81,12 @@ export const UserInfoPage = () => {
       if (
         emailMessage === '사용 가능한 이메일입니다.' &&
         pwMessage === '' &&
-        checkPwMessage === '' &&
         email !== '' &&
         name !== '' &&
         nickname !== '' &&
         phoneNumber !== '' &&
         phoneNumberMessage !== '' &&
-        pw !== '' &&
-        checkPw !== '' &&
-        pw === checkPw
+        pw !== ''
       ) {
         setIsDisable(false);
       } else {
@@ -118,8 +104,6 @@ export const UserInfoPage = () => {
     phoneNumberMessage,
     pw,
     pwMessage,
-    checkPw,
-    checkPwMessage,
   ]);
 
   useEffect(() => {
@@ -160,8 +144,10 @@ export const UserInfoPage = () => {
   return (
     <div className={styles.boxLayout}>
       <div className="m-6">
-        <div className="text-3xl font-bold">😃 회원 정보</div>
-        <div className="text-lg">정보를 수정하시려면 내용을 변경해주세요.</div>
+        <div className="text-3xl font-bold mb-2">😃 회원 정보</div>
+        <div className="text-lg ml-12">
+          정보를 수정하려면 내용을 변경하고 비밀번호를 입력해주세요.
+        </div>
       </div>
 
       {/* 회원정보 입력 영역 */}
@@ -256,24 +242,6 @@ export const UserInfoPage = () => {
             />
             <p className="flex self-end text-xs text-[#E32626] p-1">
               {pwMessage}
-            </p>
-          </div>
-
-          {/* 비밀번호 확인 */}
-          <div className="flex flex-col">
-            <p className="flex self-start text-lg p-1">비밀번호 확인</p>
-            <input
-              type="password"
-              name="passwordCheck"
-              autoComplete="current-password"
-              className={styles.input}
-              onChange={onChangeCheckPw}
-              value={checkPw}
-              placeholder="비밀번호를 한 번 더 입력해주세요"
-              disabled
-            />
-            <p className="flex self-end text-xs text-[#E32626] p-1">
-              {checkPwMessage}
             </p>
           </div>
         </div>

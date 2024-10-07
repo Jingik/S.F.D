@@ -31,15 +31,16 @@ export const HistoryPage = () => {
     },
   ]);
   const [barData, setBarData] = useState([{}]);
-  const [tableData, setTableData] = useState<TableData[]>([]);
-  const [selectedButtonId, setSelectedButtonId] = useState(-1);
-  const [date, setDate] = useState(new Date());
   const [barCounts, setBarCounts] = useState({
     scratches: 0,
     rusting: 0,
     fracture: 0,
     deformation: 0,
+    undefined: 0,
   });
+  const [tableData, setTableData] = useState<TableData[]>([]);
+  const [selectedButtonId, setSelectedButtonId] = useState(-1);
+  const [date, setDate] = useState(new Date());
   const [defectImg, setDefectImg] = useState({
     imgSrc: '',
     date: '',
@@ -48,31 +49,21 @@ export const HistoryPage = () => {
   });
 
   // 표 버튼 클릭했을 때
-  async function handleClick(data: any) {
+  function handleClick(data: any) {
     setSelectedButtonId(data.id);
 
-    let response: any;
-
-    try {
-      response = await axiosSecurity.get(`/getImg/${data.id}`);
-    } catch (e) {
-      response = {
-        data: {
-          object_url:
-            'https://sfdssafy.s3.amazonaws.com/images/sfd001_20241004111259795.jpg',
-          completed_at: '2024-10-04 11:13:01',
-        },
-      };
-    }
-
-    console.log(response);
-
     setDefectImg({
-      imgSrc: response.data.object_url,
+      imgSrc: data.imgSrc,
       date: data.date,
       time: data.time,
       type: data.type,
     });
+  }
+
+  // datepicker 클릭하고 날짜 선택 시
+  function handleDatePicker(e: any) {
+    setSelectedButtonId(-1);
+    setDate(e);
   }
 
   useEffect(() => {
@@ -86,47 +77,30 @@ export const HistoryPage = () => {
         let response: any;
 
         try {
-          response = await axiosSecurity.get('/defectAllData');
+          response = await axiosSecurity.get('/records/recent');
         } catch (e) {
-          response = {
-            data: [
-              {
-                id: 9,
-                object_detection_id: 27,
-                analysis_details: 'deformation',
-                timestamp: '2024-10-03 16:01:32',
-                confidence: 0.845427393913269,
-              },
-              {
-                id: 10,
-                object_detection_id: 28,
-                analysis_details: 'deformation',
-                timestamp: '2024-10-03 16:01:33',
-                confidence: 0.9203153252601624,
-              },
-              {
-                id: 11,
-                object_detection_id: 29,
-                analysis_details: 'deformation',
-                timestamp: '2024-10-07 22:01:33',
-                confidence: 0.9203154253242624,
-              },
-            ],
-          };
+          console.error('데이터 요청 오류: ' + e);
         }
 
-        // // 응답이 잘 오는지 보기
+        // 응답이 잘 오는지 보기
         // console.log(response);
 
-        const newTableData = response.data.map((data: any) => {
-          return {
-            id: data.object_detection_id,
-            type: data.analysis_details,
-            date: data.timestamp.substring(0, 10),
-            time: data.timestamp.substring(11, 19),
-            confidence: data.confidence,
-          };
-        });
+        const newTableData = response.data
+          .map((data: any, index: number) => {
+            return {
+              id: index,
+              type: data.defectType,
+              defective: data.defective,
+              date: data.detectionDate.substring(0, 10),
+              time: data.detectionDate.substring(11, 19),
+              confidence: data.confidenceRate,
+              imgSrc: data.objectUrl,
+              scanner: data.scannerSerialNumber,
+            };
+          })
+          .filter((data: any) => {
+            return data.defective;
+          });
 
         setLineData(() => {
           return [
@@ -193,10 +167,27 @@ export const HistoryPage = () => {
           rusting: 0,
           fracture: 0,
           deformation: 0,
+          undefined: 0,
+        };
+
+        const defectTypeMapping = {
+          scratches: '스크래치',
+          rusting: '녹',
+          fracture: '깨짐',
+          deformation: '변형',
+          undefined: '탐색 불가',
         };
 
         newTableData.forEach((data: any) => {
-          newbarCounts[data.type as keyof typeof newbarCounts]++;
+          const englishType = (
+            Object.keys(defectTypeMapping) as (keyof typeof defectTypeMapping)[]
+          ).find((key) => defectTypeMapping[key] === data.type);
+
+          if (englishType) {
+            newbarCounts[englishType]++;
+          } else {
+            newbarCounts.undefined++;
+          }
         });
         setBarCounts(newbarCounts);
       }
@@ -210,10 +201,11 @@ export const HistoryPage = () => {
   useEffect(() => {
     // 상태 변경 후 barData를 동기화
     setBarData([
-      { type: 'scratches', count: barCounts.scratches },
-      { type: 'rusting', count: barCounts.rusting },
-      { type: 'fracture', count: barCounts.fracture },
-      { type: 'deformation', count: barCounts.deformation },
+      { type: '스크래치', count: barCounts.scratches },
+      { type: '녹', count: barCounts.rusting },
+      { type: '깨짐', count: barCounts.fracture },
+      { type: '변형', count: barCounts.deformation },
+      { type: '탐색 불가', count: barCounts.undefined },
     ]);
   }, [barCounts]);
 
@@ -234,7 +226,7 @@ export const HistoryPage = () => {
             <ul className={`${styles.tableRow}`}>
               <li>↑</li>
               <li>vertical</li>
-              <li>불량 개수</li>
+              <li>총 불량 개수</li>
             </ul>
             <ul className={`${styles.tableRow}`}>
               <li>→</li>
@@ -262,7 +254,7 @@ export const HistoryPage = () => {
             <ul className={`${styles.tableRow}`}>
               <li>→</li>
               <li>horizontal</li>
-              <li>탐지 날짜</li>
+              <li>선택한 날짜로부터 4일 전까지의 탐지 날짜</li>
             </ul>
           </div>
         </div>
@@ -283,7 +275,7 @@ export const HistoryPage = () => {
 
             {/* 날짜선택(date picker) 컴포넌트 */}
             <div className="flex justify-center mt-2">
-              <DatePickerCustom setDate={setDate} />
+              <DatePickerCustom setDate={handleDatePicker} />
             </div>
 
             {/* 해당 날짜의 불량 선택 표 컴포넌트 */}
@@ -360,9 +352,17 @@ export const HistoryPage = () => {
             {/* 사진 영역 */}
             <div className={styles.mediaContainer}>
               {selectedButtonId === -1 ? (
-                '선택된 불량 사진이 없습니다!'
+                <div
+                  className={`${styles.mediaContainer} ${styles.mediaContainerNone}`}
+                >
+                  선택된 불량 사진이 없습니다!
+                </div>
               ) : (
-                <img src={defectImg.imgSrc} />
+                <img
+                  src={defectImg.imgSrc}
+                  alt="defectImg"
+                  className="rounded-lg"
+                />
               )}
             </div>
 
