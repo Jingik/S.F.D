@@ -8,4 +8,4 @@ WORKDIR /app
 COPY /build/libs/*.jar backend.jar
 
 # 컨테이너 시작 시 실행할 명령어 설정
-ENTRYPOINT ["java", "-jar", "backend.jar"]
+ENTRYPOINT ["java", "-jar", "-Duser.timezone=Asia/Seoul", "backend.jar"]
