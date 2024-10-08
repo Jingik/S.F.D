@@ -4,11 +4,11 @@ import { LineChart } from '@components/feature/LineChart';
 import { BarChart } from '@components/feature/BarChart';
 import { axiosSecurity } from '@components/common/util';
 import styles from '@/pages/Pages.module.css';
-import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill';
 
 import clock from '@/assets/images/clock.png';
 import earth from '@/assets/images/earth.png';
 import bulb from '@/assets/images/craked_bulb.png';
+import { useLocation } from 'react-router-dom';
 
 export const DetectDefectPage = () => {
   const [lineData, setLineData] = useState([
@@ -51,6 +51,7 @@ export const DetectDefectPage = () => {
   const [todayDate, setTodayDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [currentTime, setCurrentTime] = useState('');
+  const [lengthId, setLengthId] = useState(0);
   const [selectedButtonId, setSelectedButtonId] = useState(0);
 
   // 표 버튼 클릭했을 때
@@ -67,36 +68,73 @@ export const DetectDefectPage = () => {
   }
 
   // SSE 연결
+  const location = useLocation();
   useEffect(() => {
-    const EventSource = EventSourcePolyfill || NativeEventSource;
-    const token = JSON.parse(localStorage.getItem('token')!);
-    const sseEvents = new EventSource(`${SFD_URL}/????`, {
-      headers: {
-        Authorization: `Bearer ${token.accessToken}`,
-      },
+    // BE와 세션 연결
+    const sseEvents = new EventSource(`${SFD_URL}/session/connect`, {
       withCredentials: true,
     });
 
     // 연결 됐을 때
     sseEvents.onopen = function () {
-      console.log('연결되었습니다!');
-    };
-    // 에러일 때
-    sseEvents.onerror = function (error: any) {
-      console.error('연결에 문제가 생겼습니다...' + JSON.stringify(error));
-    };
-    // 메세지 받았을 때
-    sseEvents.onmessage = function (stream: any) {
-      const parsedData = JSON.parse(stream.data);
-      console.log(parsedData);
-      setTableData((prev) => [parsedData, ...prev]);
+      // console.log('SSE 연결되었습니다!');
     };
 
-    // SSE 연결 해제
-    return () => {
-      sseEvents.close();
+    // 에러일 때
+    sseEvents.onerror = function (error: any) {
+      console.error('SSE 연결에 문제가 생겼습니다...' + JSON.stringify(error));
     };
-  }, []);
+
+    // 서버에서 "object-detected" 이벤트를 수신
+    sseEvents.addEventListener('object-detected', function (event: any) {
+      const data = JSON.parse(event.data);
+
+      const newData = {
+        id: lengthId + 1,
+        type: data.defectType,
+        defective: data.defective,
+        date: data.detectionDate.substring(0, 10),
+        time: data.detectionDate.substring(11, 19),
+        confidence: data.confidenceRate,
+        imgSrc: data.objectUrl,
+        scanner: data.scannerSerialNumber,
+      };
+
+      setTableData((prev) => [newData, ...prev]);
+      setLengthId((prev) => prev + 1);
+    });
+
+    // 컴포넌트가 언마운트될 때 SSE 해제 및 세션 종료 요청
+    return () => {
+      // 세션 종료 요청
+      const handleSessionDisconnect = async () => {
+        try {
+          const response = await axiosSecurity.get(
+            '/session/disconnect',
+            {},
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              withCredentials: true,
+            },
+          );
+
+          if (response.status === 200) {
+            // console.log('세션이 성공적으로 종료되었습니다.');
+          } else {
+            console.error('세션 종료에 실패했습니다.', response.status);
+          }
+        } catch (error) {
+          console.error('세션 종료 요청 중 오류가 발생했습니다.', error);
+        }
+      };
+
+      handleSessionDisconnect();
+      sseEvents.close();
+      // console.log('SSE 연결 해제');
+    };
+  }, [location]);
 
   // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
   useEffect(() => {
@@ -156,7 +194,9 @@ export const DetectDefectPage = () => {
           console.error('데이터 요청 오류: ' + e);
         }
 
-        console.log(response.data);
+        // console.log(response.data);
+
+        setLengthId(response.data.length);
 
         const newTableData = response.data
           .map((data: any, index: number) => {
@@ -403,8 +443,8 @@ export const DetectDefectPage = () => {
                     </td>
                   </tr>
                 ) : (
-                  tableData.map((data: any, index: number) => (
-                    <tr key={index}>
+                  tableData.map((data: any) => (
+                    <tr key={data.id}>
                       <td>
                         <button
                           onClick={() => handleClick(data)}

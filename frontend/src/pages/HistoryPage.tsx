@@ -314,8 +314,8 @@ export const HistoryPage = () => {
                     </td>
                   </tr>
                 ) : (
-                  tableData.map((data: any, index: number) => (
-                    <tr key={index}>
+                  tableData.map((data: any) => (
+                    <tr key={data.id}>
                       <td>
                         <button
                           onClick={() => handleClick(data)}
