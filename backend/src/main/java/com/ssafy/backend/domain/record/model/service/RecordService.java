@@ -31,6 +31,20 @@ public class RecordService {
         }).collect(Collectors.toList());
     }
 
+    // 가장 최신의 데이터를 조회하는 메서드
+    public RecordDto getLatestRecord() {
+        // ObjectDetection 테이블에서 가장 최신의 데이터를 가져옴
+        ObjectDetection latestDetection = objectDetectionRepository.findTopByOrderByCompletedAtDesc()
+                .orElseThrow(() -> new RuntimeException("No records found"));
+
+        // 해당 ObjectDetection에 연결된 DefectAnalysis 데이터를 가져옴
+        DefectAnalysis defect = defectAnalysisRepository.findByObjectDetectionId(latestDetection.getId())
+                .stream().findFirst().orElse(null);
+
+        // RecordDto로 변환하여 반환
+        return createRecordDto(latestDetection, defect);
+    }
+
     // DTO 변환 메서드
     private RecordDto createRecordDto(ObjectDetection detection, DefectAnalysis defect) {
         String defectType;
@@ -62,5 +76,4 @@ public class RecordService {
             default: return "UNKNOWN";
         }
     }
-
 }
