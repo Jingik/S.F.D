@@ -90,7 +90,7 @@ export const DetectDefectPage = () => {
       console.log(data);
 
       const newData = {
-        id: lengthId + 1,
+        id: lengthId,
         type: data.defectType,
         defective: data.defective,
         date: data.detectionDate.substring(0, 10),
@@ -101,6 +101,7 @@ export const DetectDefectPage = () => {
       };
 
       setTableData((prev) => [newData, ...prev]);
+      setLengthId((prev) => prev + 1);
     });
 
     // 컴포넌트가 언마운트될 때 SSE 해제 및 세션 종료 요청
@@ -133,11 +134,7 @@ export const DetectDefectPage = () => {
       sseEvents.close();
       console.log('SSE 연결 해제');
     };
-  }, [location]);
-
-  useEffect(() => {
-    setLengthId((prev) => prev + 1);
-  }, [tableData]);
+  }, [location, lengthId]);
 
   // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
   useEffect(() => {
@@ -295,8 +292,6 @@ export const DetectDefectPage = () => {
       return;
     }
 
-    // console.log('Updated timeCounts: ', timeCounts);
-
     const timeDataArray = Object.keys(timeCounts).map((hour) => ({
       x: hour,
       y: timeCounts[hour],
@@ -311,8 +306,6 @@ export const DetectDefectPage = () => {
         return 0;
       }
     });
-
-    // console.log('Time Data Array: ', timeDataArray);
 
     setLineData([
       {
