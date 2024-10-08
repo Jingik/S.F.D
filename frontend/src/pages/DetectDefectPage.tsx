@@ -3,6 +3,7 @@ import { LineChart } from '@components/feature/LineChart';
 import { BarChart } from '@components/feature/BarChart';
 import { axiosSecurity, SFD_URL } from '@components/common/util';
 import styles from '@/pages/Pages.module.css';
+import { useUser } from '@components/common/UserContext';
 
 import clock from '@/assets/images/clock.png';
 import earth from '@/assets/images/earth.png';
@@ -52,10 +53,10 @@ export const DetectDefectPage = () => {
   const [currentTime, setCurrentTime] = useState('');
   const [lengthId, setLengthId] = useState(0);
   const [selectedButtonId, setSelectedButtonId] = useState(0);
+  const { user } = useUser();
 
   // 표 버튼 클릭했을 때
   function handleClick(data: any) {
-    // console.log(data);
     setSelectedButtonId(data.id);
 
     setDefectImg({
@@ -70,9 +71,12 @@ export const DetectDefectPage = () => {
   const location = useLocation();
   useEffect(() => {
     // BE와 세션 연결
-    const sseEvents = new EventSource(`${SFD_URL}/session/connect`, {
-      withCredentials: true,
-    });
+    const sseEvents = new EventSource(
+      `${SFD_URL}/session/connect?userEmail=${user.email}`,
+      {
+        withCredentials: true,
+      },
+    );
 
     // 연결 됐을 때
     sseEvents.onopen = function () {
