@@ -70,12 +70,9 @@ export const DetectDefectPage = () => {
   const location = useLocation();
   useEffect(() => {
     // BE와 세션 연결
-    const sseEvents = new EventSource(
-      `http://j11b103.p.ssafy.io:8080/api/session/connect`,
-      {
-        withCredentials: true,
-      },
-    );
+    const sseEvents = new EventSource(`${SFD_URL}/session/connect`, {
+      withCredentials: true,
+    });
 
     // 연결 됐을 때
     sseEvents.onopen = function () {
