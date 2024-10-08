@@ -5,3 +5,5 @@ declare module '@screens/*';
 declare module '@assets/*';
 
 declare module '*.png';
+
+declare module 'event-source-polyfill';
