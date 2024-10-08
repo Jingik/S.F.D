@@ -18,13 +18,21 @@ public class RecordController {
     private final RecordService recordService;
     private final UserService userService;
 
+    // 최근 7일간 데이터를 가져오는 기존 API
     @GetMapping("/recent")
     public ResponseEntity<List<RecordDto>> getRecentRecords() {
         User currentUser = userService.getMyUserWithAuthorities()
-                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없어연"));
+                .orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
         // User 객체에서 ID를 추출해서 전달
         List<RecordDto> records = recordService.getRecent7DaysRecords(currentUser.getId());
         return ResponseEntity.ok(records);
     }
 
+    // 가장 최신 데이터를 가져오는 새로운 API
+    @GetMapping("/latest")
+    public ResponseEntity<RecordDto> getLatestRecord() {
+        // 최신 데이터를 조회하여 반환
+        RecordDto latestRecord = recordService.getLatestRecord();
+        return ResponseEntity.ok(latestRecord);
+    }
 }
