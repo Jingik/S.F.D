@@ -2,6 +2,8 @@ package com.ssafy.backend.domain.connection.controller;
 
 import com.ssafy.backend.domain.record.dto.RecordDto;
 import com.ssafy.backend.domain.record.model.service.RecordService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +15,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Tag(name = "SSE 연결 API", description = "SSE 연결 및 트리거 처리 관련 API를 제공합니다.")
 @RestController
 @RequestMapping("/session")
 @RequiredArgsConstructor
@@ -21,7 +24,10 @@ public class SessionController {
     private final RecordService recordService; // 최신 데이터 조회를 위한 서비스
     private final List<SseEmitter> emitters = new ArrayList<>(); // 여러 클라이언트의 SSE 연결을 관리
 
-    // 클라이언트가 SSE 연결을 설정하는 엔드포인트
+    @Operation(
+            summary = "SSE 연결 설정",
+            description = "클라이언트가 SSE 연결을 설정하는 엔드포인트입니다. 클라이언트가 이 API를 호출하면 SSE 연결이 설정되고, 서버가 실시간 이벤트를 전송할 수 있습니다."
+    )
     @GetMapping("/connect")
     public SseEmitter connect() {
         // SseEmitter 타임아웃을 10분(600,000ms)으로 설정
@@ -50,7 +56,34 @@ public class SessionController {
         return emitter;
     }
 
-    // 하드웨어 트리거가 발생할 때 호출될 API (GET 요청)
+    @Operation(
+            summary = "SSE 연결 종료",
+            description = "현재 연결된 모든 클라이언트의 SSE 연결을 종료하는 엔드포인트입니다."
+    )
+    @GetMapping("/disconnect")
+    public ResponseEntity<String> disconnectAll() {
+        List<SseEmitter> deadEmitters = new ArrayList<>();
+
+        // 모든 연결을 종료
+        emitters.forEach(emitter -> {
+            try {
+                emitter.complete(); // 각 클라이언트와의 SSE 연결 종료
+                System.out.println("SSE 연결을 종료했습니다.");
+            } catch (Exception e) {
+                emitter.completeWithError(e); // 오류 발생 시 연결 종료
+                System.out.println("SSE 연결 종료 중 오류 발생: " + e.getMessage());
+                deadEmitters.add(emitter); // 오류가 발생한 Emitter는 리스트에서 제거
+            }
+        });
+
+        emitters.clear(); // 리스트에서 모든 Emitter를 제거
+        return ResponseEntity.ok("모든 SSE 연결이 종료되었습니다.");
+    }
+
+    @Operation(
+            summary = "하드웨어 트리거 처리",
+            description = "하드웨어에서 발생한 트리거를 처리하고, 클라이언트에게 최신 데이터를 전송하는 API입니다."
+    )
     @GetMapping("/trigger")
     public ResponseEntity<String> handleTrigger() {
         // 하드웨어에서 트리거가 발생했을 때 최신 데이터를 클라이언트로 전송
