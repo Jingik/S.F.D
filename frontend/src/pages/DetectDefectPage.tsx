@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
-import { SFD_URL } from '@components/common/util';
 import { LineChart } from '@components/feature/LineChart';
 import { BarChart } from '@components/feature/BarChart';
-import { axiosSecurity } from '@components/common/util';
+import { axiosSecurity, SFD_URL } from '@components/common/util';
 import styles from '@/pages/Pages.module.css';
 
 import clock from '@/assets/images/clock.png';
@@ -77,7 +76,7 @@ export const DetectDefectPage = () => {
 
     // 연결 됐을 때
     sseEvents.onopen = function () {
-      // console.log('SSE 연결되었습니다!');
+      console.log('SSE 연결되었습니다!');
     };
 
     // 에러일 때
@@ -88,9 +87,10 @@ export const DetectDefectPage = () => {
     // 서버에서 "object-detected" 이벤트를 수신
     sseEvents.addEventListener('object-detected', function (event: any) {
       const data = JSON.parse(event.data);
+      console.log(data);
 
       const newData = {
-        id: lengthId + 1,
+        id: lengthId,
         type: data.defectType,
         defective: data.defective,
         date: data.detectionDate.substring(0, 10),
@@ -132,9 +132,9 @@ export const DetectDefectPage = () => {
 
       handleSessionDisconnect();
       sseEvents.close();
-      // console.log('SSE 연결 해제');
+      console.log('SSE 연결 해제');
     };
-  }, [location]);
+  }, [location, lengthId]);
 
   // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
   useEffect(() => {
@@ -292,8 +292,6 @@ export const DetectDefectPage = () => {
       return;
     }
 
-    // console.log('Updated timeCounts: ', timeCounts);
-
     const timeDataArray = Object.keys(timeCounts).map((hour) => ({
       x: hour,
       y: timeCounts[hour],
@@ -308,8 +306,6 @@ export const DetectDefectPage = () => {
         return 0;
       }
     });
-
-    // console.log('Time Data Array: ', timeDataArray);
 
     setLineData([
       {
