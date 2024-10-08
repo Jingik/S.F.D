@@ -27,15 +27,15 @@ public class ObjectDetectionController {
         return ResponseEntity.ok(detection);
     }
 
-    @PostMapping
-    public ResponseEntity<ObjectDetection> createDetection(@RequestBody ObjectDetection detection) {
-        ObjectDetection createdDetection = objectDetectionService.saveObjectDetection(detection);
-        return ResponseEntity.ok(createdDetection);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDetection(@PathVariable Long id) {
-        objectDetectionService.deleteObjectDetection(id);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping
+//    public ResponseEntity<ObjectDetection> createDetection(@RequestBody ObjectDetection detection) {
+//        ObjectDetection createdDetection = objectDetectionService.saveObjectDetection(detection);
+//        return ResponseEntity.ok(createdDetection);
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteDetection(@PathVariable Long id) {
+//        objectDetectionService.deleteObjectDetection(id);
+//        return ResponseEntity.ok().build();
+//    }
 }

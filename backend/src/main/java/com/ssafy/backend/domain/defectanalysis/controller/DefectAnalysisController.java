@@ -27,15 +27,15 @@ public class DefectAnalysisController {
         return ResponseEntity.ok(analysis);
     }
 
-    @PostMapping
-    public ResponseEntity<DefectAnalysis> createAnalysis(@RequestBody DefectAnalysis analysis) {
-        DefectAnalysis createdAnalysis = defectAnalysisService.saveDefectAnalysis(analysis);
-        return ResponseEntity.ok(createdAnalysis);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteAnalysis(@PathVariable Long id) {
-        defectAnalysisService.deleteAnalysis(id);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping
+//    public ResponseEntity<DefectAnalysis> createAnalysis(@RequestBody DefectAnalysis analysis) {
+//        DefectAnalysis createdAnalysis = defectAnalysisService.saveDefectAnalysis(analysis);
+//        return ResponseEntity.ok(createdAnalysis);
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> deleteAnalysis(@PathVariable Long id) {
+//        defectAnalysisService.deleteAnalysis(id);
+//        return ResponseEntity.ok().build();
+//    }
 }
