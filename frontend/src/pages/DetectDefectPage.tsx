@@ -28,6 +28,7 @@ export const DetectDefectPage = () => {
     rusting: 0,
     fracture: 0,
     deformation: 0,
+    undefined: 0,
   });
   const [tableData, setTableData] = useState([
     {
@@ -49,30 +50,15 @@ export const DetectDefectPage = () => {
   const [todayDate, setTodayDate] = useState('');
   const [startTime, setStartTime] = useState('');
   const [currentTime, setCurrentTime] = useState('');
-  const [selectedButtonId, setSelectedButtonId] = useState(-1);
+  const [selectedButtonId, setSelectedButtonId] = useState(0);
 
   // 표 버튼 클릭했을 때
-  async function handleClick(data: any) {
+  function handleClick(data: any) {
+    console.log(data);
     setSelectedButtonId(data.id);
 
-    let response: any;
-
-    try {
-      response = await axiosSecurity.get(`/getImg/${data.id}`);
-    } catch (e) {
-      response = {
-        data: {
-          object_url:
-            'https://sfdssafy.s3.amazonaws.com/images/sfd001_20241004111259795.jpg',
-          completed_at: '2024-10-04 11:13:01',
-        },
-      };
-    }
-
-    console.log(response);
-
     setDefectImg({
-      imgSrc: response.data.object_url,
+      imgSrc: data.imgSrc,
       date: data.date,
       time: data.time,
       type: data.type,
@@ -159,62 +145,33 @@ export const DetectDefectPage = () => {
         let response: any;
 
         try {
-          response = await axiosSecurity.get('/defectData', {
-            date: todayDate,
+          response = await axiosSecurity.get('/records/recent', {
+            date: startDate,
           });
         } catch (e) {
-          response = {
-            data: [
-              {
-                id: 8,
-                object_detection_id: 26,
-                analysis_details: 'deformation',
-                timestamp: '2024-10-02 08:01:18',
-                confidence: 0.835938975913269,
-              },
-              {
-                id: 9,
-                object_detection_id: 27,
-                analysis_details: 'deformation',
-                timestamp: '2024-10-02 16:01:32',
-                confidence: 0.845427393913269,
-              },
-              {
-                id: 10,
-                object_detection_id: 28,
-                analysis_details: 'deformation',
-                timestamp: '2024-10-02 16:01:33',
-                confidence: 0.9203153252601624,
-              },
-              {
-                id: 11,
-                object_detection_id: 29,
-                analysis_details: 'deformation',
-                timestamp: '2024-10-02 17:04:23',
-                confidence: 0.9203153252601624,
-              },
-              {
-                id: 12,
-                object_detection_id: 30,
-                analysis_details: 'deformation',
-                timestamp: '2024-10-02 18:27:32',
-                confidence: 0.9203153252601624,
-              },
-            ],
-          };
+          console.error('데이터 요청 오류: ' + e);
         }
 
         console.log(response);
 
-        const newTableData = response.data.map((data: any) => {
-          return {
-            id: data.object_detection_id,
-            type: data.analysis_details,
-            date: data.timestamp.substring(0, 10),
-            time: data.timestamp.substring(11, 19),
-            confidence: data.confidence,
-          };
-        });
+        const newTableData = response.data
+          .map((data: any, index: number) => {
+            return {
+              id: index,
+              type: data.defectType,
+              defective: data.defective,
+              date: data.detectionDate.substring(0, 10),
+              time: data.detectionDate.substring(11, 19),
+              confidence: data.confidenceRate,
+              imgSrc: data.objectUrl,
+              scanner: data.scannerSerialNumber,
+            };
+          })
+          .filter((data: any) => {
+            const isSame = data.date.substring(2, 10) === startDate;
+
+            return isSame && data.defective;
+          });
 
         setTableData(newTableData.reverse());
 
@@ -224,10 +181,27 @@ export const DetectDefectPage = () => {
           rusting: 0,
           fracture: 0,
           deformation: 0,
+          undefined: 0,
+        };
+
+        const defectTypeMapping = {
+          scratches: '스크래치',
+          rusting: '녹',
+          fracture: '깨짐',
+          deformation: '변형',
+          undefined: '탐색 불가',
         };
 
         newTableData.forEach((data: any) => {
-          newbarCounts[data.type as keyof typeof newbarCounts]++;
+          const englishType = (
+            Object.keys(defectTypeMapping) as (keyof typeof defectTypeMapping)[]
+          ).find((key) => defectTypeMapping[key] === data.type);
+
+          if (englishType) {
+            newbarCounts[englishType]++;
+          } else {
+            newbarCounts.undefined++;
+          }
         });
         setBarCounts(newbarCounts);
       }
@@ -235,9 +209,8 @@ export const DetectDefectPage = () => {
       // 페이지 진입 시 데이터 요청
       await requestData();
     }
-
     fetchData();
-  }, [startTime]);
+  }, [startTime, startDate]);
 
   // tableData에 있는 시간들 모조리 lineChart의 x축에 맞게 count추가
   useEffect(() => {
@@ -258,6 +231,8 @@ export const DetectDefectPage = () => {
     });
 
     setTimeCounts(timeCountsObj);
+
+    handleClick(tableData[0]);
   }, [tableData]);
 
   // timeCounts가 업데이트될 때마다 로그 찍기 및 lineData 업데이트
@@ -304,10 +279,11 @@ export const DetectDefectPage = () => {
   useEffect(() => {
     // 상태 변경 후 barData를 동기화
     setBarData([
-      { type: 'scratches', count: barCounts.scratches },
-      { type: 'rusting', count: barCounts.rusting },
-      { type: 'fracture', count: barCounts.fracture },
-      { type: 'deformation', count: barCounts.deformation },
+      { type: '스크래치', count: barCounts.scratches },
+      { type: '녹', count: barCounts.rusting },
+      { type: '깨짐', count: barCounts.fracture },
+      { type: '변형', count: barCounts.deformation },
+      { type: '탐색 불가', count: barCounts.undefined },
     ]);
   }, [barCounts]);
 
@@ -317,9 +293,9 @@ export const DetectDefectPage = () => {
       <div className="flex flex-col mb-4 w-full h-full">
         {/* 불량 사진 띄우기 */}
         <div className={`${styles.boxLayout}`}>
-          <p className="m-4 mb-1">
-            <span className={`${styles.twinkle} mr-1 text-[#E32626]`}>●</span>
-            <span className={`${styles.blink}`}>실시간 불량 탐지</span>
+          <p className={`${styles.twinkle} m-4 mb-1`}>
+            <span className={`mr-1 text-[#E32626]`}>●</span>
+            <span>실시간 불량 탐지</span>
           </p>
           <div className="table">
             <ul className={styles.tableRow}>
@@ -336,18 +312,26 @@ export const DetectDefectPage = () => {
                 <img src={earth} alt="earth" />
               </li>
               <li>current time</li>
-              <li>
+              <li className={styles.blinkSeconds}>
                 {todayDate} | {currentTime}
               </li>
             </ul>
           </div>
 
           {/* 불량사진 컴포넌트 */}
-          <div className={styles.mediaContainer}>
+          <div className={`${styles.mediaContainer}`}>
             {defectImg.imgSrc === '' ? (
-              '탐지된 불량이 없습니다!'
+              <div
+                className={`${styles.mediaContainer} ${styles.mediaContainerNone}`}
+              >
+                탐지된 불량이 없습니다!
+              </div>
             ) : (
-              <img src={defectImg.imgSrc} alt="defect" />
+              <img
+                src={defectImg.imgSrc}
+                alt="defectImg"
+                className={`${styles.borderImg} rounded-2xl`}
+              />
             )}
           </div>
 
@@ -361,7 +345,7 @@ export const DetectDefectPage = () => {
               <li>
                 {defectImg.imgSrc === ''
                   ? '탐지된 불량이 없습니다!'
-                  : '탐지 시간'}
+                  : defectImg.time}
               </li>
             </ul>
             <ul className={styles.tableRow}>
@@ -372,13 +356,13 @@ export const DetectDefectPage = () => {
               <li>
                 {defectImg.imgSrc === ''
                   ? '탐지된 불량이 없습니다!'
-                  : '불량 종류'}
+                  : defectImg.type}
               </li>
             </ul>
           </div>
 
           {/* 해당 시간의 불량 선택 표 컴포넌트 */}
-          <table className={styles.tableSet}>
+          <table className={`${styles.tableSet} ${styles.borderTable}`}>
             <thead>
               <tr className="border-solid border-[#1c93e9] border-b-2">
                 <th>불량 유형</th>
@@ -387,14 +371,14 @@ export const DetectDefectPage = () => {
             </thead>
 
             <tbody>
-              {tableData[0].type === '' ? (
+              {tableData.length === 0 ? (
                 <tr>
                   <td>
                     <button
                       className={
-                        selectedButtonId === -1
-                          ? ''
-                          : 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                        selectedButtonId === 0
+                          ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                          : ''
                       }
                     >
                       데이터가
@@ -403,9 +387,9 @@ export const DetectDefectPage = () => {
                   <td>
                     <button
                       className={
-                        selectedButtonId === -1
-                          ? ''
-                          : 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                        selectedButtonId === 0
+                          ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                          : ''
                       }
                     >
                       없습니다

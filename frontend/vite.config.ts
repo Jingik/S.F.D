@@ -29,7 +29,8 @@ export default defineConfig({
         main: path.resolve(__dirname, 'index.html'),
       },
       output: {
-        assetFileNames: 'assets/[name].[ext]', // 모든 자산 파일을 assets 폴더에 복사
+        // 모든 자산 파일을 파일명에 해시를 붙여서 assets 폴더에 복사
+        assetFileNames: 'assets/[name].[hash].[ext]',
       },
     },
   },

@@ -42,9 +42,9 @@ body {
   background: #ddd;
   border-radius: 5px;
 }
-::-webkit-scrollbar-track {
+/* ::-webkit-scrollbar-track {
   background-color: #fff;
-}
+} */
 
 @layer base {
   /* 전체 */
