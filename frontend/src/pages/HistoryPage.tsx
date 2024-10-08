@@ -173,7 +173,7 @@ export const HistoryPage = () => {
         const defectTypeMapping = {
           scratches: '스크래치',
           rusting: '녹',
-          fracture: '깨짐',
+          fracture: '균열',
           deformation: '변형',
           undefined: '탐색 불가',
         };
@@ -203,7 +203,7 @@ export const HistoryPage = () => {
     setBarData([
       { type: '스크래치', count: barCounts.scratches },
       { type: '녹', count: barCounts.rusting },
-      { type: '깨짐', count: barCounts.fracture },
+      { type: '균열', count: barCounts.fracture },
       { type: '변형', count: barCounts.deformation },
       { type: '탐색 불가', count: barCounts.undefined },
     ]);
@@ -264,7 +264,7 @@ export const HistoryPage = () => {
       <div className={`${styles.boxLayout} flex-[1]`}>
         <div className="flex flex-col w-full h-full">
           {/* 불량 사진 탐색 */}
-          <div className="flex-[1] flex flex-col">
+          <div className="h-[50%] flex flex-col">
             {/* 텍스트 영역 */}
             <div className="flex flex-row justify-between items-end">
               <p className="mt-4 ml-4">● 불량 사진 탐색</p>
@@ -314,8 +314,8 @@ export const HistoryPage = () => {
                     </td>
                   </tr>
                 ) : (
-                  tableData.map((data: any, index: number) => (
-                    <tr key={index}>
+                  tableData.map((data: any) => (
+                    <tr key={data.id}>
                       <td>
                         <button
                           onClick={() => handleClick(data)}
@@ -348,23 +348,21 @@ export const HistoryPage = () => {
           </div>
 
           {/* 불량사진 영역 */}
-          <div className="flex-[1] flex flex-col">
+          <div className="h-[50%] flex flex-col">
             {/* 사진 영역 */}
-            <div className={styles.mediaContainer}>
-              {selectedButtonId === -1 ? (
-                <div
-                  className={`${styles.mediaContainer} ${styles.mediaContainerNone}`}
-                >
-                  선택된 불량 사진이 없습니다!
-                </div>
-              ) : (
-                <img
-                  src={defectImg.imgSrc}
-                  alt="defectImg"
-                  className="rounded-lg"
-                />
-              )}
-            </div>
+            {selectedButtonId === -1 ? (
+              <div
+                className={`${styles.mediaContainer} ${styles.mediaContainerNone}`}
+              >
+                선택된 불량 사진이 없습니다!
+              </div>
+            ) : (
+              <img
+                src={defectImg.imgSrc}
+                alt="defectImg"
+                className={`${styles.imgSetting} ${styles.mediaContainer}`}
+              />
+            )}
 
             {/* 텍스트 영역 */}
             <div className="table mb-4">
