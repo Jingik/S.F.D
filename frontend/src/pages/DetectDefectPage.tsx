@@ -4,6 +4,7 @@ import { LineChart } from '@components/feature/LineChart';
 import { BarChart } from '@components/feature/BarChart';
 import { axiosSecurity } from '@components/common/util';
 import styles from '@/pages/Pages.module.css';
+import { EventSourcePolyfill, NativeEventSource } from 'event-source-polyfill';
 
 import clock from '@/assets/images/clock.png';
 import earth from '@/assets/images/earth.png';
@@ -54,7 +55,7 @@ export const DetectDefectPage = () => {
 
   // 표 버튼 클릭했을 때
   function handleClick(data: any) {
-    console.log(data);
+    // console.log(data);
     setSelectedButtonId(data.id);
 
     setDefectImg({
@@ -67,7 +68,12 @@ export const DetectDefectPage = () => {
 
   // SSE 연결
   useEffect(() => {
-    const sseEvents = new EventSource(`${SFD_URL}/createEventStream`, {
+    const EventSource = EventSourcePolyfill || NativeEventSource;
+    const token = JSON.parse(localStorage.getItem('token')!);
+    const sseEvents = new EventSource(`${SFD_URL}/????`, {
+      headers: {
+        Authorization: `Bearer ${token.accessToken}`,
+      },
       withCredentials: true,
     });
 
@@ -76,16 +82,14 @@ export const DetectDefectPage = () => {
       console.log('연결되었습니다!');
     };
     // 에러일 때
-    sseEvents.onerror = function (error) {
+    sseEvents.onerror = function (error: any) {
       console.error('연결에 문제가 생겼습니다...' + JSON.stringify(error));
     };
     // 메세지 받았을 때
-    sseEvents.onmessage = function (stream) {
+    sseEvents.onmessage = function (stream: any) {
       const parsedData = JSON.parse(stream.data);
       console.log(parsedData);
-      // 받은 데이터로 지금 시간대에 count 하나 추가
-      // 표 버튼 최신으로 하나 추가, 그 버튼 선택하기 > selectedButtonId = 새로 추가된 데이터
-      // 불량 종류 count 하나 추가
+      setTableData((prev) => [parsedData, ...prev]);
     };
 
     // SSE 연결 해제
@@ -152,7 +156,7 @@ export const DetectDefectPage = () => {
           console.error('데이터 요청 오류: ' + e);
         }
 
-        console.log(response);
+        console.log(response.data);
 
         const newTableData = response.data
           .map((data: any, index: number) => {
@@ -187,7 +191,7 @@ export const DetectDefectPage = () => {
         const defectTypeMapping = {
           scratches: '스크래치',
           rusting: '녹',
-          fracture: '깨짐',
+          fracture: '균열',
           deformation: '변형',
           undefined: '탐색 불가',
         };
@@ -281,7 +285,7 @@ export const DetectDefectPage = () => {
     setBarData([
       { type: '스크래치', count: barCounts.scratches },
       { type: '녹', count: barCounts.rusting },
-      { type: '깨짐', count: barCounts.fracture },
+      { type: '균열', count: barCounts.fracture },
       { type: '변형', count: barCounts.deformation },
       { type: '탐색 불가', count: barCounts.undefined },
     ]);
@@ -293,33 +297,33 @@ export const DetectDefectPage = () => {
       <div className="flex flex-col mb-4 w-full h-full">
         {/* 불량 사진 띄우기 */}
         <div className={`${styles.boxLayout}`}>
-          <p className={`${styles.twinkle} m-4 mb-1`}>
-            <span className={`mr-1 text-[#E32626]`}>●</span>
-            <span>실시간 불량 탐지</span>
-          </p>
-          <div className="table">
-            <ul className={styles.tableRow}>
-              <li>
-                <img src={clock} alt="clock" />
-              </li>
-              <li>started at</li>
-              <li>
-                {startDate} | {startTime}
-              </li>
-            </ul>
-            <ul className={styles.tableRow}>
-              <li>
-                <img src={earth} alt="earth" />
-              </li>
-              <li>current time</li>
-              <li className={styles.blinkSeconds}>
-                {todayDate} | {currentTime}
-              </li>
-            </ul>
-          </div>
+          <div className="h-[50%] flex flex-col">
+            <p className={`${styles.twinkle} m-4 mb-1`}>
+              <span className={`mr-1 text-[#E32626]`}>●</span>
+              <span>실시간 불량 탐지</span>
+            </p>
+            <div className="table">
+              <ul className={styles.tableRow}>
+                <li>
+                  <img src={clock} alt="clock" />
+                </li>
+                <li>started at</li>
+                <li>
+                  {startDate} | {startTime}
+                </li>
+              </ul>
+              <ul className={styles.tableRow}>
+                <li>
+                  <img src={earth} alt="earth" />
+                </li>
+                <li>current time</li>
+                <li className={styles.blinkSeconds}>
+                  {todayDate} | {currentTime}
+                </li>
+              </ul>
+            </div>
 
-          {/* 불량사진 컴포넌트 */}
-          <div className={`${styles.mediaContainer}`}>
+            {/* 불량사진 컴포넌트 */}
             {defectImg.imgSrc === '' ? (
               <div
                 className={`${styles.mediaContainer} ${styles.mediaContainerNone}`}
@@ -330,104 +334,107 @@ export const DetectDefectPage = () => {
               <img
                 src={defectImg.imgSrc}
                 alt="defectImg"
-                className={`${styles.borderImg} rounded-2xl`}
+                className={`${styles.mediaContainer} ${styles.borderImg} ${styles.imgSetting}`}
               />
             )}
           </div>
 
-          {/* 사진 설명 텍스트 */}
-          <div className="table">
-            <ul className={styles.tableRow}>
-              <li>
-                <img src={clock} alt="clock" />
-              </li>
-              <li>captured at</li>
-              <li>
-                {defectImg.imgSrc === ''
-                  ? '탐지된 불량이 없습니다!'
-                  : defectImg.time}
-              </li>
-            </ul>
-            <ul className={styles.tableRow}>
-              <li>
-                <img src={bulb} alt="bulb" />
-              </li>
-              <li>type</li>
-              <li>
-                {defectImg.imgSrc === ''
-                  ? '탐지된 불량이 없습니다!'
-                  : defectImg.type}
-              </li>
-            </ul>
-          </div>
+          {/* 하단 영역 */}
+          <div className="h-[50%] flex flex-col">
+            {/* 사진 설명 텍스트 */}
+            <div className="table">
+              <ul className={styles.tableRow}>
+                <li>
+                  <img src={clock} alt="clock" />
+                </li>
+                <li>captured at</li>
+                <li>
+                  {defectImg.imgSrc === ''
+                    ? '탐지된 불량이 없습니다!'
+                    : defectImg.time}
+                </li>
+              </ul>
+              <ul className={styles.tableRow}>
+                <li>
+                  <img src={bulb} alt="bulb" />
+                </li>
+                <li>type</li>
+                <li>
+                  {defectImg.imgSrc === ''
+                    ? '탐지된 불량이 없습니다!'
+                    : defectImg.type}
+                </li>
+              </ul>
+            </div>
 
-          {/* 해당 시간의 불량 선택 표 컴포넌트 */}
-          <table className={`${styles.tableSet} ${styles.borderTable}`}>
-            <thead>
-              <tr className="border-solid border-[#1c93e9] border-b-2">
-                <th>불량 유형</th>
-                <th>검출 시간</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {tableData.length === 0 ? (
-                <tr>
-                  <td>
-                    <button
-                      className={
-                        selectedButtonId === 0
-                          ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
-                          : ''
-                      }
-                    >
-                      데이터가
-                    </button>
-                  </td>
-                  <td>
-                    <button
-                      className={
-                        selectedButtonId === 0
-                          ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
-                          : ''
-                      }
-                    >
-                      없습니다
-                    </button>
-                  </td>
+            {/* 해당 시간의 불량 선택 표 컴포넌트 */}
+            <table className={`${styles.tableSet} ${styles.borderTable}`}>
+              <thead>
+                <tr className="border-solid border-[#1c93e9] border-b-2">
+                  <th>불량 유형</th>
+                  <th>검출 시간</th>
                 </tr>
-              ) : (
-                tableData.map((data: any, index: number) => (
-                  <tr key={index}>
+              </thead>
+
+              <tbody>
+                {tableData.length === 0 ? (
+                  <tr>
                     <td>
                       <button
-                        onClick={() => handleClick(data)}
                         className={
-                          selectedButtonId === data.id
+                          selectedButtonId === 0
                             ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
                             : ''
                         }
                       >
-                        {data.type}
+                        데이터가
                       </button>
                     </td>
                     <td>
                       <button
-                        onClick={() => handleClick(data)}
                         className={
-                          selectedButtonId === data.id
+                          selectedButtonId === 0
                             ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
                             : ''
                         }
                       >
-                        {data.time}
+                        없습니다
                       </button>
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  tableData.map((data: any, index: number) => (
+                    <tr key={index}>
+                      <td>
+                        <button
+                          onClick={() => handleClick(data)}
+                          className={
+                            selectedButtonId === data.id
+                              ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                              : ''
+                          }
+                        >
+                          {data.type}
+                        </button>
+                      </td>
+                      <td>
+                        <button
+                          onClick={() => handleClick(data)}
+                          className={
+                            selectedButtonId === data.id
+                              ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                              : ''
+                          }
+                        >
+                          {data.time}
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
