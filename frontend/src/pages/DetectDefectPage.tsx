@@ -91,7 +91,7 @@ export const DetectDefectPage = () => {
     // 서버에서 "object-detected" 이벤트를 수신
     sseEvents.addEventListener('object-detected', function (event: any) {
       const data = JSON.parse(event.data);
-      console.log(data);
+      // console.log(data);
 
       const newData = {
         id: lengthId,
@@ -136,7 +136,7 @@ export const DetectDefectPage = () => {
 
       handleSessionDisconnect();
       sseEvents.close();
-      console.log('SSE 연결 해제');
+      // console.log('SSE 연결 해제');
     };
   }, [location, lengthId]);
 
