@@ -2,7 +2,7 @@
 
 ## 💡 UCC
 
-![UCC](./README_ASSETS/logo.png)
+![UCC](./README_ASSETS/logo.gif)
 
 ## 🚩 목차
 
