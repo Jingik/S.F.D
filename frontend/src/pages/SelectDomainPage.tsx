@@ -3,6 +3,10 @@ import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { axiosSecurity } from '@components/common/util';
 import styles from '@/pages/Pages.module.css';
 
+import nut from '@/assets/images/domain_nut.jpg';
+import lumpSuger from '@/assets/images/domain_lump_suger.jpg';
+import eraser from '@/assets/images/domain_eraser.jpg';
+
 export const SelectDomainPage = () => {
   const [isSelected, setIsSelected] = useState(NaN);
   const nav = useNavigate();
@@ -10,7 +14,20 @@ export const SelectDomainPage = () => {
 
   const isDomainPage = location.pathname === '/domain';
 
-  const domainList = ['너트', '각설탕', '지우개'];
+  const domainList = [
+    {
+      img: nut,
+      name: '너트',
+    },
+    {
+      img: lumpSuger,
+      name: '각설탕',
+    },
+    {
+      img: eraser,
+      name: '지우개',
+    },
+  ];
 
   function handleClick(index: number) {
     setIsSelected(index);
@@ -40,18 +57,25 @@ export const SelectDomainPage = () => {
 
           {/* 목록 */}
           <div className="m-6 h-[80%] overflow-y-auto">
-            <ol>
+            <ol className="flex flex-row flex-wrap items-baseline">
               {domainList.map((domain, index) => (
-                <li key={index} className="">
+                <li key={index}>
                   <button
                     className={
                       isSelected === index
-                        ? 'p-2 bg-[#A4D69F] text-white font-bold rounded-md'
-                        : 'p-2'
+                        ? `${styles.cardContainerSelected}`
+                        : `${styles.cardContainer}`
                     }
                     onClick={() => handleClick(index)}
                   >
-                    {domain}
+                    <div>
+                      <img
+                        src={domain.img}
+                        alt="domainImg"
+                        className={`${styles.imgCard}`}
+                      />
+                      <p className="mt-4">{domain.name}</p>
+                    </div>
                   </button>
                 </li>
               ))}
