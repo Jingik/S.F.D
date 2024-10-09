@@ -80,7 +80,7 @@
 - **인프라** : Docker, Nginx, Jenkins, MySQL, Certbot, EC2
 - **AI** : 
   - 탐지 : YoloV5(최종 선정), Yoloworld
-  - 분류 : MobileNetV3(최종 선정), InecptionV5, DenseNet128, Resnet, MobileNetV4
+  - 분류 : MobileNetV3(최종 선정), Inception-ResNet-v2, DenseNet128, Resnet, MobileNetV4
   - 분석 : YoloV8(최종 선정), Swin-transformer, Swin-Detr
 - **HW** : YoloV5(객체 탐지), Arduino, S3
 - **이슈 관리** : Git Lab, JIRA, Mattermost, Notion
