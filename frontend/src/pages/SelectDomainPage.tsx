@@ -34,7 +34,7 @@ export const SelectDomainPage = () => {
   }
 
   function submitDomain() {
-    axiosSecurity.post('/domain', { domain: domainList[isSelected] });
+    // axiosSecurity.post('/domain', { domain: domainList[isSelected] });
     nav('/detect');
   }
 
@@ -57,15 +57,16 @@ export const SelectDomainPage = () => {
 
           {/* 목록 */}
           <div className="m-6 h-[80%] overflow-y-auto">
-            <ol className="flex flex-row flex-wrap items-baseline">
+            <ol className="flex flex-row h-full w-full">
               {domainList.map((domain, index) => (
-                <li key={index}>
+                <li key={index} className="flex-grow flex h-full">
                   <button
                     className={
                       isSelected === index
                         ? `${styles.cardContainerSelected}`
                         : `${styles.cardContainer}`
                     }
+                    disabled={index === 0 ? false : true}
                     onClick={() => handleClick(index)}
                   >
                     <div>
