@@ -54,36 +54,38 @@
 
 ## ✨ 기능 소개
 
-- **대시보드**
-  - **0CHA가 추천하는 루틴** : 0CHA가 직접 개발하고 고안한 루틴을 추천합니다.
-  - **진행 중인 운동** : 현재 진행 중인 운동이 있는 경우 바로 이동할 수 있습니다.
-  - **내 루틴** : 내 루틴을 최신 순으로 보여집니다. 더 보기를 누르면 루틴 목록으로 각 루틴의 상세 정보를 누르면 루틴의 상세 정보를 확인할 수 있습니다.
+- **품목 선택**
+  - **불량 검사하기** : 품목을 선택하고 불량을 검사할 수 있습니다. 현재 너트 항목에 대한 검사만 가능합니다. 검사 시 불량 검출 페이지로 이동합니다.
+  - **검사 진행** : 탐지 모델, 분류 모델, 불량 원인 탐지 모델 3가지 모델이 유기적으로 연결되어 불량 탐지 프로세스를 진행합니다.
+
+- **불량 검출** 
+  - **실시간 불량 탐지** : 현재 수행 중인 검사 중 가장 최신의 불량이 나타납니다. 하단에 지금까지 탐지된 불량과 불량 유형의 정보 테이블을 제시해줍니다.
+  - **시간당 불량 개수 통계** : 탐지 시간에 따른 불량 개수 통계 정보를 제공합니다.
+  - **불량 종류 통계** : 불량 종류에 대한 통계 정보를 제공합니다.
+
+- **전체 기록 조회**
+  - **총 불량 개수 통계** : 불량 종류에 대한 총 불량 개수 통계를 제공합니다.
+  - **날짜 당 불량 개수 통계** : 선택 날짜 포함 이전 5일 간의 일일 불량 개수에 대한 정보를 제공합니다.
+  - **불량 사진 탐색** : 선택된 날짜의 불량 정보를 제공합니다. 불량 정보를 클릭하면 해당 사진과 정보를 제공합니다.
 
 - **회원가입 & 로그인**
-  - **회원가입** : 이메일 인증, 비밀번호, 생년월일, 전화번호, 닉네임 입력 후 가입할 수 있습니다.
+  - **회원가입** : 이메일, 비밀번호, 전화번호, 닉네임 입력 후 가입할 수 있습니다. 기존에 가입한 이메일은 사용할 수 없습니다.
   - **로그인 & 로그아웃** : JWT Token을 사용하여 로그인 및 로그아웃이 가능합니다.
-  - **소셜 로그인** : Google, Kakao 계정과 연동하여 로그인이 가능합니다.
-  - **프로필 수정** : 프로필 이미지와 닉네임을 변경할 수 있습니다.
-  - **내 정보 수정** : 내 키와 몸무게 활동 지역을 변경할 수 있습니다.
-  - **회원 탈퇴** : 회원 탈퇴 문구 작성 후 탈퇴 가능합니다.
-
-- **관리자 페이지**
-  - **운동 목록** : 상단의 부위를 탭하여 해당 부위의 운동 목록을 확인할 수 있습니다.
-  - **운동 찜** : 사용자는 별표 버튼을 클릭해 운동을 찜/찜해제 할 수 있습니다.
-  - **운동 상세보기** : 운동을 클릭해 각 운동의 운동 예시와 운동 상세정보를 확인할 수 있습니다.
-  - **루틴에 운동 추가** : 사용자는 V표를 클릭해 루틴에 추가할 운동을 선택할 수 있고 새 루틴에 추가하기 버튼을 클릭해 새 루틴에 운동을 추가할 수 있습니다.
-  - **운동 검색** : 검색창에 검색어를 입력하면 해당 부위에 맞는 운동이 실시간으로 검색됩니다.
+  - **회원정보** : 내 정보를 제공합니다.
 
 ## ✨ 기술 스택
 
-- **프론트엔드** : React, TypeScript, Redux-toolkit, styled-components, Stomp, PWA
-- **백엔드** : Spring Boot, Spring Security, JWT, Oauth 2.0, FCM
-- **인프라** : Docker, Nginx, Jenkins, MySQL, Certbot, EC2, S3
+- **프론트엔드** : React, TypeScript, Vite, Tailwind, React Context, react-datepicker, SSE
+- **백엔드** : Spring, Spring Security, JWT, JPA, SSE
+- **인프라** : Docker, Nginx, Jenkins, MySQL, Certbot, EC2
 - **AI** : 
-- **HW** : 
-- **이슈 관리** : JIRA, Mattermost, Notion
+  - 탐지 : YoloV5(최종 선정), Yoloworld
+  - 분류 : MobileNetV3(최종 선정), InecptionV5, DenseNet128, Resnet, MobileNetV4
+  - 분석 : YoloV8(최종 선정), Swin-transformer, Swin-Detr
+- **HW** : YoloV5(객체 탐지), Arduino, S3
+- **이슈 관리** : Git Lab, JIRA, Mattermost, Notion
 
-### 아키텍처 설계도
+## ✨ 아키텍처 설계도
 
 ![architecture](./README_ASSETS/architecture.png)
 
@@ -98,15 +100,19 @@
 
 ### Git Flow
 
-![git flow](./README_ASSETS/GitFlow.gif)
+![git_flow](./README_ASSETS/git_flow.gif)
 
-### 유저플로우
+### 기능 명세서
 
-![userflow](./README_ASSETS/userflow.png)
+![functional_specification1](./README_ASSETS/functional_specification1.png)
+![functional_specification2](./README_ASSETS/functional_specification2.png)
+
+### Use Case
+![use_case](./README_ASSETS/use_case.png)
 
 ### 피그마 화면 정의서
 
-![Figma](./README_ASSETS/figma.PNG)
+![figma](./README_ASSETS/figma.PNG)
 
 ### ERD
 
@@ -114,47 +120,52 @@
 
 ### API 명세서
 
-| [API 명세서](https://past-currant-4d8.notion.site/API-57f2a24c811143dea87f1da52203df55) |                                   |
-| :-------------------------------------------------------------------------------------: | :-------------------------------: |
-|                            ![api](./README_ASSETS/API1.PNG)                             | ![api](./README_ASSETS/API2.PNG)  |
-|                            ![api](./README_ASSETS/API3.PNG)                             | ![api](./README_ASSETS/API4.PNG)  |
-|                            ![api](./README_ASSETS/API5.PNG)                             | ![api](./README_ASSETS/API6.PNG)  |
-|                            ![api](./README_ASSETS/API7.PNG)                             | ![api](./README_ASSETS/API8.PNG)  |
-|                            ![api](./README_ASSETS/API9.PNG)                             | ![api](./README_ASSETS/API10.PNG) |
-|                            ![api](./README_ASSETS/API11.PNG)                            | ![api](./README_ASSETS/API12.PNG) |
+![api1](./README_ASSETS/api1.PNG)  
+![api2](./README_ASSETS/api2.PNG)  
+![api3](./README_ASSETS/api3.PNG)  
+![api4](./README_ASSETS/api4.PNG)  
+![api5](./README_ASSETS/api5.PNG)  
+![api6](./README_ASSETS/api6.PNG)  
+![api7](./README_ASSETS/api7.PNG)  
+![api8](./README_ASSETS/api8.PNG)  
+
+## ✨ HW
+
+<table>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="./README_ASSETS/hw.gif" width="500px">
+    </td>
+  </tr>
+  <tr>
+    <td><img src="./README_ASSETS/hw1.png" width="300px"></td>
+    <td><img src="./README_ASSETS/hw2.jpg" width="300px"></td>
+  </tr>
+  <tr>
+    <td><img src="./README_ASSETS/hw3.jpg" width="300px"></td>
+    <td><img src="./README_ASSETS/hw4.jpg" width="300px"></td>
+  </tr>
+</table>
 
 ## ✨ 화면
 
-|                                                          |                                                          |                                                          |                                                           |
-| :------------------------------------------------------: | :------------------------------------------------------: | :------------------------------------------------------: | :-------------------------------------------------------: |
-|           ![로그인](./README_ASSETS/login.PNG)           |         ![회원가입](./README_ASSETS/signup.PNG)          |     ![회원 추가정보](./README_ASSETS/signupplus.PNG)     |       ![이메일 찾기](./README_ASSETS/findemail.PNG)       |
-|                          로그인                          |                         회원가입                         |                    회원 추가정보 입력                    |                        이메일 찾기                        |
-| ![이메일 찾기 결과](./README_ASSETS/findemailresult.PNG) |       ![비밀번호 찾기](./README_ASSETS/findpw.PNG)       |      ![비밀번호 변경](./README_ASSETS/changepw.PNG)      |          ![메인페이지](./README_ASSETS/main.PNG)          |
-|                     이메일 찾기 결과                     |                      비밀번호 찾기                       |                      비밀번호 변경                       |                        메인 페이지                        |
-|     ![프로필 메인](./README_ASSETS/profilemain.PNG)      | ![내 정보 수정](./README_ASSETS/profileupdatemyinfo.PNG) |   ![프로필 이미지](./README_ASSETS/profileupdate.PNG)    |   ![비밀번호 수정](./README_ASSETS/profilechangepw.PNG)   |
-|                       프로필 메인                        |                       내 정보 수정                       |                    프로필 이미지 수정                    |                       비밀번호 수정                       |
-|      ![운동 목록](./README_ASSETS/exerciselist.PNG)      |     ![운동 상세](./README_ASSETS/exercisedetail.PNG)     |      ![루틴 목록](./README_ASSETS/routinelist.PNG)       |      ![루틴 상세](./README_ASSETS/routinedetail.PNG)      |
-|                        운동 목록                         |                        운동 상세                         |                        루틴 목록                         |                         루틴 상세                         |
-|     ![루틴 생성](./README_ASSETS/routinecreate.PNG)      |       ![운동하기](./README_ASSETS/exercising.PNG)        |     ![운동 완료](./README_ASSETS/exercisefinish.PNG)     |       ![기록 캘린더](./README_ASSETS/calender.PNG)        |
-|                      루틴 생성하기                       |                         운동하기                         |                        운동 완료                         |                     기록 메인(캘린더)                     |
-|     ![인바디 등록](./README_ASSETS/inbodyenter.PNG)      |      ![인바디 스캔](./README_ASSETS/inbodyscan.PNG)      |     ![인바디 결과](./README_ASSETS/inbodyresult.PNG)     |     ![운동 기록](./README_ASSETS/exerciserecord.PNG)      |
-|                       인바디 등록                        |                       인바디 스캔                        |                       인바디 결과                        |                         운동 기록                         |
-|       ![AI 초기 설정](./README_ASSETS/aistart.PNG)       |          ![AI 대기](./README_ASSETS/aiwait.PNG)          |         ![AI 진행 중](./README_ASSETS/aion.PNG)          |         ![AI 결과](./README_ASSETS/airesult.PNG)          |
-|                  AI 트레이너 초기 설정                   |                        운동 대기                         |                         운동 중                          |                     AI 트레이닝 결과                      |
-|      ![SNS 프로필](./README_ASSETS/snsprofile.PNG)       |         ![SNS 피드](./README_ASSETS/snsfeed.PNG)         |   ![SNS 피드 작성](./README_ASSETS/snsfeedcreate.PNG)    |    ![SNS 피드 댓글](./README_ASSETS/snsfeeddetail.PNG)    |
-|                        SNS 프로필                        |                         SNS 피드                         |                    SNS 피드 작성/수정                    |                       SNS 피드 댓글                       |
-|        ![SNS 장터](./README_ASSETS/snsmarket.PNG)        |  ![SNS 장터 검색](./README_ASSETS/snsmarketsearch.PNG)   | ![SNS 장터 글 작성](./README_ASSETS/snsmarketcreate.PNG) | ![SNS 장터 상세보기](./README_ASSETS/snsmarketdetail.PNG) |
-|                         SNS 장터                         |                      SNS 장터 검색                       |                     SNS 장터 글 작성                     |                    SNS 장터 상세 보기                     |
-|     ![SNS 채팅목록](./README_ASSETS/snschatlist.PNG)     |         ![SNS 채팅](./README_ASSETS/snschat.PNG)         |                                                          |                                                           |
-|                       SNS 채팅목록                       |                         SNS 채팅                         |                                                          |                                                           |
+| ![시작 페이지](./README_ASSETS/start.PNG) | ![로그인](./README_ASSETS/login.PNG) | ![회원가입](./README_ASSETS/register.PNG) |
+|:----------------------------------------:|:------------------------------------:|:----------------------------------------:|
+|              시작 페이지                |               로그인                |               회원가입                 |
+| ![품목 선택](./README_ASSETS/select.PNG) | ![불량 검출](./README_ASSETS/detect.PNG) | ![전체 기록 조회](./README_ASSETS/log.PNG) |
+|              품목 선택                 |               불량 검출              |               전체 기록 조회            |
+| ![회원 정보](./README_ASSETS/user_info.PNG) |                                |                                        |
+|              회원 정보                 |                                      |                                        |
+
+
 
 ## ✨ 소감
 
 |                      이름                      |      역할       | 소감                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | :--------------------------------------------: | :-------------: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|  ![문범수](./README_ASSETS/mbs.png)<br>문범수  |    팀장(BE)     | 관통프로젝트 이후 저의 두번째 프로젝트였습니다. 팀장이라는 직책을 맡게 되었고 막막하고 두려웠습니다. <br> 미숙하고 까다로운 팀장과 함께 잘 마무리해준 팀원들, 많은 도움을 주신 컨설턴트님, 코치님들께 너무나도 감사드립니다. <br> 덕분에 잘 마무리할 수 있었다고 생각합니다. 많은 것을 배웠고, 자신감도 얻을 수 있었던 잊지 못할 기간이었습니다.                                                                                                                     |
-| ![김예현](./README_ASSETS/kyh.png) <br> 김예현 |     FE     | 프로젝트를 하면서 처음에는 어떻게 해야할까 고민과 걱정이 많았지만 그래도 결과가 나오고 하나씩 적용이 되다보니 <br> 뿌듯함도 많이 느꼈습니다. 아마 이번 프로젝트가 졸작때보다 기간때문인지 더 힘들다고 느꼈습니다. <br> 앞으로의 프로젝트도 힘들겠지만 그래도 재미있는 프로젝트들이라서 기대가 됩니다. B310 모두 수고했습니다~                                                                                                                                        |
-| ![박상천](./README_ASSETS/psc.png) <br>박상천  | 인프라, AI | 짧은 시간 동안 다양한 기능을 프로젝트에 녹여내려는 것이 시간적으로 많이 힘들었지만, <br> 도커 네트워크와 STOMP 등 다양한 것을 얻을 수 있었던 좋은 기회였습니다. |
-| ![김진기](./README_ASSETS/kjg.png) <br> 김진기 |     AI      | 많은 걱정을 안고 시작했지만 다들 열심히 하는 모습에서 더 프로젝트에 집중할 수 있었습니다. <br> 기능적으로 완성시키지 못한 부분이 많았는데 이 점을 피드백 삼아 다음 기획에서 반영하고자 합니다. <br>특히 로그인, 시큐리티같은 시스템 전반의 기초부분에 대해서 먼저 마무리 짓고 시스템을 구축하고 싶습니다.                                                                                                                                                            |
-| ![복현우](./README_ASSETS/bhw.png) <br>복현우  |       AI        | 프로젝트에서 사용되는 기술 스택들 대부분이 처음 접하는 것인 만큼 많은 어려움을 안고 시작했던 프로젝트였습니다. <br> 하지만 동작 과정을 먼저 생각한 후 그에 맞는 코드를 작성하면서 설계와 로직의 중요성을 실감할 수 있었습니다. <br> 또 그 과정에서 백엔드와 프론트엔드의 소통 방식, 서버와의 소통 방식을 배우고 알아가는 재미를 느낄 수 있었습니다. <br> 무엇보다도 팀원들이 작성한 코드가 하나하나 맞물려가며 하나의 프로젝트를 완성한 것에 대해 매우 뿌듯했습니다. |
-| ![이동복](./README_ASSETS/ldb.png) <br>이동복  |       BE, HW        | 2학기 첫 프로젝트로 6명이 진행하는 만큼 규모가 커져서 처음에는 막막했지만 다같이 만들어나가는 과정이 재미있었습니다. <br> 많은 것을 배울 수 있었던 것 같고 다들 남은 2학기도 즐겁게 보냈으면 좋겠습니다                                                                                                                                                                                                                                                              |
+|  ![문범수](./README_ASSETS/mbs.png)<br>문범수  |    팀장(BE)     | 프로젝트 설정부터 DB설계, 보안 설정 등 백엔드와 관련한 모든 사항에 대해서 기획부터 설계를 담당할 수 있어 좋았습니다.<br> 특히 JPA와 Security, JWT 등 기초적인 보안 파트와 DB 로직 설계에 대해 역량을 기를 수 있었고, SSE를 활용한 실시간 통신을 구현했습니다.<br> 다음 기회에는 저장 데이터를 빠르고 안정적이게 업데이트 할 수 있는 방식에 대해 학습하고자 합니다.                                                                                                                     |
+| ![김예현](./README_ASSETS/kyh.png) <br> 김예현 |     FE     | Figma부터 리액트 코드까지 전반적인 부분들을 처음으로 대표로 맡게 되어 디자인, 코드 부분에 있어서 부담스럽고 긴장이 되었습니다. <br> 하지만 걱정했던 부분에서 팀원분들이 괜찮다고 해주셔서 조금 자신감을 얻어서 작업을 차근차근 진행할 수 있었고 구현하기 원했던 기능들을 완성할 수 있었습니다. <br> 다른 부분을 걱정하지 않고 Front End 부분에 집중할 수 있도록 해준 팀원분들께 감사드립니다...!                                                                                                                                        |
+| ![박상천](./README_ASSETS/psc.png) <br>박상천  | 인프라, AI | 이번 프로젝트에서 AI 실시간 처리 공정에 맞는 인프라 환경을 구축하며, 도메인의 특성에 따라 인프라 구조가 달라진다는 중요한 교훈을 얻었습니다.<br> 또한, SSE를 통해 실시간 분석 결과를 클라이언트로 전송하는 과정에서 발생한 오류를 해결하며 Nginx의 buffering 기능을 알게 되었고, 기술을 사용할 때는 그 기술에 대한 깊은 이해가 필요하다는 점을 다시 한 번 느꼈습니다.<br><br> AI라는 새로운 분야에 도전하면서, 모델의 정확도를 높이기 위해 배치 사이즈, 에폭, 학습률, 전이 학습, 모델 수정 등을 직접 조정하며 AI의 기초 지식과 역량을 쌓을 수 있었습니다.<br> 이 경험은 향후 AI가 포함된 프로젝트를 진행할 때 프로젝트의 전반적인 이해도를 높이는 데 큰 도움이 될 것이라고 생각합니다.<br><br> 비록 여러 오류와 새로운 분야에서의 도전이 쉽지 않았지만, 팀원들과의 소통과 협업을 통해 문제를 해결하며 좋은 결과물을 만들어낼 수 있었습니다.<br> 이번 프로젝트를 통해 개발자로서 한 단계 성장하는 소중한 기회가 되었습니다. |
+| ![김진기](./README_ASSETS/kjg.png) <br> 김진기 |     AI      | 이번 프로젝트에서는 스마트 팩토리에서 사용할 수 있는 불량 탐지 시스템 개발에 중점을 두었습니다. <br> 목표는 다양한 제품에서 불량을 실시간으로 높은 정확도로 탐지하고 분석할 수 있는 시스템을 구축하는 것이었습니다. <br> 탐지 단계에서는 YoloV5 모델을 활용해 실시간 성능과 정확도에서 우수한 결과를 얻었으며, 이를 통해 실제로 발생할 수 있는 제품의 불량을 빠르게 탐지할 수 있었습니다. <br> 불량 분류 단계에서는 MobileNetV3를 적용해 속도와 정확도를 균형 있게 유지할 수 있었습니다. <br> 이후, 분석 단계에서는 YoloV8 모델을 사용해 더욱 세밀한 결함을 찾아내는 성능을 강화했습니다.<br><br> 이 과정에서 InceptionV5, DenseNet128, MobileNetV4, Swin Transformer, Swin Detr 등 다양한 AI 모델들을 실험하며 최적의 성능을 탐구했습니다.<br> 실제 데이터셋 처리와 라벨링 작업 등 실무에서 필요한 여러 과정들을 거쳐 시스템을 구축할 수 있었고, 데이터셋이 부족한 상황에 대비한 분석 방법도 모색했습니다.<br><br> 이번 프로젝트를 통해 스마트 팩토리 내 불량 탐지 시스템 개발에 대한 깊은 이해와 경험을 쌓을 수 있었고, 각 모델의 특성을 비교하며 프로젝트 요구 사항에 적합한 최적의 솔루션을 도출하는 데 성공했습니다.                                                                                                                                                           |
+| ![복현우](./README_ASSETS/bhw.png) <br>복현우  |       AI        | 특화라는 이름에 걸맞게 AI 기술에 치중했던 프로젝트였습니다.<br>  패키지 버전 충돌, 기대 이하의 성능 등 AI를 다루는 데 있어 많은 어려움이 있었습니다.<br> 하지만 그 문제들을 해결하고 제어하여 결국 원하는 결과물을 만들어 내는 AI의 묘미를 느낄 수 있던 프로젝트였습니다.<br> 또 그 과정에서 GPU 서버와 프론트엔드, 백엔드의 소통 방식을 배우고 알아가는 재미를 느낄 수 있었습니다.<br>  이 프로젝트를 통해 AI 기술을 다루는 역량이 한 층 더 성장시킬 수 있어 좋았습니다.<br><br> 특화라는 이름에 걸맞게 AI 기술에 치중했던 프로젝트였습니다.<br>  패키지 버전 충돌, 기대 이하의 성능 등 AI를 다루는 데 있어 많은 어려움이 있었습니다.<br> 하지만 그 문제들을 해결하고 제어하여 결국 원하는 결과물을 만들어 내는 AI의 묘미를 느낄 수 있던 프로젝트였습니다.<br> 또 그 과정에서 GPU 서버와 프론트엔드, 백엔드의 소통 방식을 배우고 알아가는 재미를 느낄 수 있었습니다.<br>  이 프로젝트를 통해 AI 기술을 다루는 역량이 한 층 더 성장시킬 수 있어 좋았습니다.<br> |
+| ![이동복](./README_ASSETS/ldb.png) <br>이동복  |       BE, HW        | 기존 팀의 사정으로 중간에 팀에 합류하게 되었는데, 팀원 분들이 많이 도와주셔서 미약하지만 조금이나마 기여를 할 수 있어 다행이었다고 생각합니다.<br> 한 달 남짓의 짧은 시간이었지만, 유능한 팀원들과 함께 프로젝트를 진행하며 많은 것을 배웠고, 덕분에 만족스러운 결과물이 나왔다고 생각합니다.<br>                                                                                                                                                                                                                                                              |
