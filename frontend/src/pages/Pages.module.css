@@ -29,7 +29,7 @@
   border: dashed 2px #999999;
   border-radius: 1rem;
   padding: 1rem;
-  background-color: white;
+  background: white;
 }
 
 .input {
@@ -80,6 +80,32 @@
 .bottomInput {
   border-radius: 0rem 0rem 0.5rem 0.5rem;
   border-top: none;
+}
+
+/* 도메인 선택 페이지 */
+.cardContainer {
+  padding: 1rem;
+  margin: 0.5rem;
+  border: solid 3px #ffb625;
+  border-radius: 1rem;
+  background: linear-gradient(#ffeecc, #ffdd99 75%);
+}
+
+.cardContainerSelected {
+  padding: 1rem;
+  margin: 0.5rem;
+  border: solid 4px #47c93c;
+  border-radius: 1rem;
+  background: #a4d69f;
+  font-weight: bold;
+  color: white;
+}
+
+.imgCard {
+  width: 10rem;
+  heigth: 10rem;
+  /* border: solid 1px #999999; */
+  border-radius: 5px;
 }
 
 /* 불량 검출 페이지 */
