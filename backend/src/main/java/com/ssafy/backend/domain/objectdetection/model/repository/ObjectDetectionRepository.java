@@ -15,7 +15,15 @@ public interface ObjectDetectionRepository extends JpaRepository<ObjectDetection
     // 스캐너 ID로 데이터를 가져오는 기존 메서드
     List<ObjectDetection> findByScanners_Id(Long scannerId);
 
-    // 새로운 메서드: 사용자 ID로 가장 최신의 데이터를 하나 가져오기
-    Optional<ObjectDetection> findTopByOrderByCompletedAtDesc();
-}
+    // 사용자 ID로 가장 최신의 데이터를 가져오는 메서드
+    Optional<ObjectDetection> findTopByScanners_UserIdOrderByCompletedAtDesc(Long userId);
 
+    // 새로운 메서드: 사용자 ID로 모든 ObjectDetection 데이터를 가져오는 메서드
+    List<ObjectDetection> findByScanners_UserId(Long userId);
+
+    // 마지막 탐지 객체 탐색
+    Optional<ObjectDetection> findTopByOrderByIdDesc();
+
+    // 사용자 ID와 오늘 날짜, 그리고 불량 객체 조건으로 데이터를 필터링하는 메서드
+    List<ObjectDetection> findByScanners_UserIdAndCompletedAtAfterAndDetectionType(Long userId, LocalDateTime today, Integer detectionType);
+}
