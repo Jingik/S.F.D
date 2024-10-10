@@ -85,7 +85,7 @@ if str(ROOT) not in sys.path:
 ROOT = Path(os.path.relpath(ROOT, Path.cwd()))  # 상대 경로로 변환
 
 # 분류모델 로드
-cls_checkpoint = torch.load('test_exp/tensorboard_logs_csv_logs/0_1/checkpoints/last.ckpt', map_location=torch.device('cpu'))
+cls_checkpoint = torch.load('test_exp/tensorboard_logs_csv_logs/0_1/checkpoints/last2.ckpt', map_location=torch.device('cpu'))
 cls_config = OmegaConf.load('config.yaml')
 cls_model = ClassificationModel(cls_config)
 # 모델에 저장된 가중치 로드
@@ -317,10 +317,10 @@ def run(
                         
                         print(predicted_class, '로 예측')
                         # True/False 폴더로 저장 (분류에 따라)
-                        if predicted_class == 0:  # 불량이면 'False' 폴더로
-                            output_dir = save_dir / "False" / f"sfd001_{formatted_time}.jpg"
-                        else:  # 양품이면 'True' 폴더로
+                        if predicted_class:  # 양품이면 'True' 폴더로
                             output_dir = save_dir / "True" / f"sfd001_{formatted_time}.jpg"
+                        else:  # 불량이면 'False' 폴더로 
+                            output_dir = save_dir / "False" / f"sfd001_{formatted_time}.jpg"
 
                         # 결과를 해당 폴더로 저장
                         save_one_box(xyxy, imc, gain=1.2, pad=100, file=output_dir, BGR=True)
