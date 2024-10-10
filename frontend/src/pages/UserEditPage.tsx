@@ -1,36 +1,37 @@
 import { useEffect, useState } from 'react';
+import { useUser } from '@components/common/UserContext';
 import {
   SFD_URL,
+  axiosSecurity,
   removeWhitespace,
   validateEmail,
   validatePassword,
   validatePhoneNumber,
 } from '@components/common/util';
 import axios from 'axios';
-import { Button } from '@components/feature/Button';
-import { useNavigate } from 'react-router-dom';
-
 import styles from '@/pages/Pages.module.css';
 
-export const RegisterPage = () => {
-  const [email, setEmail] = useState('');
+export const UserEditPage = () => {
+  const { user, setUser } = useUser();
+  const [email, setEmail] = useState(user.email);
   const [emailMessage, setEmailMessage] = useState('');
-  const [name, setName] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [name, setName] = useState(user.name);
+  const [nickname, setNickname] = useState(user.nickname);
+  const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
   const [phoneNumberMessage, setPhoneNumberMessage] = useState('');
   const [pw, setPw] = useState('');
   const [pwMessage, setPwMessage] = useState('');
-  const [checkPw, setCheckPw] = useState('');
-  const [checkPwMessage, setCheckPwMessage] = useState('');
   const [isDisable, setIsDisable] = useState(true);
   const [buttonColor, setButtonColor] = useState('#148EE6');
-
-  const nav = useNavigate();
 
   async function onChangeEmail(e: any) {
     const trimEmail = removeWhitespace(e.target.value);
     setEmail(trimEmail);
+
+    if (trimEmail === user.email) {
+      setEmailMessage('');
+      return;
+    }
 
     if (!validateEmail(trimEmail)) {
       setEmailMessage('이메일 형식을 확인해주세요!');
@@ -60,6 +61,12 @@ export const RegisterPage = () => {
   function onChangePw(e: any) {
     const trimPassWord = removeWhitespace(e.target.value);
     setPw(trimPassWord);
+
+    if (trimPassWord === '') {
+      setPwMessage('');
+      return;
+    }
+
     setPwMessage(
       validatePassword(trimPassWord)
         ? '적합한 비밀번호입니다.'
@@ -67,21 +74,16 @@ export const RegisterPage = () => {
     );
   }
 
-  // 비밀번호 확인 입력 체크
-  function onChangeCheckPw(e: any) {
-    const trimCheckPW = removeWhitespace(e.target.value);
-    setCheckPw(trimCheckPW);
-    setCheckPwMessage(() =>
-      pw === trimCheckPW
-        ? '비밀번호가 일치합니다.'
-        : '비밀번호가 일치하지 않습니다...',
-    );
-  }
-
   // 전화번호 입력 체크
   function onChangePhoneNumer(e: any) {
     const trimCheckPhoneNumber = removeWhitespace(e.target.value);
     setPhoneNumber(trimCheckPhoneNumber);
+
+    if (trimCheckPhoneNumber === user.phoneNumber) {
+      setPhoneNumberMessage('');
+      return;
+    }
+
     setPhoneNumberMessage(() =>
       validatePhoneNumber(trimCheckPhoneNumber)
         ? '올바른 전화번호 형식입니다.'
@@ -95,16 +97,13 @@ export const RegisterPage = () => {
     function checkDisable() {
       if (
         email !== '' &&
-        emailMessage === '사용 가능한 이메일입니다.' &&
+        emailMessage !== '이메일 형식을 확인해주세요!' &&
+        emailMessage !== '중복된 이메일입니다!' &&
         name !== '' &&
         nickname !== '' &&
         phoneNumber !== '' &&
-        phoneNumberMessage === '올바른 전화번호 형식입니다.' &&
-        pw !== '' &&
-        pwMessage === '적합한 비밀번호입니다.' &&
-        checkPw !== '' &&
-        checkPwMessage === '비밀번호가 일치합니다.' &&
-        pw === checkPw
+        phoneNumberMessage !== '"-"를 제외하고 숫자만 입력해주세요!' &&
+        pwMessage !== '영어 대소문자, 숫자, 특수문자 포함 8자 이상'
       ) {
         setIsDisable(false);
       } else {
@@ -122,8 +121,6 @@ export const RegisterPage = () => {
     phoneNumberMessage,
     pw,
     pwMessage,
-    checkPw,
-    checkPwMessage,
   ]);
 
   useEffect(() => {
@@ -132,30 +129,44 @@ export const RegisterPage = () => {
 
   // 서버로 회원 정보 보내기
   function sendRegister() {
-    const user = {
-      email: email,
-      password: pw,
-      name: name,
-      nickname: nickname,
-      phone_number: phoneNumber,
-    };
+    let user: any;
 
-    axios
-      .post(`${SFD_URL}/user/signup`, user)
+    if (pw === '') {
+      user = {
+        email: email,
+        name: name,
+        nickname: nickname,
+      };
+    } else {
+      user = {
+        email: email,
+        password: pw,
+        name: name,
+        nickname: nickname,
+      };
+    }
+
+    axiosSecurity
+      .put(`${SFD_URL}/user/update`, user)
       .then((response: any) => {
         console.log(response);
-        alert('회원가입이 완료되었습니다!');
-        nav('/login');
+        setUser({
+          nickname: response.data.nickname,
+          email: response.data.email,
+          phoneNumber: response.data.phoneNumber,
+          name: response.data.name,
+        });
+        alert('회원 정보가 수정되었습니다!');
       })
       .catch((e: any) => {
-        console.error('회원 가입 에러발생: ' + e);
-        alert('회원가입에 문제가 생겼습니다...');
+        console.error('회원 정보 수정 에러발생: ' + e);
+        alert('정보 수정에 문제가 생겼습니다...');
         return;
       });
   }
 
-  // 회원가입
-  const onSubmitRegister = async (e: React.FormEvent) => {
+  // 정보수정
+  const onSubmitEdit = async (e: React.FormEvent) => {
     // 폼 제출 시 새로고침 되는 것을 방지
     e.preventDefault();
     if (isDisable) return;
@@ -163,13 +174,16 @@ export const RegisterPage = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-full">
-      {/* 상단 제목 */}
-      <p className="text-5xl m-6 mt-14 font-extrabold">회원가입</p>
-      <p className="text-base m-2">환영합니다!!</p>
+    <div className={styles.boxLayout}>
+      <div className="m-6">
+        <div className="text-3xl font-bold mb-2">😃 회원 정보 수정</div>
+        <div className="text-lg ml-12">
+          정보를 수정하려면 내용을 변경해주세요!
+        </div>
+      </div>
 
       {/* 회원정보 입력 영역 */}
-      <form onSubmit={onSubmitRegister} className="w-full">
+      <form onSubmit={onSubmitEdit} className="w-full">
         <div className="flex flex-col w-full justify-center items-center overflow-y-auto">
           {/* 이메일 */}
           <div className="flex flex-col">
@@ -205,6 +219,7 @@ export const RegisterPage = () => {
               onChange={(e: any) => setName(e.target.value)}
               value={name}
               placeholder="이름"
+              disabled
             />
             <p className="flex self-end text-xs text-[#E32626] p-1">{}</p>
           </div>
@@ -235,6 +250,7 @@ export const RegisterPage = () => {
               onChange={onChangePhoneNumer}
               value={phoneNumber}
               placeholder="01012345678"
+              disabled
             />
             <p
               className={
@@ -253,7 +269,7 @@ export const RegisterPage = () => {
             <input
               type="password"
               name="password"
-              autoComplete="new-password"
+              autoComplete="current-password"
               className={styles.input}
               onChange={onChangePw}
               value={pw}
@@ -269,30 +285,8 @@ export const RegisterPage = () => {
               {pwMessage}
             </p>
           </div>
-
-          {/* 비밀번호 확인 */}
-          <div className="flex flex-col">
-            <p className="flex self-start text-lg p-1">비밀번호 확인</p>
-            <input
-              type="password"
-              name="passwordCheck"
-              autoComplete="current-password"
-              className={styles.input}
-              onChange={onChangeCheckPw}
-              value={checkPw}
-              placeholder="비밀번호를 한 번 더 입력해주세요"
-            />
-            <p
-              className={
-                checkPwMessage === '비밀번호가 일치합니다.'
-                  ? 'flex self-end text-xs text-[#47C93C] p-1'
-                  : 'flex self-end text-xs text-[#E32626] p-1'
-              }
-            >
-              {checkPwMessage}
-            </p>
-          </div>
         </div>
+
         {/* 하단 버튼 */}
         <div className="flex justify-center">
           <button
@@ -300,10 +294,8 @@ export const RegisterPage = () => {
             style={{ backgroundColor: buttonColor }}
             disabled={isDisable}
           >
-            회원가입
+            정보 수정
           </button>
-
-          <Button name="메인으로" color="#444444" path="/" />
         </div>
       </form>
     </div>
