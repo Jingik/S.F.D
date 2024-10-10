@@ -61,6 +61,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/scanners/**", "/api/object-detections/**", "/api/defect-analysis/**").permitAll()
                         // 가장 최신의 정보 가져오기 허용
                         .requestMatchers("/api/session/**").permitAll()
+                        .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/records/latest").permitAll()
                         // 나머지 요청은 인증 필요
                         .anyRequest().authenticated()
