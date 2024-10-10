@@ -44,7 +44,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-
     // 이메일을 통해 유저,권한 정보를 확인
     @Transactional(readOnly = true)
     public Optional<User> getUserWithAuthorities(String email) {
@@ -79,4 +78,34 @@ public class UserService {
                 .map(User::getPassword)
                 .orElse(null);
     }
+
+    // ID로 사용자 조회 메서드 추가
+    public Optional<User> getUserById(Long userId) {
+        return userRepository.findById(userId);
+    }
+
+    // 사용자 정보 업데이트
+    @Transactional
+    public User updateUser(UserDto userDto) {
+        User currentUser = getMyUserWithAuthorities().orElseThrow(() -> new RuntimeException("로그인된 사용자가 없습니다."));
+
+        // 변경된 값이 있을 경우에만 업데이트
+        if (userDto.getEmail() != null && !userDto.getEmail().equals(currentUser.getEmail())) {
+            if (checkEmailDuplicate(userDto.getEmail())) {
+                throw new RuntimeException("이미 사용 중인 이메일입니다.");
+            }
+            currentUser.setEmail(userDto.getEmail());
+        }
+
+        if (userDto.getPassword() != null) {
+            currentUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        }
+
+        if (userDto.getNickname() != null) {
+            currentUser.setNickname(userDto.getNickname());
+        }
+
+        return userRepository.save(currentUser);
+    }
+
 }
