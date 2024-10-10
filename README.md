@@ -120,14 +120,12 @@
 
 ### API 명세서
 
-![api1](./README_ASSETS/api1.PNG)  
-![api2](./README_ASSETS/api2.PNG)  
-![api3](./README_ASSETS/api3.PNG)  
-![api4](./README_ASSETS/api4.PNG)  
-![api5](./README_ASSETS/api5.PNG)  
-![api6](./README_ASSETS/api6.PNG)  
-![api7](./README_ASSETS/api7.PNG)  
-![api8](./README_ASSETS/api8.PNG)  
+![api1](./README_ASSETS/RecordAPI.PNG)  
+![api2](./README_ASSETS/ScannerAPI.PNG)  
+![api3](./README_ASSETS/API3.PNG)  
+![api4](./README_ASSETS/UserAPI.PNG)  
+![api5](./README_ASSETS/AdminAPI.PNG)  
+![api6](./README_ASSETS/SSEAPI.PNG)
 
 ## ✨ HW
 
