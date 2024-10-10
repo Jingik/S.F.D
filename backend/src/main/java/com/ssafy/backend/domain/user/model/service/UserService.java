@@ -38,6 +38,7 @@ public class UserService {
                 .name(userDto.getName())
                 .nickname(userDto.getNickname())
                 .authorities(Collections.singleton(authority))
+                .phoneNumber(userDto.getPhoneNumber())
                 .activated(true)
                 .build();
 
