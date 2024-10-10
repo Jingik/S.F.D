@@ -82,6 +82,8 @@ export const HistoryPage = () => {
           console.error('데이터 요청 오류: ' + e);
         }
 
+        // console.log(response.data);
+
         const newTableData = response.data
           .map((data: any, index: number) => {
             return {
