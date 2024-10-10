@@ -73,4 +73,15 @@ public class UserController {
         }
         return ResponseEntity.ok(password);
     }
+
+    @Operation(
+            summary = "사용자 정보 수정",
+            description = "사용자가 자신의 정보를 수정할 수 있는 API입니다."
+    )
+    @PutMapping("/update")
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    public ResponseEntity<User> updateUser(@Valid @RequestBody UserDto userDto) {
+        User updatedUser = userService.updateUser(userDto);
+        return ResponseEntity.ok(updatedUser);
+    }
 }
