@@ -82,9 +82,6 @@ export const HistoryPage = () => {
           console.error('데이터 요청 오류: ' + e);
         }
 
-        // 응답이 잘 오는지 보기
-        // console.log(response);
-
         const newTableData = response.data
           .map((data: any, index: number) => {
             return {
@@ -356,12 +353,16 @@ export const HistoryPage = () => {
               >
                 선택된 불량 사진이 없습니다!
               </div>
-            ) : (
+            ) : defectImg.imgSrc ? (
               <img
                 src={defectImg.imgSrc}
                 alt="defectImg"
                 className={`${styles.imgSetting} ${styles.mediaContainer}`}
               />
+            ) : (
+              <div className={`${styles.mediaContainer}`}>
+                잘못된 불량 데이터 사진 형식입니다!
+              </div>
             )}
 
             {/* 텍스트 영역 */}
