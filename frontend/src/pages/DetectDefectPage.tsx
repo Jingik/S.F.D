@@ -70,75 +70,92 @@ export const DetectDefectPage = () => {
   // SSE 연결
   const location = useLocation();
   useEffect(() => {
-    // BE와 세션 연결
-    const sseEvents = new EventSource(
-      `${SFD_URL}/session/connect?userEmail=${user.email}`,
-      {
-        withCredentials: true,
-      },
-    );
+    const connectSSE = () => {
+      const sseEvents = new EventSource(
+        `${SFD_URL}/session/connect/${user.email}`,
+        { withCredentials: true },
+      );
 
-    // 연결 됐을 때
-    sseEvents.onopen = function () {
-      console.log('SSE 연결되었습니다!');
-    };
-
-    // 에러일 때
-    sseEvents.onerror = function (error: any) {
-      console.error('SSE 연결에 문제가 생겼습니다...' + JSON.stringify(error));
-    };
-
-    // 서버에서 "object-detected" 이벤트를 수신
-    sseEvents.addEventListener('object-detected', function (event: any) {
-      const data = JSON.parse(event.data);
-      // console.log(data);
-
-      const newData = {
-        id: lengthId,
-        type: data.defectType,
-        defective: data.defective,
-        date: data.detectionDate.substring(0, 10),
-        time: data.detectionDate.substring(11, 19),
-        confidence: data.confidenceRate,
-        imgSrc: data.objectUrl,
-        scanner: data.scannerSerialNumber,
+      // SSE 연결 성공 시
+      sseEvents.onopen = () => {
+        console.log('SSE 연결되었습니다!');
       };
 
-      setTableData((prev) => [newData, ...prev]);
-      setLengthId((prev) => prev + 1);
-    });
+      // SSE 에러 처리
+      sseEvents.onerror = (error: any) => {
+        console.error(
+          'SSE 연결에 문제가 생겼습니다...' + JSON.stringify(error),
+        );
+      };
 
-    // 컴포넌트가 언마운트될 때 SSE 해제 및 세션 종료 요청
-    return () => {
-      // 세션 종료 요청
-      const handleSessionDisconnect = async () => {
-        try {
-          const response = await axiosSecurity.get(
-            '/session/disconnect',
-            {},
-            {
-              headers: {
-                'Content-Type': 'application/json',
+      // "object-detected" 이벤트 수신
+      sseEvents.addEventListener('object-detected', (event: any) => {
+        const data = JSON.parse(event.data);
+        const newData = {
+          id: lengthId,
+          type: data.defectType,
+          defective: data.defective,
+          date: data.detectionDate.substring(0, 10),
+          time: data.detectionDate.substring(11, 19),
+          confidence: data.confidenceRate,
+          imgSrc: data.objectUrl,
+          scanner: data.scannerSerialNumber,
+        };
+
+        setTableData((prev) => [newData, ...prev]);
+        setLengthId((prev) => prev + 1);
+      });
+
+      // 컴포넌트 언마운트 시 세션 종료 및 SSE 닫기
+      return () => {
+        const handleSessionDisconnect = async () => {
+          try {
+            const response = await axiosSecurity.get(
+              `${SFD_URL}/session/disconnect`,
+              {
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                withCredentials: true,
               },
-              withCredentials: true,
-            },
-          );
+            );
 
-          if (response.status === 200) {
-            // console.log('세션이 성공적으로 종료되었습니다.');
-          } else {
-            console.error('세션 종료에 실패했습니다.', response.status);
+            if (response.status === 200) {
+              console.log('세션이 성공적으로 종료되었습니다.');
+            } else {
+              console.error('세션 종료에 실패했습니다.', response.status);
+            }
+          } catch (error) {
+            console.error('세션 종료 요청 중 오류가 발생했습니다.', error);
           }
-        } catch (error) {
-          console.error('세션 종료 요청 중 오류가 발생했습니다.', error);
-        }
-      };
+        };
 
-      handleSessionDisconnect();
-      sseEvents.close();
-      // console.log('SSE 연결 해제');
+        handleSessionDisconnect();
+        sseEvents.close();
+        console.log('SSE 연결 해제');
+      };
     };
-  }, [location, lengthId]);
+
+    // 인증 요청 및 SSE 연결
+    const authenticateAndConnectSSE = async () => {
+      try {
+        // 인증 요청
+        const response = await axiosSecurity.get(`${SFD_URL}/user/info`);
+
+        if (response.status === 200) {
+          // console.log('인증에 성공했습니다.');
+          // 인증 성공 후 SSE 연결
+          connectSSE();
+        } else {
+          console.error('인증에 실패했습니다.', response.status);
+        }
+      } catch (error) {
+        console.error('인증 요청 중 오류가 발생했습니다.', error);
+      }
+    };
+
+    authenticateAndConnectSSE();
+  }, [location, lengthId, user.email]);
 
   // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
   useEffect(() => {
@@ -191,7 +208,7 @@ export const DetectDefectPage = () => {
         let response: any;
 
         try {
-          response = await axiosSecurity.get('/records/recent', {
+          response = await axiosSecurity.get('/records/today/defective', {
             date: startDate,
           });
         } catch (e) {
