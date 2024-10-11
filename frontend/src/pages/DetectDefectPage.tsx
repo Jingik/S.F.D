@@ -8,7 +8,6 @@ import { useUser } from '@components/common/UserContext';
 import clock from '@/assets/images/clock.png';
 import earth from '@/assets/images/earth.png';
 import bulb from '@/assets/images/craked_bulb.png';
-import { useLocation } from 'react-router-dom';
 
 export const DetectDefectPage = () => {
   const [lineData, setLineData] = useState([
@@ -68,7 +67,6 @@ export const DetectDefectPage = () => {
   }
 
   // SSE 연결
-  const location = useLocation();
   useEffect(() => {
     const connectSSE = () => {
       const sseEvents = new EventSource(
@@ -143,7 +141,7 @@ export const DetectDefectPage = () => {
         const response = await axiosSecurity.get(`${SFD_URL}/user/info`);
 
         if (response.status === 200) {
-          // console.log('인증에 성공했습니다.');
+          console.log('인증에 성공했습니다.');
           // 인증 성공 후 SSE 연결
           connectSSE();
         } else {
@@ -155,7 +153,7 @@ export const DetectDefectPage = () => {
     };
 
     authenticateAndConnectSSE();
-  }, [location, lengthId, user.email]);
+  }, [user.email]);
 
   // 페이지 진입 시의 날짜 및 시간 설정 (한번만 실행)
   useEffect(() => {
@@ -215,7 +213,7 @@ export const DetectDefectPage = () => {
           console.error('데이터 요청 오류: ' + e);
         }
 
-        // console.log(response.data);
+        console.log(response.data);
 
         setLengthId(response.data.length);
 
