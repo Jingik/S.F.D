@@ -113,7 +113,7 @@ public class SessionController {
                 }
 
                 // 사용자 ID로 현재 사용 중인 가장 최근의 스캐너를 조회
-                Scanners scanner = scannersService.findMostRecentActiveScanner(userId);
+                Scanners scanner = scannersService.findMostRecentActiveScanner();
 
                 if (scanner != null && scanner.getIsUsing()) {
                     // 스캐너 사용 종료 처리
@@ -138,14 +138,9 @@ public class SessionController {
     @Operation(summary = "하드웨어 트리거 처리", description = "하드웨어에서 발생한 트리거를 처리하고, 클라이언트에게 최신 데이터를 전송하는 API입니다.")
     @GetMapping("/trigger")
     public ResponseEntity<String> handleTrigger() {
-        // 저장된 사용자 ID 가져오기
-        Long userId = sessionService.getCurrentUserId();
 
         // 현재 사용 중인 스캐너 중 가장 최근의 스캐너 조회
-        Scanners scanner = scannersService.findMostRecentActiveScanner(userId);
-        if (scanner == null || !scanner.getIsUsing()) {
-            return ResponseEntity.badRequest().body("현재 사용 중인 스캐너가 없습니다.");
-        }
+        Scanners scanner = scannersService.findMostRecentActiveScanner();
 
         // 트리거 발생 시 ObjectDetection 테이블의 마지막 데이터를 업데이트
         objectDetectionService.updateObjectDetectionWithScanner(scanner.getId());
