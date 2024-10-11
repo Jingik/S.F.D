@@ -213,7 +213,7 @@ export const DetectDefectPage = () => {
           console.error('데이터 요청 오류: ' + e);
         }
 
-        console.log(response.data);
+        // console.log(response.data);
 
         setLengthId(response.data.length);
 
