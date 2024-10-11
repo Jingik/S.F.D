@@ -60,6 +60,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login", "/api/user/signup", "/api/user/find-password", "/api/user/find-email", "/api/user/check-email").permitAll()
                         .requestMatchers("/api/scanners/**", "/api/object-detections/**", "/api/defect-analysis/**").permitAll()
                         // 가장 최신의 정보 가져오기 허용
+                        .requestMatchers("/api/session/trigger").permitAll()
                         .requestMatchers("/api/session/**").permitAll()
                         .requestMatchers("/api/user/**").permitAll()
                         .requestMatchers("/api/records/latest").permitAll()
