@@ -87,9 +87,9 @@ public class ScannersService {
         return new ScannersDto(updatedScanner.getId(), updatedScanner.getUser().getId(), updatedScanner.getSerialNumber(), updatedScanner.getCompletedAt(), updatedScanner.getIsUsing());
     }
 
-    // 사용자 ID로 가장 최근 사용 중인 스캐너 조회
-    public Scanners findMostRecentActiveScanner(Long userId) {
-        return scannersRepository.findTopByUserIdAndIsUsingOrderByIdDesc(userId, true)
+    // 가장 최근 사용 중인 스캐너 조회 (사용자 ID 사용 안 함)
+    public Scanners findMostRecentActiveScanner() {
+        return scannersRepository.findTopByIsUsingOrderByIdDesc(true)
                 .orElseThrow(() -> new IllegalArgumentException("사용 중인 스캐너가 없습니다."));
     }
 
