@@ -333,6 +333,22 @@
   padding: 5px;
 }
 
+.tableButtonSelectedLeft {
+  background: #156ba9;
+  border-radius: 0.5rem 0rem 0rem 0.5rem;
+  border-left: solid #125687 3px;
+  border-top: solid #125687 3px;
+  border-bottom: solid #125687 3px;
+}
+
+.tableButtonSelectedRight {
+  background: #156ba9;
+  border-radius: 0rem 0.5rem 0.5rem 0rem;
+  border-right: solid #125687 3px;
+  border-top: solid #125687 3px;
+  border-bottom: solid #125687 3px;
+}
+
 .imgSetting {
   width: auto;
   height: 60%;
