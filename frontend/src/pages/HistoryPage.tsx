@@ -293,7 +293,7 @@ export const HistoryPage = () => {
                       <button
                         className={
                           selectedButtonId === -1
-                            ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                            ? styles.tableButtonSelectedLeft
                             : ''
                         }
                       >
@@ -304,7 +304,7 @@ export const HistoryPage = () => {
                       <button
                         className={
                           selectedButtonId === -1
-                            ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                            ? styles.tableButtonSelectedRight
                             : ''
                         }
                       >
@@ -320,7 +320,7 @@ export const HistoryPage = () => {
                           onClick={() => handleClick(data)}
                           className={
                             selectedButtonId === data.id
-                              ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                              ? styles.tableButtonSelectedLeft
                               : ''
                           }
                         >
@@ -332,7 +332,7 @@ export const HistoryPage = () => {
                           onClick={() => handleClick(data)}
                           className={
                             selectedButtonId === data.id
-                              ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                              ? styles.tableButtonSelectedRight
                               : ''
                           }
                         >
