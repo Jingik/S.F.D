@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { axiosSecurity } from '@components/common/util';
+// import { axiosSecurity } from '@components/common/util';
 import styles from '@/pages/Pages.module.css';
 
 import nut from '@/assets/images/domain_nut.jpg';
