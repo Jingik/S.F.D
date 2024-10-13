@@ -89,19 +89,22 @@ export const DetectDefectPage = () => {
       // "object-detected" 이벤트 수신
       sseEvents.addEventListener('object-detected', (event: any) => {
         const data = JSON.parse(event.data);
-        const newData = {
-          id: lengthId,
-          type: data.defectType,
-          defective: data.defective,
-          date: data.detectionDate.substring(0, 10),
-          time: data.detectionDate.substring(11, 19),
-          confidence: data.confidenceRate,
-          imgSrc: data.objectUrl,
-          scanner: data.scannerSerialNumber,
-        };
+        setLengthId((prevLengthId) => {
+          const newData = {
+            id: prevLengthId,
+            type: data.defectType,
+            defective: data.defective,
+            date: data.detectionDate.substring(0, 10),
+            time: data.detectionDate.substring(11, 19),
+            confidence: data.confidenceRate,
+            imgSrc: data.objectUrl,
+            scanner: data.scannerSerialNumber,
+          };
 
-        setTableData((prev) => [newData, ...prev]);
-        setLengthId((prev) => prev + 1);
+          setTableData((prev) => [newData, ...prev]);
+
+          return prevLengthId + 1;
+        });
       });
 
       // 컴포넌트 언마운트 시 세션 종료 및 SSE 닫기
@@ -119,7 +122,7 @@ export const DetectDefectPage = () => {
             );
 
             if (response.status === 200) {
-              console.log('세션이 성공적으로 종료되었습니다.');
+              // console.log('세션이 성공적으로 종료되었습니다.');
             } else {
               console.error('세션 종료에 실패했습니다.', response.status);
             }
@@ -130,7 +133,7 @@ export const DetectDefectPage = () => {
 
         handleSessionDisconnect();
         sseEvents.close();
-        console.log('SSE 연결 해제');
+        // console.log('SSE 연결 해제');
       };
     };
 
@@ -438,7 +441,7 @@ export const DetectDefectPage = () => {
                       <button
                         className={
                           selectedButtonId === 0
-                            ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                            ? styles.tableButtonSelectedLeft
                             : ''
                         }
                       >
@@ -449,7 +452,7 @@ export const DetectDefectPage = () => {
                       <button
                         className={
                           selectedButtonId === 0
-                            ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                            ? styles.tableButtonSelectedRight
                             : ''
                         }
                       >
@@ -465,7 +468,7 @@ export const DetectDefectPage = () => {
                           onClick={() => handleClick(data)}
                           className={
                             selectedButtonId === data.id
-                              ? 'bg-[#156ba9] rounded-tl-lg rounded-bl-lg'
+                              ? styles.tableButtonSelectedLeft
                               : ''
                           }
                         >
@@ -477,7 +480,7 @@ export const DetectDefectPage = () => {
                           onClick={() => handleClick(data)}
                           className={
                             selectedButtonId === data.id
-                              ? 'bg-[#156ba9] rounded-tr-lg rounded-br-lg'
+                              ? styles.tableButtonSelectedRight
                               : ''
                           }
                         >
