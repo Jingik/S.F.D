@@ -209,9 +209,9 @@ export const HistoryPage = () => {
   }, [barCounts]);
 
   return (
-    <div className="flex flex-row w-full h-full">
+    <div className={styles.pageLayout}>
       {/* 왼줄 */}
-      <div className="flex flex-col flex-[1]">
+      <div className="flex flex-col flex-[1] w-full h-[95vh]">
         {/* 총 불량 개수 통계 */}
         <div className={`${styles.boxLayout} mb-4`}>
           <p className="m-4">▲ 총 불량 개수 통계</p>
@@ -261,7 +261,7 @@ export const HistoryPage = () => {
 
       {/* 오른줄 */}
       <div className={`${styles.boxLayout} flex-[1]`}>
-        <div className="flex flex-col w-full h-full">
+        <div className="flex flex-col w-full h-[95vh]">
           {/* 불량 사진 탐색 */}
           <div className="h-[50%] flex flex-col">
             {/* 텍스트 영역 */}
