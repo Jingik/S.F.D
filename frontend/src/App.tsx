@@ -40,14 +40,14 @@ export function App() {
 
   return (
     <UserProvider>
-      <div className="flex w-full h-full">
+      <div className="flex flex-row">
         {!hideSidebar && (
-          <div className="h-full flex justify-center">
+          <div className="sticky h-[95vh] top-[1rem]">
             <Sidebar />
           </div>
         )}
 
-        <div className="w-full h-full">
+        <div className="w-full">
           <Routes>
             {/* 로그인 했으면 진입 금지 */}
             <Route element={<PublicRoute />}>

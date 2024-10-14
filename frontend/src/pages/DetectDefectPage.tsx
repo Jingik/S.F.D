@@ -144,7 +144,7 @@ export const DetectDefectPage = () => {
         const response = await axiosSecurity.get(`${SFD_URL}/user/info`);
 
         if (response.status === 200) {
-          console.log('인증에 성공했습니다.');
+          // console.log('인증에 성공했습니다.');
           // 인증 성공 후 SSE 연결
           connectSSE();
         } else {
@@ -216,7 +216,7 @@ export const DetectDefectPage = () => {
           console.error('데이터 요청 오류: ' + e);
         }
 
-        // console.log(response.data);
+        console.log(response.data);
 
         setLengthId(response.data.length);
 
@@ -350,9 +350,9 @@ export const DetectDefectPage = () => {
   }, [barCounts]);
 
   return (
-    <div className="flex flex-row w-full h-full">
+    <div className={styles.pageLayout}>
       {/* 왼쪽줄 */}
-      <div className="flex flex-col mb-4 w-full h-full">
+      <div className="flex flex-col w-full h-full">
         {/* 불량 사진 띄우기 */}
         <div className={`${styles.boxLayout}`}>
           <div className="h-[50%] flex flex-col">
@@ -497,7 +497,7 @@ export const DetectDefectPage = () => {
       </div>
 
       {/* 오른쪽줄 */}
-      <div className={`flex flex-col w-full h-full`}>
+      <div className={`flex flex-col w-full h-[95vh]`}>
         <div className={`${styles.boxLayout} mb-4`}>
           <p className={`m-4 ${styles.blink}`}>■ 시간 당 불량 개수 통계</p>
           {/* 통계 그래프 영역 */}
