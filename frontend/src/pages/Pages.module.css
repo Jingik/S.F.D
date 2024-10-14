@@ -1,11 +1,26 @@
+.pageLayout {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+@media screen and (min-width: 950px) {
+  .pageLayout {
+    flex-direction: row;
+  }
+}
+
 .boxLayout {
   width: auto;
   height: 100%;
+  min-height: 15vh;
+  max-height: 95vh;
   display: flex;
   flex-direction: column;
   background-color: white;
   border-radius: 0.5rem;
-  margin-left: 1rem;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
   box-shadow: 0px 0px 5px 0px rgba(0, 0, 0, 0.25);
   overflow-y: auto;
 }
@@ -48,6 +63,7 @@
   justify-content: center;
   align-items: center;
   width: 20%;
+  min-width: 10rem;
   border-radius: 9999px;
   padding: 0.5rem;
   margin: 1rem;
@@ -103,6 +119,7 @@
 
 .imgCard {
   border-radius: 5px;
+  max-height: 15rem;
 }
 
 /* 불량 검출 페이지 */
@@ -132,22 +149,30 @@
 .lineChart {
   align-self: center;
   width: 90%;
-  height: 100%;
+  height: 14rem;
   min-height: 10rem;
-  max-height: 15rem;
+  max-height: 20rem;
   border-radius: 1rem;
   background: linear-gradient(#80d479, #47c93c);
+}
+
+.lineChart:hover {
+  width: 90.1%;
 }
 
 /* 막대 그래프 배경 */
 .barChart {
   align-self: center;
   width: 90%;
-  height: 100%;
+  height: 14rem;
   min-height: 10rem;
-  max-height: 15rem;
+  max-height: 20rem;
   border-radius: 1rem;
   background: linear-gradient(#e29191, #e36161);
+}
+
+.barChart:hover {
+  width: 90.1%;
 }
 
 /* 서서히 흐려지는 효과 */
@@ -292,6 +317,7 @@
   width: 90%;
   height: 100%;
   min-height: 10rem;
+  max-height: 15rem;
   margin: 1rem;
   color: white;
   border-radius: 1rem;
@@ -352,5 +378,6 @@
 .imgSetting {
   width: auto;
   height: 60%;
+  max-height: 12rem;
   border-radius: 1rem;
 }

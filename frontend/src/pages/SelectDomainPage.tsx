@@ -39,7 +39,7 @@ export const SelectDomainPage = () => {
   }
 
   return (
-    <div className={`${styles.boxLayout} h-full`}>
+    <div className={`${styles.boxLayout}`}>
       {isDomainPage ? (
         <>
           {/* 윗부분 */}
@@ -57,9 +57,9 @@ export const SelectDomainPage = () => {
 
           {/* 목록 */}
           <div className="m-6 h-[80%] overflow-y-auto">
-            <ol className="flex flex-row h-full w-full">
+            <ol className={`${styles.pageLayout}`}>
               {domainList.map((domain, index) => (
-                <li key={index} className="flex-grow flex h-full">
+                <li key={index} className="flex-grow flex">
                   <button
                     className={
                       isSelected === index
