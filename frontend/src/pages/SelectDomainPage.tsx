@@ -44,11 +44,12 @@ export const SelectDomainPage = () => {
         <>
           {/* 윗부분 */}
           <div className="flex justify-between">
-            <p className="m-6 text-3xl font-bold">
-              □ 불량을 검출할 품목명 선택
-            </p>
+            <div className="m-6 text-3xl font-bold flex flex-row">
+              <p className="mr-2">□</p>
+              <p>불량을 검출할 품목명 선택</p>
+            </div>
             <button
-              className="m-6 text-[#999999] items-end"
+              className="m-6 text-[#999999] items-end min-w-[8rem]"
               onClick={() => nav('request')}
             >
               + 새 품목 추가 요청
@@ -56,10 +57,10 @@ export const SelectDomainPage = () => {
           </div>
 
           {/* 목록 */}
-          <div className="m-6 h-[80%] overflow-y-auto">
+          <div className="m-6 h-[80%] w-auto overflow-y-auto">
             <ol className={`${styles.pageLayout}`}>
               {domainList.map((domain, index) => (
-                <li key={index} className="flex-grow flex">
+                <li key={index} className="flex-grow flex self-center">
                   <button
                     className={
                       isSelected === index

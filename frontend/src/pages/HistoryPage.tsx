@@ -153,11 +153,13 @@ export const HistoryPage = () => {
         });
 
         setTableData(
-          newTableData.filter((data: any) => {
-            return (
-              data.date.substring(8, 10) === String(dateData).padStart(2, '0')
-            );
-          }),
+          newTableData
+            .filter((data: any) => {
+              return (
+                data.date.substring(8, 10) === String(dateData).padStart(2, '0')
+              );
+            })
+            .reverse(),
         );
 
         // 막대그래프에서의 불량 종류의 개수 세기
