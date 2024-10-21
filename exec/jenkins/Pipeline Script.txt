@@ -1,0 +1,162 @@
+pipeline {
+    agent any
+
+    environment {
+        GIT_BRANCH = ''
+        GIT_URL = 'https://pswlove38:az3udQpBxi9b7RDKhQyH@lab.ssafy.com/s11-ai-image-sub2/S11P22B103.git'
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                script {
+                    // 안전한 디렉토리 설정
+                    sh 'git config --global --add safe.directory /var/jenkins_home/workspace/sp-project'
+                    
+                    GIT_BRANCH = sh(script: 'git rev-parse --abbrev-ref HEAD', returnStdout: true).trim()
+                    
+                    dir('backend'){
+                        // .grable 파일이 있으면 삭제
+                        sh'''
+                        if [ -d ".gradle" ]; then
+                            echo "Deleting .gradle directory..."
+                            rm -rf .gradle
+                        else
+                            echo ".gradle directory not found."
+                        fi
+                        '''
+                    }
+                    
+                    echo "Checked out branch: ${GIT_BRANCH}"
+                    sh "git pull origin ${GIT_BRANCH}"
+                    
+                    def changes = sh(script: "git diff --name-only HEAD~1 HEAD", returnStdout: true).trim()
+                    echo "Changed files:\n${changes}"
+
+                    CHANGED_BACKEND = changes.split('\n').any { it.startsWith('backend/') }
+                    CHANGED_FRONTEND = changes.split('\n').any { it.startsWith('frontend/') }
+
+                    if (CHANGED_BACKEND) {
+                        echo "Backend directory has changes."
+                    } else {
+                        echo "No changes in Backend directory."
+                    }
+
+                    if (CHANGED_FRONTEND) {
+                        echo "Frontend directory has changes."
+                    } else {
+                        echo "No changes in Frontend directory."
+                    }
+                }
+            }
+        }
+
+        stage('Build and Dockerize') {
+            steps {
+                script {
+                    def parallelTasks = [:]
+
+                    if (CHANGED_BACKEND) {
+                        parallelTasks["Backend Build and Dockerize"] = {
+                            echo "Building Backend..."
+                            dir('backend'){
+                                sh 'pwd'
+                                sh "chmod +x gradlew"
+                                sh "./gradlew clean bootJar"
+                                sh "ls -al"
+                            }
+                            echo "Backend build completed."
+
+                            echo "Making Docker Image Backend..."
+                            dir('backend'){
+                                // 새로운 도커 이미지 생성
+                                sh "docker build -t spring-image:latest ."
+                                sh "docker images"
+
+                                // 동일한 이름의 컨테이너가 이미 존재하면 삭제
+                                echo "Checking existing spring containers..."
+                                sh """
+                                if [ \$(docker ps -a -q -f name=spring-container) ]; then
+                                    docker stop spring-container
+                                    docker rm spring-container
+                                fi
+                                """
+
+                                // 새로운 컨테이너 실행
+                                sh "docker run -d --name spring-container --network app-network -p 8080:8080 spring-image:latest"
+                                sh "docker ps -a | grep spring-container"
+                                sh "docker logs spring-container"
+                                
+                                // 기준 <none> 이미지들 삭제
+                                sh "docker image prune -f"
+                            }
+                            echo "Backend Docker image created & run successfully."
+                        }
+                    }
+
+                    if (CHANGED_FRONTEND) {
+                        parallelTasks["Frontend Build and Dockerize"] = {
+                            // 프론트엔드 도커 이미지 생성
+                            echo "Making Docker Image Frontend..."
+                            dir('frontend'){
+                                // 프론트 도커 이미지 생성
+                                sh "docker build -t react-image:latest ."
+                                
+                                // 동일한 이름의 컨테이너가 이미 존재하면 삭제
+                                echo "Checking existing react containers..."
+                                sh """
+                                if [ \$(docker ps -a -q -f name=react-container) ]; then
+                                    docker stop react-container
+                                    docker rm react-container
+                                fi
+                                """
+                                // 기존에 있던 이미지 삭제
+                                sh "docker image prune -f"
+                                
+                                // 디버깅을 위한 로그
+                                sh "docker images"
+                                
+                                // 리액트 컨테이너 실행
+                                sh "docker run -d -p 3000:80 --name react-container --network app-network react-image:latest"
+                                
+                                // 컨테이너 로그 확인
+                                sh "docker logs react-container"
+                            }
+                            echo "Frontend Docker image created successfully."
+                        }
+                    }
+
+                    if (parallelTasks) {
+                        parallel parallelTasks
+                    } else {
+                        echo "No changes detected in Backend or Frontend. Skipping build and Dockerization."
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            script {
+                echo "Pipeline completed successfully."
+                if (CHANGED_BACKEND) {
+                    echo "Backend build and Docker image creation completed successfully."
+                } else {
+                    echo "No changes in Backend, no build or Docker image creation performed."
+                }
+
+                if (CHANGED_FRONTEND) {
+                    echo "Frontend build and Docker image creation completed successfully."
+                } else {
+                    echo "No changes in Frontend, no build or Docker image creation performed."
+                }
+            }
+        }
+        failure {
+            script {
+                echo "Pipeline failed. Please check the logs for more details."
+            }
+        }
+    }
+}
